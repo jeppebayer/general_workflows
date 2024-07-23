@@ -7,9 +7,9 @@ taxonomic_group: Collembola
 # Name of species being analyzed
 species_name: Pogonognathellus flavescens
 # Path to reference genome file in FASTA format
-reference_genome_path: 
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Pogonognathellus_flavescens/EG_PogFla_23072024_genomic.fna
 # Directory for intermediary files.
-working_directory_path: 
+working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps
 # # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
 output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/
 # AdapterRemoval settings.
@@ -28,12 +28,23 @@ sample_lists:
   -
     group_name: Grassland
     sample_folder_list:
-      - 
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Pogonognathellus_flavescens/PogFla_aaRJ-C228
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Pogonognathellus_flavescens/PogFla_FaaJ-C7
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Pogonognathellus_flavescens/PogFla_KLJ-C125
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Pogonognathellus_flavescens/PogFla_MYS-C279
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Pogonognathellus_flavescens/PogFla_NOJ-C113
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Pogonognathellus_flavescens/PogFla_NYS-F-C115
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Pogonognathellus_flavescens/PogFla_RYJ-C44-1
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Pogonognathellus_flavescens/PogFla_RYJ-C44-2
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Pogonognathellus_flavescens/PogFla_SHJ-C21
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Pogonognathellus_flavescens/PogFla_SSJ-C261
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Pogonognathellus_flavescens/PogFla_ULJ-C315
   -
     group_name: Conservation_agriculture
     sample_folder_list:
-      - 
   -
     group_name: Conventional_agriculture
     sample_folder_list:
-      - 
+  -
+    group_name: Outgroup_
+    sample_folder_list:

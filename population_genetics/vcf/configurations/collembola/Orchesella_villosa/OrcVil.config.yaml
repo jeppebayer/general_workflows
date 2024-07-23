@@ -2,32 +2,50 @@
 TAG: jeppebayer:EcoGenetics,population_genetics,vcf:workflowconfiguration
 # The name of the relevant project account.
 account: EcoGenetics
+# Taxonomic group.
+taxonomic_group: 
 # Name of species being analyzed.
 species_name: 
 # Path to reference genome.
 reference_genome_path: 
 # Directory for intermediary files.
 working_directory_path: 
-# Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
+# Directory for final output files. (If left empty, output file will be placed within 'working_directory_path').
 output_directory_path:
-# Partition size of genome in base pairs
+# Partition size of genome in base pairs.
 partition_size: 100000
-# Freebayes settings
+# Freebayes settings.
 freebayes_settings:
   sample_ploidy: 100
   best_n_alleles: 3
   min_alternate_fraction: 0
   min_alternate_count: 2
-# Filtering depths, the number included
+# Filtering depths, limits included.
 filtering:
   minimum_depth: 300
   maximum_depth: 600
+# Mode for creating VCF file (1 | 2 | 3 | 4).
+# 1 = Separate VCF files for each sample/BAM file. 2 = One VCF file per sample group. 3 = One VCF containing data for all samples/BAM files. 4 = Both.
+mode: 4
 # Sample setup. List of dictionaries listing the configuration for each sample.
 sample_list:
-  -
-    # Name of sample.
-    sample_name: 
+  - 
     # Name of sample group.
-    sample_group: 
-    # Path to BAM file.
-    bam_file: 
+    group_name: Grassland
+    # List of paths to BAM files.
+    bam_file_list:
+  - 
+    # Name of sample group.
+    group_name: Conservation_agriculture
+    # List of paths to BAM files.
+    bam_file_list:
+  - 
+    # Name of sample group.
+    group_name: Conventional_agriculture
+    # List of paths to BAM files.
+    bam_file_list:
+  - 
+    # Name of sample group.
+    group_name: Outgroup_Orchesella_cincta
+    # List of paths to BAM files.
+    bam_file_list:

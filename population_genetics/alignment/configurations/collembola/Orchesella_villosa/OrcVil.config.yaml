@@ -7,9 +7,9 @@ taxonomic_group: Collembola
 # Name of species being analyzed
 species_name: Orchesella villosa
 # Path to reference genome file in FASTA format
-reference_genome_path: 
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Orchesella_villosa/EG_OrcVil_23072024_genomic.fna
 # Directory for intermediary files.
-working_directory_path: 
+working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps
 # # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
 output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/
 # AdapterRemoval settings.
@@ -28,12 +28,31 @@ sample_lists:
   -
     group_name: Grassland
     sample_folder_list:
-      - 
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_BRS-C95
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_FaaJ-C5
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_HAS-C58
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_KOS-C292
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_KRS-C187
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_MSJ-C3
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_NYS-F-C26
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_ORoe-C193
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_RES-C167
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_SKS-C54
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_ULJ-C123
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_VIS-C359
   -
     group_name: Conservation_agriculture
     sample_folder_list:
-      - 
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_CA-KNJ-C208
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_CA-MoeJ-C353
   -
     group_name: Conventional_agriculture
     sample_folder_list:
-      - 
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_K-KNJ-C219
+  -
+    group_name: Outgroup_Orchesella_cincta
+    sample_folder_list:
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_cincta/OrcCin_aeRoe-C182
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_cincta/OrcCin_DSJ-C233
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_cincta/OrcCin_FaaJ-C6
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_cincta/OrcCin_JHJ-C222
