@@ -29,6 +29,7 @@ sample_lists:
     group_name: Grassland
     sample_folder_list:
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Pogonognathellus_flavescens/PogFla_aaRJ-C228
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Pogonognathellus_flavescens/PogFla_DSJ-C249
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Pogonognathellus_flavescens/PogFla_FaaJ-C7
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Pogonognathellus_flavescens/PogFla_KLJ-C125
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Pogonognathellus_flavescens/PogFla_MYS-C279

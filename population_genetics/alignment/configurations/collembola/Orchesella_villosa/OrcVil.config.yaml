@@ -11,7 +11,7 @@ reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/population_geneti
 # Directory for intermediary files.
 working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps
 # # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
-output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics
 # AdapterRemoval settings.
 adapterremoval_settings:
   min_quality: 25
@@ -29,6 +29,7 @@ sample_lists:
     group_name: Grassland
     sample_folder_list:
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_BRS-C95
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_DSJ-C235
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_FaaJ-C5
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_HAS-C58
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_KOS-C292
@@ -44,6 +45,7 @@ sample_lists:
     group_name: Conservation_agriculture
     sample_folder_list:
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_CA-KNJ-C208
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_CA-LES-C386
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_CA-MoeJ-C353
   -
     group_name: Conventional_agriculture

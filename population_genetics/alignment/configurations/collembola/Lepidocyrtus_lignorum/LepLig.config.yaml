@@ -9,9 +9,9 @@ species_name: Lepidocyrtus lignorum
 # Path to reference genome file in FASTA format
 reference_genome_path: 
 # Directory for intermediary files.
-working_directory_path: 
+working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps
 # # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
-output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics
 # AdapterRemoval settings.
 adapterremoval_settings:
   min_quality: 25
@@ -28,12 +28,37 @@ sample_lists:
   -
     group_name: Grassland
     sample_folder_list:
-      - 
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_aaRJ-C207
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_BRS-C269
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_FaaJ-C8
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_FHJ-C92
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_FUR-C231
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_GoeJ-C242
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_GSJ-C273
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_HHJ-C215
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_JEJ-C18
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_KOS-C181
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_LEJ-C243
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_LVJ-C78
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_MYS-C39
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_RES-C286
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_SHJ-C9
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_SKJ-C102
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_SKS-C106
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_SSJ-C258
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_VAJ-C10
   -
     group_name: Conservation_agriculture
     sample_folder_list:
-      - 
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_CA-FS6J-C90
   -
     group_name: Conventional_agriculture
     sample_folder_list:
-      - 
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_K-JES-C324
+  -
+    group_name: Outgroup_Entomobrya_nicoleti
+    sample_folder_list:
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_aaRJ-C225
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_GSJ-C274
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_CA-ToeJ-C85
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_K-JES-C323

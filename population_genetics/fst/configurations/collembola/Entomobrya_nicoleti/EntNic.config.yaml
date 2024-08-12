@@ -13,23 +13,57 @@ working_directory_path: /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scrip
   #/faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps
 # # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
 output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics
+
 # Make neutral VCF settings: (intergenic and rm repetitive)
-
-
+# Bed file path
+bed_files_path: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/annotation/
+# VCF folders
+vcf_base_folder: /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf
+# vcf tip folders
+vcf_base_folder: /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland
 # VCF filter settings? (threshold depth per pop or across pops, or across 70% of pops?)
 
+vcf_lists:
+  -
+    group_name: good_samples
+    vcf_files_list:
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_aaRJ-C225/filtered_vcf/EntNic_aaRJ-C225.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_aeRoe-C36/filtered_vcf/EntNic_aeRoe-C36.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_BIJ-C30/filtered_vcf/EntNic_BIJ-C30.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_BJJ-C34/filtered_vcf/EntNic_BJJ-C34.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_BRS-C268/filtered_vcf/EntNic_BRS-C268.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_DoeJ-C27/filtered_vcf/EntNic_DoeJ-C27.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_DSJ-C190/filtered_vcf/EntNic_DSJ-C190.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_FHJ-C38/filtered_vcf/EntNic_FHJ-C38.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_FUR-C230/filtered_vcf/EntNic_FUR-C230.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_GEJ-C42/filtered_vcf/EntNic_GEJ-C42.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_GoeJ-C19/filtered_vcf/EntNic_GoeJ-C19.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_GSJ-C274/filtered_vcf/EntNic_GSJ-C274.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_GUS-C41/filtered_vcf/EntNic_GUS-C41.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_JHJ-C220/filtered_vcf/EntNic_JHJ-C220.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_JoeJ-C252/filtered_vcf/EntNic_JoeJ-C252.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_KLJ-C127/filtered_vcf/EntNic_KLJ-C127.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_LEJ-C64/filtered_vcf/EntNic_LEJ-C64.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_MSJ-C2/filtered_vcf/EntNic_MSJ-C2.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_NOJ-C37/filtered_vcf/EntNic_NOJ-C37.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_RYJ-C139/filtered_vcf/EntNic_RYJ-C139.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_SHJ-C48/filtered_vcf/EntNic_SHJ-C48.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_SKJ-C16/filtered_vcf/EntNic_SKJ-C16.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_SKJ-C216/filtered_vcf/EntNic_SKJ-C216.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_STF-C266/filtered_vcf/EntNic_STF-C266.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_ULJ-C60/filtered_vcf/EntNic_ULJ-C60.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_UTJ-C22/filtered_vcf/EntNic_UTJ-C22.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+  -
+    group_name: bad_samples
+    vcf_files_list:
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_HHJ-C162/filtered_vcf/EntNic_HHJ-C162.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_JEJ-C119/filtered_vcf/EntNic_JEJ-C119.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_KoeJ-C212/filtered_vcf/EntNic_KoeJ-C212.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_LVJ-C76/filtered_vcf/EntNic_LVJ-C76.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_SBJ-C52/filtered_vcf/EntNic_SBJ-C52.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_VAJ-C24/filtered_vcf/EntNic_VAJ-C24.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz
 
-# AdapterRemoval settings.
-adapterremoval_settings:
-  min_quality: 25
-  min_length: 20
-  adaptersequence1: AAGTCGGAGGCCAAGCGGTCTTAGGAAGACAA
-  adaptersequence2: AAGTCGGATCGTAGCCATGTCGTTCTGTGAGCCAAGGAGTTG
-# Samtools filter settings.
-filter_settings:
-  flags_excluded: 3844
-  flags_required: 
-  min_mq: 20
+
 # List of path to sample folders containing resequencing data.
 sample_lists:
   -

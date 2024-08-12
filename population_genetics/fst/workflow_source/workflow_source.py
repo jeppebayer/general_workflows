@@ -1,12 +1,12 @@
 #!/bin/env python3
 from gwf import Workflow
 from gwf.workflow import collect
-import os, yaml, glob, sys
+import os, yaml, glob, sys, re
 from workflow_templates import *
 
 def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 	"""
-	Workflow: Create :format:`VCF` using :script:`freebayes`.
+	Workflow: Estimates pi and Fst from filtered and neutral :format:`VCF` using equations desribed in :script: popoolation :script: fst-sliding.
 	
 	:param str config_file:
 		Configuration file containing pre-defined set of variables
@@ -18,18 +18,14 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 	CONFIG = yaml.safe_load(open(config_file)) #opens yml file for reading
 	ACCOUNT: str = CONFIG['account'] # gets the setting after account as string
 	SPECIES_NAME: str = CONFIG['species_name']
-	OUTPUT_DIR: str = CONFIG['output_directory_path']
+	#OUTPUT_DIR: str = CONFIG['output_directory_path']
 	WORK_DIR: str = CONFIG['working_directory_path']
+	#VCF_BASE_FOLDER: str = CONFIG['vcf_base_folder']
+	TAXONOMY: str = CONFIG['taxonomic_group']
+	BED_PATH: str = CONFIG['bed_files_path']
+	GENOME_PATH: str = CONFIG['reference_genome_path']
+	VCF_FILES: list = CONFIG['vcf_lists']
 
-
-
-	SAMPLE_LIST: list = CONFIG['sample_list']
-	REFERENCE_GENOME: str = CONFIG['reference_genome_path']
-	PARTITION_SIZE: int = CONFIG['partition_size']
-	PLOIDY: int = CONFIG['sample_ploidy']
-	BESTN: int = CONFIG['best_n_alleles']
-	ALT_FRACTION: float | int = CONFIG['min_alternate_fraction']
-	ALT_COUNT: int = CONFIG['min_alternate_count']
 
 	# --------------------------------------------------
 	#                  Workflow
@@ -37,224 +33,107 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 	
 	gwf = Workflow(
 		defaults={'account': ACCOUNT}
-	) # defines what happens when you have started this workflow.
+	) # what does this do?
 	
-	# this part checks if fasta has already been parsed or not. the paths are outfiles.
-	if os.path.exists(f'reference_partitions.{PARTITION_SIZE}bp.txt') and os.path.exists('reference_sequences.txt'):
-		# If files exists reads data directly from files
-		# Loads reference genome partitioning
-		with open(f'reference_partitions.{PARTITION_SIZE}bp.txt', 'r') as infile:
-			partitions = [{'num': entry.split(sep='\t')[0].strip(), 'region': entry.split(sep='\t')[1].strip(), 'start': entry.split(sep='\t')[2].strip(), 'end': entry.split(sep='\t')[3].strip()} for entry in infile]
-			npadding = len(str(sum(1 for line in partitions)))
-		# Loads list of contigs in reference genome
-		with open('reference_sequences.txt', 'r') as infile:
-			contigs = [{'contig': entry.split(sep='\t')[0].strip()} for entry in infile]
-	else:
-		# If files don't exist, generate data and write files
-		sequences = parse_fasta(REFERENCE_GENOME)
-		with open(f'reference_sequences.txt', 'w') as outfile:
-			outfile.write('\n'.join('\t'.join(str(i) for i in entry.values()) for entry in sequences)) # why starting name with newline?
-		# Partitions reference genome
-		npadding = padding_calculator(parse_fasta=sequences, size=PARTITION_SIZE)
-		partitions = partition_chrom(parse_fasta=sequences, size=PARTITION_SIZE, npad=npadding)
-		with open(f'reference_partitions.{PARTITION_SIZE}bp.txt', 'w') as outfile:
-			outfile.write('\n'.join('\t'.join(str(i) for i in entry.values()) for entry in partitions))
-		# Creates list of contigs in reference genome
-		contigs = [{'contig': contig['sequence_name']} for contig in sequences]
 
-	# defines new directories base on config
-	top_dir = f'{WORK_DIR}/{SPECIES_NAME.replace(" ", "_")}/freebayes'
-	output_dir = f'{OUTPUT_DIR}/{SPECIES_NAME.replace(" ", "_")}/freebayes'
-
-	freebayes_parts = gwf.map(
-		template_func=freebayes_chrom,
-		inputs=partitions,
-		name=name_freebayes_chrom,
-		extra={'reference_genome_file': REFERENCE_GENOME,
-			   'bam_file_list': SAMPLE_LIST,
-			   'output_directory': top_dir,
-			   'species_name': SPECIES_NAME,
-			   'ploidy': PLOIDY,
-			   'best_n_alleles': BESTN,
-			   'min_alternate_fraction': ALT_FRACTION,
-			   'min_alternate_count': ALT_COUNT}
-		)
+	### MAKE DIRECTORIES
 	
-	concat_freebayes = gwf.target_from_template(
-			name='concatenate_freebayes',
-			template=concat_vcf(
-				files=collect(freebayes_parts.outputs, ['vcf'])['vcfs'],
-				output_name=f'{species_abbreviation(SPECIES_NAME)}.freebayes_n{BESTN}_p{PLOIDY}_minaltfrc{ALT_FRACTION}_minaltcnt{ALT_COUNT}',
-				output_directory=output_dir,
-				compress=True
-			)
+	# make directories
+	new_wd=f'{WORK_DIR}/fst/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/genome_or_annot'
+	if not os.path.isdir(new_wd):
+		os.makedirs(new_wd)
+
+	# defines new files/directories base on config
+	bed_genes = glob.glob(f'{BED_PATH}/*_genome.genes.bed')[0]
+	bed_repeats = glob.glob(f'{BED_PATH}/*_genome.repeats.bed')[0]
+	bed_neutral = f'{new_wd}/{os.path.basename(bed_genes).replace("genes","neutral")}'
+	# f'{bed_repeats.replace("repeats","neutral")}'
+	
+
+
+	# Define target making genome.fna.fai
+	make_fna_fai_target = gwf.target_from_template(
+			name='make_genome_fai',
+			template=make_genome_fai(
+				ref_genome_file=GENOME_PATH,
+				fasta_fai_output=f'{new_wd}/{GENOME_PATH.split('/')[-1].replace(".fna", ".fna.fai")}')
 		)
 
-	return gwf
-
-def freebayes_population_set_workflow(config_file: str = glob.glob('*config.y*ml')[0]):
-	"""
-	Workflow: Create :format:`VCF` file for each sample in configuration.
-	
-	:param str config_file:
-		Configuration file containing pre-defined set of variables
-	"""
-	# --------------------------------------------------
-	#                  Configuration
-	# --------------------------------------------------
-	
-	CONFIG = yaml.safe_load(open(config_file))
-	ACCOUNT: str = CONFIG['account']
-	TAXONOMY: str = CONFIG['taxonomic_group'].lower()
-	SPECIES_NAME: str = CONFIG['species_name']
-	REFERENCE_GENOME: str = CONFIG['reference_genome_path']
-	WORK_DIR: str = CONFIG['working_directory_path'][:len(CONFIG['working_directory_path']) - 1] if CONFIG['working_directory_path'].endswith('/') else CONFIG['working_directory_path']
-	OUTPUT_DIR: str = CONFIG['output_directory_path'][:len(CONFIG['output_directory_path']) - 1] if CONFIG['output_directory_path'].endswith('/') else CONFIG['output_directory_path']
-	PARTITION_SIZE: int | None = CONFIG['partition_size'] if CONFIG['partition_size'] else 500000
-	FREEBAYES_SETTINGS: dict = CONFIG['freebayes_settings']
-	FREEBAYES_PLOIDY: int | None = FREEBAYES_SETTINGS['sample_ploidy'] if FREEBAYES_SETTINGS['sample_ploidy'] else 100
-	FREEBAYES_BESTN: int | None = FREEBAYES_SETTINGS['best_n_alleles'] if FREEBAYES_SETTINGS['best_n_alleles'] else 3
-	FREEBAYES_MINALTFRC: float | int | None = FREEBAYES_SETTINGS['min_alternate_fraction'] if FREEBAYES_SETTINGS['min_alternate_fraction'] else 0
-	FREEBAYES_MINALTCNT: int | None = FREEBAYES_SETTINGS['min_alternate_count'] if FREEBAYES_SETTINGS['min_alternate_count'] else 2
-	FILTERING: dict = CONFIG['filtering']
-	FILTERING_MINDP: int | None = FILTERING['minimum_depth'] if FILTERING['minimum_depth'] else 300
-	FILTERING_MAXDP: int | None = FILTERING['maximum_depth'] if FILTERING['maximum_depth'] else 600
-	MODE: int = CONFIG['mode']
-	SAMPLE_LIST: list = CONFIG['sample_list']
-
-	# --------------------------------------------------
-	#                  Workflow
-	# --------------------------------------------------
-	
-	gwf = Workflow(
-		defaults={'account': ACCOUNT}
+	# Define target with input genes and repeats bed
+		# output neutral bed
+	make_neutral_bed_target = gwf.target_from_template(
+		name='make_neutral_bed',
+		template=make_neutral_bed(
+			genes_bed_file = bed_genes,
+			repeats_bed_file = bed_repeats,
+			genome_bedstyle = make_fna_fai_target.outputs['genome_fai'],
+			neutral_bed_out = bed_neutral)
 	)
-	
-	if os.path.exists(f'reference_partitions.{PARTITION_SIZE}bp.txt') and os.path.exists('reference_sequences.txt'):
-		# If files exists reads data directly from files
-		# Loads reference genome partitioning
-		with open(f'reference_partitions.{PARTITION_SIZE}bp.txt', 'r') as infile:
-			partitions = [{'num': entry.split(sep='\t')[0].strip(), 'region': entry.split(sep='\t')[1].strip(), 'start': entry.split(sep='\t')[2].strip(), 'end': entry.split(sep='\t')[3].strip()} for entry in infile]
-			npadding = len(str(sum(1 for line in partitions)))
-		# Loads list of contigs in reference genome
-		with open('reference_sequences.txt', 'r') as infile:
-			contigs = [{'contig': entry.split(sep='\t')[0].strip()} for entry in infile]
-	else:
-		# If files don't exist, generate data and write files
-		sequences = parse_fasta(REFERENCE_GENOME)
-		with open(f'reference_sequences.txt', 'w') as outfile:
-			outfile.write('\n'.join('\t'.join(str(i) for i in entry.values()) for entry in sequences))
-		# Partitions reference genome
-		npadding = padding_calculator(parse_fasta=sequences, size=PARTITION_SIZE)
-		partitions = partition_chrom(parse_fasta=sequences, size=PARTITION_SIZE, npad=npadding)
-		with open(f'reference_partitions.{PARTITION_SIZE}bp.txt', 'w') as outfile:
-			outfile.write('\n'.join('\t'.join(str(i) for i in entry.values()) for entry in partitions))
-		# Creates list of contigs in reference genome
-		contigs = [{'contig': contig['sequence_name']} for contig in sequences]
 
-	top_dir = f'{WORK_DIR}f/{TAXONOMY.replace(" ", "_")}/{SPECIES_NAME.replace(" ", "_")}/vcf'
-	top_out = f'{OUTPUT_DIR}/vcf/{TAXONOMY.replace(" ", "_")}/{SPECIES_NAME.replace(" ", "_")}'
-	full_bam_list = []
+# Target to deminish VCF to only contain neutral sites
+# iterating files using .map
 
-	for GROUP in SAMPLE_LIST:
-		if not GROUP['bam_file_list']:
-			continue
-		GROUP_NAME: str = GROUP['group_name'].lower()
+	# make list of dictionary with :new_wd + file directory name
+	for GROUP in VCF_FILES:
+		#if not GROUP['vcf_files_list']:
+		#	continue
 
-		for SAMPLE in GROUP['bam_file_list']:
-			SAMPLE_NAME: str = os.path.basename(os.path.dirname(SAMPLE))
+		if GROUP['group_name'] == 'good_samples':
+			#print('yes')
+			files_list = GROUP['vcf_files_list'] # access the good samples GROUP and get the list of vcf files
+			#print(files_list)
+			# files_popdir=[ f'{new_wd}/{os.path.dirname(el).split("/")[-2]}' for el in files_list ]  # via list comprehension extract pop directory name and append it to the wkdirectory path
+			files_popdir=[ f'{os.path.dirname(el)}/neutral_vcf/' for el in files_list ]  # via list comprehension extract pop directory name and append it to the wkdirectory path
 			
-			full_bam_list.append(SAMPLE)
+			input_dict=[{'vcf_file': f, 'working_directory': p} for f, p in zip(files_list, files_popdir)] # making combined dictionary of files and new wd paths using list comprehension and zip
 
-			# One VCF file per sample file.
-			if MODE == 1 or MODE == 4:
-				freebayes_parts_single = gwf.map(
-					name=name_freebayes_partition_single,
-					template_func=freebayes_partition_single,
-					inputs=partitions,
-					extra={'reference_genome_file': REFERENCE_GENOME,
-						   'bam_file': SAMPLE,
-						   'output_directory': top_dir,
-						   'group_name': GROUP_NAME,
-						   'sample_name': SAMPLE_NAME,
-						   'ploidy': FREEBAYES_PLOIDY,
-						   'best_n_alleles': FREEBAYES_BESTN,
-						   'min_alternate_fraction': FREEBAYES_MINALTFRC,
-						   'min_alternate_count': FREEBAYES_MINALTCNT}
-				)
+			neutral_vcf_files_runtemplate_map = gwf.map(
+					#name=make_neutral_vcf,
+					template_func = make_neutral_vcf,
+					inputs = input_dict,
+					extra = {'neutral_bed': make_neutral_bed_target.outputs['neutral_bed']})
+		#else:
+			#print("no")
+			neutral_vcf_list = neutral_vcf_files_runtemplate_map.outputs, ['neutral_vcf']
+			neutral_vcf_list = [x['neutral_vcf'] for x in neutral_vcf_list[0]]
 
-				concat_freebayes_single = gwf.target_from_template(
-						name=f'concatenate_freebayes_vcf_{GROUP_NAME}_{SAMPLE_NAME.replace("-", "_")}',
-						template=concat_vcf(
-							files=collect(freebayes_parts_single.outputs, ['vcf'])['vcfs'],
-							output_name=f'{SAMPLE_NAME}.freebayes_n{FREEBAYES_BESTN}_p{FREEBAYES_PLOIDY}_minaltfrc{FREEBAYES_MINALTFRC}_minaltcnt{FREEBAYES_MINALTCNT}',
-							output_directory=f'{top_out}/{GROUP_NAME}/{SAMPLE_NAME}/vcf' if OUTPUT_DIR else f'{top_dir}/raw_vcf/{GROUP_NAME}/{SAMPLE_NAME}',
-							compress=True
-						)
-				)
+		# I am about here. Trying to get lists and dictionaries to cooperate in creating a list with two dict per entry. one with vcf_file, one with new wd. in my folder.
+			new_wd = f'{new_wd.replace("/fst/","/allele_frequencies/").replace("genome_or_annot","")}/'
+			wd_list = [ f'{new_wd}{re.split("//|/",el)[-4]}' for el in neutral_vcf_list ]  # via list comprehension extract pop directory name and append it to the wkdirectory path
+			#print(neutral_vcf_list)
+			print(new_wd)
+			print(neutral_vcf_list)
+			print()
+			print(wd_list)
+			#inputs_and_new_wd_dict = neutral_vcf_collect
+			#result = [dict(item, **{'elem':'value'}) for item in neutral_vcf_list[0]]
 
-				# filtering = gwf.target_from_template(
-				# 	name=f'filter_vcf_{GROUP_NAME}_{SAMPLE_NAME.replace("-", "_")}',
-				# 	template=filter_vcf(
-				# 		vcf_file=concat_freebayes_single.outputs['concat_file'],
-				# 		output_directory=f'{OUTPUT_DIR}' if OUTPUT_DIR else f'{top_dir}/filtered_vcf',
-				# 		sample_group=GROUP_NAME,
-				# 		sample_name=SAMPLE_NAME,
-				# 		min_depth=FILTERING_MINDP,
-				# 		max_depth=FILTERING_MAXDP
-				# 	)
-				# )
-		
-		# One VCF file per sample group.
-		if MODE == 2 or MODE == 4:
-			freebayes_parts_group = gwf.map(
-				name=name_freebayes_partition_group,
-				template_func=freebayes_partition_group,
-				inputs=partitions,
-				extra={'reference_genome_file': REFERENCE_GENOME,
-		  		   	   'bam_files': GROUP['bam_file_list'],
-				   	   'output_directory': top_dir,
-					   'species_name': SPECIES_NAME,
-					   'group_name': GROUP_NAME,
-				   	   'ploidy': FREEBAYES_PLOIDY,
-				   	   'best_n_alleles': FREEBAYES_BESTN,
-				   	   'min_alternate_fraction': FREEBAYES_MINALTFRC,
-				   	   'min_alternate_count': FREEBAYES_MINALTCNT}
-			)
-		
-			concat_freebayes_group = gwf.target_from_template(
-				name=f'cocatenate_freebayes_vcf_group',
-				template=concat_vcf(
-					files=collect(freebayes_parts_group.outputs['vcf'])['vcfs'],
-					output_name=f'{species_abbreviation(SPECIES_NAME)}_{GROUP_NAME}.freebayes_n{FREEBAYES_BESTN}_p{FREEBAYES_PLOIDY}_minaltfrc{FREEBAYES_MINALTFRC}_minaltcnt{FREEBAYES_MINALTCNT}',
-					output_directory=f'{top_out}/{GROUP_NAME}/vcf' if OUTPUT_DIR else f'{top_dir}/raw_vcf/{GROUP_NAME}'
-				)
-			)
+
+			#get_allele_freqs = gwf.map(
+			#	template_func = extract_allele_frq,
+			#	inputs = inputs_and_new_wd_dict)
+
+
+	# collect outputs from neutral_vcf_files_runtemplate_map
+	# from those output should be defined as:
+		# exported in : /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/pi/
+		# deciding where to put the intermediate
+
+
 	
-	# One VCF file containing all sample files.
-	if MODE == 3 or MODE == 4:
-		freebayes_parts_all = gwf.map(
-			name=name_freebayes_partition_all,
-			template_func=freebayes_partition_all,
-			inputs=partitions,
-			extra={'reference_genome_file': REFERENCE_GENOME,
-		  		   'bam_files': full_bam_list,
-				   'output_directory': top_dir,
-				   'species_name': SPECIES_NAME,
-				   'ploidy': FREEBAYES_PLOIDY,
-				   'best_n_alleles': FREEBAYES_BESTN,
-				   'min_alternate_fraction': FREEBAYES_MINALTFRC,
-				   'min_alternate_count': FREEBAYES_MINALTCNT}
-		)
+	# define target with input vcf and output neutral vcf
+		# files needed:
+			# bed file with genic positions, and repeats
+			# vcf filtered : "/faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_aaRJ-C225/filtered_vcf/EntNic_aaRJ-C225.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz"
+				# add to config file
+		# add to gwf.map() so it iterates over all the files
 
-		concat_freebayes_all = gwf.target_from_template(
-			name=f'concatenate_freebayes_vcf_all',
-			template=concat_vcf(
-				files=collect(freebayes_parts_all.outputs['vcf'])['vcfs'],
-				output_name=f'{species_abbreviation(SPECIES_NAME)}.freebayes_n{FREEBAYES_BESTN}_p{FREEBAYES_PLOIDY}_minaltfrc{FREEBAYES_MINALTFRC}_minaltcnt{FREEBAYES_MINALTCNT}',
-				output_directory=f'{top_out}/vcf' if OUTPUT_DIR else f'{top_dir}/raw_vcf',
-				compress=True
-			)
-		)
+	#sample_site_type = f'a' #obs fix this ON MONDAY THIS IS WHERE I GOT TO
+		# in this process I started listing VCF samples in config file, 
+		# since this info can be derived from their path.
+		# next is to access list, make new list or dict with sample_site_type information
+	 #maybe it is not nessesaey, since I may just move the path into fst output
+
 	
+
 	return gwf
