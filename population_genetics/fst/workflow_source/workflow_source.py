@@ -80,6 +80,11 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 
 		if GROUP['group_name'] == 'good_samples':
 			#print('yes')
+
+			########################
+			### MAKE NEUTRAL VCF ###
+			########################
+
 			files_list = GROUP['vcf_files_list'] # access the good samples GROUP and get the list of vcf files
 			#print(files_list)
 			# files_popdir=[ f'{new_wd}/{os.path.dirname(el).split("/")[-2]}' for el in files_list ]  # via list comprehension extract pop directory name and append it to the wkdirectory path
@@ -94,17 +99,60 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 					extra = {'neutral_bed': make_neutral_bed_target.outputs['neutral_bed']})
 		#else:
 			#print("no")
-			neutral_vcf_list = neutral_vcf_files_runtemplate_map.outputs, ['neutral_vcf']
-			neutral_vcf_list = [x['neutral_vcf'] for x in neutral_vcf_list[0]]
+			
+			########################
+			### GET ALLELE FREQ  ###
+			########################
 
-		# I am about here. Trying to get lists and dictionaries to cooperate in creating a list with two dict per entry. one with vcf_file, one with new wd. in my folder.
+		# Making ready for next map:
+			neutral_vcf_list = neutral_vcf_files_runtemplate_map.outputs, ['neutral_vcf'] # get list of lists with output from former map
+			neutral_vcf_list = [x['neutral_vcf'] for x in neutral_vcf_list[0]]	# make list of output vcf files, via accesing output. only file paths, not as dictionary or something else
+
+		# MAKING lists of new working directories, to output i personal folder
 			new_wd = f'{new_wd.replace("/fst/","/allele_frequencies/").replace("genome_or_annot","")}/'
-			wd_list = [ f'{new_wd}{re.split("//|/",el)[-4]}' for el in neutral_vcf_list ]  # via list comprehension extract pop directory name and append it to the wkdirectory path
+			wd_list = [ f'{new_wd}{re.split("//|/",el)[-5]}/{re.split("//|/",el)[-4]}' for el in neutral_vcf_list ]  # via list comprehension extract pop directory name (and name of dir before) and append it to the wkdirectory path
+			
+			input_dict = [{'vcf_file': f, 'working_directory': p} for f, p in zip(neutral_vcf_list, wd_list)] # making combined dictionary of files and new wd paths using list comprehension and zip
+
+		# Map over neutral vcfs to get allele frequency
+			get_allele_freq_runtemplate_map = gwf.map(
+					#name=make_neutral_vcf,
+					template_func = extract_allele_frq,
+					inputs = input_dict)
+
+			##############################
+			### GET COMMON ALLELE FRQ  ###
+			##############################
+
+			freq_files = collect(get_allele_freq_runtemplate_map.outputs, ['allele_frq_file']) # dict with allele_frq_files: [list of files]
+			#print(freq_files)
+			#print(list(freq_files.values())[0]) 	# to get first element of list within dictionary, get the values in from dict using values. then convert that to list. get first element of first element.[0]
+			#print(len(list(freq_files.values())[0])) 	# to get first element of list within dictionary, get the values in from dict using values. then convert that to list. get first element of first element.[0]
+			#print()
+			new_wd = os.path.dirname(os.path.dirname(list(freq_files.values())[0][0]))
+				# to get first element of list within dictionary, get the values in from dict using values. then convert that to list. get first element of first element.[0]
+				# then take directory name twice, to get working directory
+			count_files = len(list(freq_files.values())[0])
+				# count number of files to add to outputfile
+			freq_files = list(freq_files.values())[0] # made into a list
+
+			make_neutral_bed_target = gwf.target_from_template(
+				name='common_sites_allele_frq',
+				template=common_sites_allele_frq(
+					allele_freq_files = freq_files,
+					working_directory = new_wd,
+					files_count = count_files)
+			)
+
+
+			
+
+
 			#print(neutral_vcf_list)
-			print(new_wd)
-			print(neutral_vcf_list)
-			print()
-			print(wd_list)
+			#print(new_wd)
+			#print(neutral_vcf_list)
+			#print()
+			#print(input_dict)
 			#inputs_and_new_wd_dict = neutral_vcf_collect
 			#result = [dict(item, **{'elem':'value'}) for item in neutral_vcf_list[0]]
 

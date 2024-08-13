@@ -165,6 +165,8 @@ def make_neutral_vcf(vcf_file: str, working_directory: str, neutral_bed: str):
 		-R {inputs['neutral_bed']} {working_directory}/{os.path.basename(inputs['vcf_file'])} \
 		> {outputs['neutral_vcf']}
 
+	bcftools index {outputs['neutral_vcf']}
+
 	rm {working_directory}/{os.path.basename(inputs['vcf_file'])}
 	rm {working_directory}/{os.path.basename(inputs['vcf_file']).replace(".vcf.gz",".vcf.gz.csi")}
 		
@@ -184,10 +186,127 @@ def make_neutral_vcf(vcf_file: str, working_directory: str, neutral_bed: str):
 	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
+def awk_time_column_by_number(file, outfile, column, number):
+    # Convert all elements to strings and concatenate them with a space as separator
+	cmd = "awk -v column=" + column + " -v number=" + number + " '{ for (x=1; x<column; x++) { print $1, $column*number}}' " + file + " > " + outfile 
+	os.system (cmd)
+
+
+#def awk_runner(inputfile, outputfile):
+ #   cmd = "awk 'FNR<=27{print;next} ++count%10==0{print;count}' " + inputfile + " > " + outputfile
+  #  os.system(cmd)
+
+
+
+def extract_allele_frq(vcf_file: str, working_directory: str):
+	"""
+	Template: Extract allele frequencies using bcftools on vcf files
+	
+	Template I/O::
+	
+		inputs = {}
+		outputs = {}
+	
+	:param
+	"""
+	inputs = {'neutral_vcf_file': vcf_file}
+	outputs = {'allele_frq_file': f'{working_directory}/{vcf_file.split("/")[-1].replace(".vcf.gz",".frq")}',
+				'pos_bed_file': f'{working_directory}/{vcf_file.split("/")[-1].replace(".vcf.gz",".bed")}'}
+	# change to just adjust vcf_file, if should be placed in same folder
+	options = {
+		'cores': 1,
+		'memory': '5g',
+		'walltime': '11:00:00'
+	}
+	spec = f"""
+	# Sources environment 										OBS EDIT:
+	source /home/"$USER"/.bashrc
+	conda activate ecogen_neutral_diversity_wf
+	if [ "$USER" == "jepe" ]; then
+		source /home/"$USER"/.bashrc
+		source activate popgen ########### OBS make dedicated env
+	fi
+
+	echo "START: $(date)"
+	echo "JobID: $SLURM_JOBID"
+
+	mkdir -p {working_directory}
+		# working directory is input as dictionary connected to the vcf file
+		# should be in my local folder, not in wf_outputs
+	
+	# line example:
+	# HiC_scaffold_1  2875    .       AACTA   AACTT   4156.93 PASS    AB=0.442539;ABP=19.7303;AC=48;AF=0.48;AN=100;AO=258;CIGAR=4M1X;DP=583;DPB=592.4;DPRA=0;EPP=9.60888;EPPR=14.9338;GTI=1;LEN=1;MEANALT=19;MQM=31.6705;MQMR=33.9386;NS=1;NUMALT=1;ODDS=0.119269;PAIRED=0.914729;PAIREDR=0.855596;PAO=6.16667;PQA=222.167;PQR=222.167;PRO=6.16667;QA=9347;QR=9649;RO=277;RPL=256;RPP=546.013;RPPR=338.914;RPR=2;RUN=1;SAF=143;SAP=9.60888;SAR=115;SRF=112;SRP=25.0308;SRR=165;TYPE=snp       GT:DP:AD:RO:QR:AO:QA    0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1:583:277,258:277:9649:258:9347
+	##INFO=<ID=AC,Number=A,Type=Integer,Description="Total number of alternate alleles in called genotypes">
+	##INFO=<ID=AN,Number=1,Type=Integer,Description="Total number of alleles in called genotypes">
+	##INFO=<ID=AF,Number=A,Type=Float,Description="Estimated allele frequency in the range (0,1]">
+	##INFO=<ID=TYPE,Number=A,Type=String,Description="The type of allele, either snp, mnp, ins, del, or complex.">
+
+	bcftools query -f '%CHROM %POS0 %POS0 %TYPE %AF\n' {inputs['neutral_vcf_file']} > {outputs['allele_frq_file']}
+	{awk_time_column_by_number(file=outputs['allele_frq_file'], outfile=outputs['pos_bed_file'].replace(".bed",".frq.bed"), column=5, number=100)}
+	#bcftools query -f '%CHROM %POS0 %POS0 %TYPE %AF\n' {inputs['neutral_vcf_file']} > {outputs['pos_bed_file'].replace(".bed",".frq.bed")}
+
+	bcftools query -f '%CHROM %POS0 %POS0\n' {inputs['neutral_vcf_file']} > {outputs['pos_bed_file']}
+
+	echo "END: $(date)"
+	echo "$(jobinfo "$SLURM_JOBID")"
+	"""
+	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
+
+
+
+def concatenate_list_elements(input_list):
+    # Convert all elements to strings and concatenate them with a space as separator
+    result = ' '.join(str(element) for element in input_list)
+    return result
 
 
 
 
+def common_sites_allele_frq(allele_freq_files: list, working_directory: str, files_count = int):
+	"""
+	Template: Get common sites for all .frq.bed files outputted from extract_allele_frq()
+	
+	Template I/O::
+	
+		inputs = {}
+		outputs = {}
+	
+	:param
+	"""
+	inputs = {'freq_files': allele_freq_files}
+	outputs = {'common_allele_frq_file': f'{working_directory}/{allele_freq_files[0].split("/")[-1].split(".")[-2]}.{files_count}.frq'}
+	options = {
+		'cores': 1,
+		'memory': '5g',
+		'walltime': '11:00:00'
+	}
+	spec = f"""
+	# Sources environment 										OBS EDIT:
+	source /home/"$USER"/.bashrc
+	conda activate ecogen_neutral_diversity_wf
+	if [ "$USER" == "jepe" ]; then
+		source /home/"$USER"/.bashrc
+		source activate popgen ########### OBS make dedicated env
+	fi
 
+	echo "START: $(date)"
+	echo "JobID: $SLURM_JOBID"
 
+	mkdir -p {working_directory}
+	
+	echo {working_directory}/{allele_freq_files[0].split("/")[-1].split(".")[-2]}.{files_count}.frq
 
+	
+	bedtools intersect -sorted -a {inputs['freq_files'][0]} -b {concatenate_list_elements(inputs['freq_files'][1:])} -f 1.0 -C > {outputs['common_allele_frq_file']}
+
+	echo "END: $(date)"
+	echo "$(jobinfo "$SLURM_JOBID")"
+	"""
+	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
+
+# target for combining vcf's keeping only common variants among all samples
+	# 	potentiallt using bcftools "isec -n+2 -p output_dir *.vcf.gz"
+		# "present in n files" variants with the -n parameter
+		# Ensure that your VCF is decomposed and normalized (left aligned, parsimonious representation) before you do this though, multi-allelic variants and non-normalized entries can mess up comparison.
+	# use BEDtools 'intersect' for the two original VCFs. bedtools intersect -a $vcffileA -b all_vcfs*
+	# use VCFtools 'vcf-annotate' to add the 1000 Genomes rs numbers, then 'grep' to keep the variants that were annotated as such.
