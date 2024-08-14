@@ -210,8 +210,7 @@ def extract_allele_frq(vcf_file: str, working_directory: str):
 	:param
 	"""
 	inputs = {'neutral_vcf_file': vcf_file}
-	outputs = {'allele_frq_file': f'{working_directory}/{vcf_file.split("/")[-1].replace(".vcf.gz",".frq")}',
-				'pos_bed_file': f'{working_directory}/{vcf_file.split("/")[-1].replace(".vcf.gz",".bed")}'}
+	outputs = {'allele_frq_file': f'{working_directory}/{vcf_file.split("/")[-1].replace(".vcf.gz",".frq.bed")}'}
 	# change to just adjust vcf_file, if should be placed in same folder
 	options = {
 		'cores': 1,
@@ -241,11 +240,7 @@ def extract_allele_frq(vcf_file: str, working_directory: str):
 	##INFO=<ID=AF,Number=A,Type=Float,Description="Estimated allele frequency in the range (0,1]">
 	##INFO=<ID=TYPE,Number=A,Type=String,Description="The type of allele, either snp, mnp, ins, del, or complex.">
 
-	bcftools query -f '%CHROM %POS0 %POS0 %TYPE %AF\n' {inputs['neutral_vcf_file']} > {outputs['allele_frq_file']}
-	{awk_time_column_by_number(file=outputs['allele_frq_file'], outfile=outputs['pos_bed_file'].replace(".bed",".frq.bed"), column=5, number=100)}
-	#bcftools query -f '%CHROM %POS0 %POS0 %TYPE %AF\n' {inputs['neutral_vcf_file']} > {outputs['pos_bed_file'].replace(".bed",".frq.bed")}
-
-	bcftools query -f '%CHROM %POS0 %POS0\n' {inputs['neutral_vcf_file']} > {outputs['pos_bed_file']}
+	bcftools query -f '%CHROM\t%POS0\t%POS0\t%TYPE\t%AF\n' {inputs['neutral_vcf_file']} > {outputs['allele_frq_file']}
 
 	echo "END: $(date)"
 	echo "$(jobinfo "$SLURM_JOBID")"
@@ -297,7 +292,7 @@ def common_sites_allele_frq(allele_freq_files: list, working_directory: str, fil
 	echo {working_directory}/{allele_freq_files[0].split("/")[-1].split(".")[-2]}.{files_count}.frq
 
 	
-	bedtools intersect -sorted -a {inputs['freq_files'][0]} -b {concatenate_list_elements(inputs['freq_files'][1:])} -f 1.0 -C > {outputs['common_allele_frq_file']}
+	bedtools intersect -sorted -wa -wb -f 1.0 -C -a {inputs['freq_files'][0]} -b {concatenate_list_elements(inputs['freq_files'][1:])} > {outputs['common_allele_frq_file']}
 
 	echo "END: $(date)"
 	echo "$(jobinfo "$SLURM_JOBID")"
@@ -310,3 +305,6 @@ def common_sites_allele_frq(allele_freq_files: list, working_directory: str, fil
 		# Ensure that your VCF is decomposed and normalized (left aligned, parsimonious representation) before you do this though, multi-allelic variants and non-normalized entries can mess up comparison.
 	# use BEDtools 'intersect' for the two original VCFs. bedtools intersect -a $vcffileA -b all_vcfs*
 	# use VCFtools 'vcf-annotate' to add the 1000 Genomes rs numbers, then 'grep' to keep the variants that were annotated as such.
+
+
+	# now I want to use an awk. How to do that within python? define function like above? then no f string thingy

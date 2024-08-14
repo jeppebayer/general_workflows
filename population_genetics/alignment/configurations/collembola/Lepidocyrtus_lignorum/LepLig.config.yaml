@@ -7,7 +7,7 @@ taxonomic_group: collembola
 # Name of species being analyzed
 species_name: Lepidocyrtus lignorum
 # Path to reference genome file in FASTA format
-reference_genome_path: 
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Lepidocyrtus_lignorum/EG_LepLig_16022023_genomic_nomask_noann.fna
 # Directory for intermediary files.
 working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps
 # # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')

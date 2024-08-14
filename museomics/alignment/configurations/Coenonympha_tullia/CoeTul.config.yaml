@@ -149,11 +149,7 @@ sample_lists:
     data_type: contemporary, paired-end
     populations:
       -
-        population_name: Individual_extraction
-        sample_folder_list:
-          - 
-      -
         population_name: Pooled_extraction
         sample_folder_list:
-          - 
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Coenonympha_tullia/CoTu_poolseq_2022
   

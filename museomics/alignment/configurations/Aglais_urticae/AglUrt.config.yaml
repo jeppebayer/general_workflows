@@ -149,10 +149,6 @@ sample_lists:
     data_type: contemporary, paired-end
     populations:
       -
-        population_name: Individual_extraction
-        sample_folder_list:
-          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Gonepteryx_rhamni/GoRh_poolseq_2022/GoRh_ind50
-      -
         population_name: Pooled_extraction
         sample_folder_list:
-          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Gonepteryx_rhamni/GoRh_poolseq_2022/GoRh_pool50
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Aglais_urticae/AgUr_poolseq_2022

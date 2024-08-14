@@ -5,7 +5,7 @@ account: EcoGenetics
 # Name of species being analyzed
 species_name: Maniola jurtina
 # Path to reference genome file in FASTA format
-reference_genome_path: 
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Maniola_jurtina/GCF_905333055.1_ilManJurt1.1_genomic.fna
 # Directory for intermediary files.
 working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/museomics/steps
 # # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
@@ -149,11 +149,7 @@ sample_lists:
     data_type: contemporary, paired-end
     populations:
       -
-        population_name: Individual_extraction
-        sample_folder_list:
-          - 
-      -
         population_name: Pooled_extraction
         sample_folder_list:
-          - 
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Maniola_jurtina/MaJu_poolseq_2022
   
