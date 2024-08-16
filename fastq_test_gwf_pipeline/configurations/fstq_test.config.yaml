@@ -1,0 +1,18 @@
+# Tag identifying file association.
+TAG: anneaa:EcoGenetics,population_genetics,DiversityEstimates:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Taxonomic group
+taxonomic_group: Collembola
+# Name of species being analyzed
+species_name: Entomobrya nicoleti
+# Directory for intermediary files.
+working_directory_path: /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps
+  #/faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps
+# # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/fastq_test
+
+
+fastq_folder_list:
+  - /home/anneaa/EcoGenetics/BACKUP/population_genetics/fastq
+  - /home/anneaa/EcoGenetics/BACKUP/museomics/fastq
