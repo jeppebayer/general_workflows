@@ -1,0 +1,6 @@
+HiC_scaffold_1	59264737
+HiC_scaffold_2	57254726
+HiC_scaffold_3	53998086
+HiC_scaffold_4	51243946
+HiC_scaffold_5	36713526
+HiC_scaffold_6	36495562
