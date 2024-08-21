@@ -3,7 +3,7 @@ TAG: jeppebayer:EcoGenetics,museomics,mapping:workflowconfiguration
 # The name of the relevant project account.
 account: EcoGenetics
 # Name of species being analyzed
-species_name: Thymilicus lineola
+species_name: Thymelicus lineola
 # Path to reference genome file in FASTA format
 reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Thymelicus_lineola/EG_ThyLin_01052024_genomic.fna
 # Directory for intermediary files.

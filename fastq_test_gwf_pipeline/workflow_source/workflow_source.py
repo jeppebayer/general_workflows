@@ -1,7 +1,7 @@
 #!/bin/env python3
 from gwf import Workflow
 from gwf.workflow import collect
-import os, yaml, glob, sys, re
+import os, yaml, glob, sys, re, datetime
 from workflow_templates import *
 
 def fastq_test_wf(config_file: str = glob.glob('*config.y*ml')[0]):
@@ -72,10 +72,30 @@ def fastq_test_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 	test_fastqfiles_map = gwf.map(
 		#name=make_neutral_vcf,
 		template_func = gzip_test,
-		inputs = input_dict)
+		inputs = input_dict,
+		extra = {'testresult_info_directory': OUTPUT_DIR})
 
 # make template that lists all files put in erroneous folders, dependent on the other one to finish
 # or make template that takes in outputs of the other template, and lists the names of the non-empty outputs, with fq.gz file ending. into file with date and time in name.
+	date_time = datetime.datetime.now()
+	date_time = date_time.strftime("%d-%m-%Y_%H-%M")
+	#print(test_fastqfiles_map.outputs)
+	# print(isinstance(collect(test_fastqfiles_map.outputs, ['output_file']), dict))
+	#with open(os.path.join(OUTPUT_DIR, f'erroneous_files_{date_time}.txt'), 'w') as fp:
+	#	pass
+
+	#check_output_target = gwf.map(
+	#	template_func = check_output,
+	#	inputs = test_fastqfiles_map.outputs,
+	#	extra = { 'filename_output': os.path.join(OUTPUT_DIR, f'erroneous_files_{date_time}.txt')}
+	#)
+	check_output_target = gwf.target_from_template(
+		name= 'check_output_cat_list',
+		template = check_output(
+			test_files = collect(test_fastqfiles_map.outputs, ['output_file']),
+			filename_output = os.path.join(OUTPUT_DIR, f'erroneous_files_{date_time}.txt'))
+	)
+	
 
 # additional templates to make:
 	# possibly after first screening (being gzip screening)

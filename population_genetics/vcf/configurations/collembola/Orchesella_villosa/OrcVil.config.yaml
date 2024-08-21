@@ -1,7 +1,7 @@
 # Tag identifying file association.
 TAG: jeppebayer:EcoGenetics,population_genetics,vcf:workflowconfiguration
 # The name of the relevant project account.
-account: EcoGenetics
+account: spider2
 # Taxonomic group.
 taxonomic_group: Collembola
 # Name of species being analyzed.

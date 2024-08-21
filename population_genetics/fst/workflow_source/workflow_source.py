@@ -137,8 +137,8 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 			freq_files = list(freq_files.values())[0] # made into a list
 
 			make_neutral_bed_target = gwf.target_from_template(
-				name='common_sites_allele_frq',
-				template=common_sites_allele_frq(
+				name = 'common_sites_allele_frq',
+				template = common_sites_allele_frq(
 					allele_freq_files = freq_files,
 					working_directory = new_wd,
 					files_count = count_files)
