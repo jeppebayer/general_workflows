@@ -50,6 +50,7 @@ def fastq_test_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 	
 	### Find fastq files in directories
 	#print(fastq_directories_list)
+	print("Checking for fastq files (.fq.gz) recursively in these directories:")
 	fastq_files_list = []
 	for direct in fastq_directories_list:
 		print(direct)
@@ -67,13 +68,20 @@ def fastq_test_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 
 	## Make dictionary of input files, and modified file path for output folder
 	input_dict = [{'fastq_file': f, 'filename_output': d} for f, d in zip(fastq_files_list, outdir_file_list)]
-
+	#print(input_dict)
+		# fastq_file
+		# filename_output
 
 	test_fastqfiles_map = gwf.map(
 		#name=make_neutral_vcf,
 		template_func = gzip_test,
 		inputs = input_dict,
-		extra = {'testresult_info_directory': OUTPUT_DIR})
+		extra = {})
+#test_fastqfiles_map = gwf.map(
+		#name=make_neutral_vcf,
+#		template_func = gzip_test,
+#		inputs = input_dict,
+#		extra = {'testresult_info_directory': OUTPUT_DIR})
 
 # make template that lists all files put in erroneous folders, dependent on the other one to finish
 # or make template that takes in outputs of the other template, and lists the names of the non-empty outputs, with fq.gz file ending. into file with date and time in name.
@@ -84,17 +92,37 @@ def fastq_test_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 	#with open(os.path.join(OUTPUT_DIR, f'erroneous_files_{date_time}.txt'), 'w') as fp:
 	#	pass
 
+
+	# change keys of input dict
+		# tested_files_output
+		# filename_fastq
+	input_dict_test = input_dict
+	print(input_dict_test)
+	#input_dict_test['filename_fastq'] = input_dict_test.pop('fastq_file')
+	#input_dict_test['tested_files_output'] = input_dict_test.pop('filename_output')
+	input_dict_test = {'filename_fastq': input_dict_test.pop('fastq_file') for key in input_dict_test.keys()}
+	print()
+	print(input_dict_test)
+		# del dictionary[old_key]
+	check_output_target = gwf.map(
+		#name=make_neutral_vcf,
+		template_func = check_output,
+		inputs = input_dict_test,
+		extra = {'filename_output': os.path.join(OUTPUT_DIR, f'erroneous_files_{date_time}.txt')})
+
+
 	#check_output_target = gwf.map(
 	#	template_func = check_output,
 	#	inputs = test_fastqfiles_map.outputs,
 	#	extra = { 'filename_output': os.path.join(OUTPUT_DIR, f'erroneous_files_{date_time}.txt')}
 	#)
-	check_output_target = gwf.target_from_template(
-		name= 'check_output_cat_list',
-		template = check_output(
-			test_files = collect(test_fastqfiles_map.outputs, ['output_file']),
-			filename_output = os.path.join(OUTPUT_DIR, f'erroneous_files_{date_time}.txt'))
-	)
+
+	#check_output_target = gwf.target_from_template(
+	#	name= 'check_output_cat_list',
+	#	template = check_output(
+	#		test_files = collect(test_fastqfiles_map.outputs, ['output_file']),
+	#		filename_output = os.path.join(OUTPUT_DIR, f'erroneous_files_{date_time}.txt'))
+	#)##
 	
 
 # additional templates to make:
