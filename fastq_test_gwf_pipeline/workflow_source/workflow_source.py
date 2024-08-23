@@ -55,7 +55,7 @@ def fastq_test_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 	for direct in fastq_directories_list:
 		print(direct)
 		fastq_files_list.extend([f for f in glob.glob(direct + '/**', recursive=True) if os.path.isfile(f) & f.endswith(".fq.gz") & (not bool(re.search("erroneous/", f )))]	)
-		# somehow add if folder is not called "erroneous"
+		# somehow add if folder is not called "erroneous" maybe above works
 	
 	## modify the paths and file names for output
 	pathlist = [os.path.dirname(file).split("BACKUP/")[-1] for file in fastq_files_list]
@@ -77,32 +77,25 @@ def fastq_test_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 		template_func = gzip_test,
 		inputs = input_dict,
 		extra = {})
-#test_fastqfiles_map = gwf.map(
-		#name=make_neutral_vcf,
-#		template_func = gzip_test,
-#		inputs = input_dict,
-#		extra = {'testresult_info_directory': OUTPUT_DIR})
 
 # make template that lists all files put in erroneous folders, dependent on the other one to finish
 # or make template that takes in outputs of the other template, and lists the names of the non-empty outputs, with fq.gz file ending. into file with date and time in name.
 	date_time = datetime.datetime.now()
 	date_time = date_time.strftime("%d-%m-%Y_%H-%M")
-	#print(test_fastqfiles_map.outputs)
-	# print(isinstance(collect(test_fastqfiles_map.outputs, ['output_file']), dict))
-	#with open(os.path.join(OUTPUT_DIR, f'erroneous_files_{date_time}.txt'), 'w') as fp:
-	#	pass
-
 
 	# change keys of input dict
 		# tested_files_output
 		# filename_fastq
 	input_dict_test = input_dict
-	print(input_dict_test)
+	#print(input_dict_test[1])
+	for elem in input_dict_test:
+		elem['filename_fastq'] = elem.pop('fastq_file')
+		elem['tested_files_output'] = elem.pop('filename_output')
+
+	#print(input_dict_test[1])
 	#input_dict_test['filename_fastq'] = input_dict_test.pop('fastq_file')
 	#input_dict_test['tested_files_output'] = input_dict_test.pop('filename_output')
-	input_dict_test = {'filename_fastq': input_dict_test.pop('fastq_file') for key in input_dict_test.keys()}
-	print()
-	print(input_dict_test)
+	
 		# del dictionary[old_key]
 	check_output_target = gwf.map(
 		#name=make_neutral_vcf,
@@ -111,19 +104,17 @@ def fastq_test_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 		extra = {'filename_output': os.path.join(OUTPUT_DIR, f'erroneous_files_{date_time}.txt')})
 
 
-	#check_output_target = gwf.map(
-	#	template_func = check_output,
-	#	inputs = test_fastqfiles_map.outputs,
-	#	extra = { 'filename_output': os.path.join(OUTPUT_DIR, f'erroneous_files_{date_time}.txt')}
-	#)
 
-	#check_output_target = gwf.target_from_template(
-	#	name= 'check_output_cat_list',
-	#	template = check_output(
-	#		test_files = collect(test_fastqfiles_map.outputs, ['output_file']),
-	#		filename_output = os.path.join(OUTPUT_DIR, f'erroneous_files_{date_time}.txt'))
-	#)##
+	print("Preparing for second check: Checking for fastq files (.fq.gz) recursively in these directories (unless in erroneous directory):")
+	fastq_files_list_1 = []
+	fastq_files_list_2 = []
+	for direct in fastq_directories_list:
+		print(direct)
+		fastq_files_list_1.extend([f for f in glob.glob(direct + '/**', recursive=True) if os.path.isfile(f) & f.endswith("_1.fq.gz") & (not bool(re.search("erroneous/", f )))]	)
+		fastq_files_list_2.extend([f for f in glob.glob(direct + '/**', recursive=True) if os.path.isfile(f) & f.endswith("_2.fq.gz") & (not bool(re.search("erroneous/", f )))]	)
+		
 	
+	 fastq_info file_1.fastq.gz file_2.fastq.gz    
 
 # additional templates to make:
 	# possibly after first screening (being gzip screening)
@@ -131,5 +122,9 @@ def fastq_test_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 	
 	# check MD5 screening
 	# Check for four line and same length of seq and quality score
+
+# add template to check if all reverse and forward pairs are still present in main folders. if not, move loner to erroneous folder.
+
+	# conda install bioconda::fastq_utils
 
 	return gwf

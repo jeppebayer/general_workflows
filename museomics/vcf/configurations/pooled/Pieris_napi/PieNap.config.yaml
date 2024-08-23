@@ -1,0 +1,37 @@
+# Tag identifying file association.
+TAG: jeppebayer:EcoGenetics,population_genetics,vcf:workflowconfiguration
+# The name of the relevant project account.
+account: spider2
+# Taxonomic group.
+taxonomic_group: 
+# Name of species being analyzed.
+species_name: Pieris napi
+# Path to reference genome.
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Pieris_napi/GCF_905475465.1_ilPieNapi1.2_genomic.fna
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/museomics/steps
+# Directory for final output files. (If left empty, output file will be placed within 'working_directory_path').
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics
+# Partition size of genome in base pairs.
+partition_size: 100000
+# Freebayes settings.
+freebayes_settings:
+  sample_ploidy: 100
+  best_n_alleles: 3
+  min_alternate_fraction: 0
+  min_alternate_count: 2
+# Filtering depths, limits included.
+filtering:
+  minimum_depth: 200
+  maximum_depth: 600
+# Mode for creating VCF file (1 | 2 | 3 | 4).
+# 1 = Separate VCF files for each sample/BAM file. 2 = One VCF file per sample group. 3 = One VCF containing data for all samples/BAM files. 4 = Both.
+mode: 1
+# Sample setup. List of dictionaries listing the configuration for each sample.
+sample_list:
+  - 
+    # Name of sample group.
+    group_name: pooled
+    # List of paths to BAM files.
+    bam_file_list:
+      - /faststorage/project/EcoGenetics/general_workflow_outputs/museomics/alignments/Pieris_napi/Pooled/pooled_extraction/PiNa_poolseq_2022/PiNa_poolseq_2022.filtered.bam

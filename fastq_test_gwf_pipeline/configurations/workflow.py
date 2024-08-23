@@ -18,6 +18,5 @@ gwf = fastq_test_wf()
 # gwf status
 # gwf logs --stderr make_genome_fai
 
-# maybe invent something that checks for new filtered vcf files, and edits yaml file
-    # Ask Jeppe for good ideas
+
 

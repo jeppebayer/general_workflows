@@ -7,7 +7,7 @@ taxonomic_group: Collembola
 # Name of species being analyzed
 species_name: Isotoma viridis
 # Path to reference genome file in FASTA format
-reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Isotoma_viridis/EG_IsoVir_19022024_genomic.fna
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Isotoma_viridis/EG_IsoVir_23082024_genomic.fna
 # Directory for intermediary files.
 working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps
 # # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
