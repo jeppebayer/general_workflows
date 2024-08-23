@@ -1,2 +1,0 @@
-
-gzip: /home/anneaa/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_HHJ-C162/V350149263_L02_507_2.fq.gz: unexpected end of file

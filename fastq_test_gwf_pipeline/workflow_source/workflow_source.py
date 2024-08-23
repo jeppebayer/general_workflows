@@ -105,16 +105,25 @@ def fastq_test_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 
 
 
-	print("Preparing for second check: Checking for fastq files (.fq.gz) recursively in these directories (unless in erroneous directory):")
-	fastq_files_list_1 = []
-	fastq_files_list_2 = []
-	for direct in fastq_directories_list:
-		print(direct)
-		fastq_files_list_1.extend([f for f in glob.glob(direct + '/**', recursive=True) if os.path.isfile(f) & f.endswith("_1.fq.gz") & (not bool(re.search("erroneous/", f )))]	)
-		fastq_files_list_2.extend([f for f in glob.glob(direct + '/**', recursive=True) if os.path.isfile(f) & f.endswith("_2.fq.gz") & (not bool(re.search("erroneous/", f )))]	)
-		
+	print("Preparing for second check for fastq integrity:")
+	fastq_files_list_1 = [name for name in fastq_files_list if '_1.fq.gz' in name]
+	fastq_files_list_2 = [name for name in fastq_files_list if '_2.fq.gz' in name]
+	pathlist = [os.path.dirname(file).split("BACKUP/")[-1] for file in fastq_files_list_1]
+	out_pathlist = [ OUTPUT_DIR + '/' + pathis for pathis in pathlist]
+	out_new_name = [os.path.basename(file).replace('.fq.gz', '_fqInteg.txt') for file in fastq_files_list_1]
+	outdir_file_list_test2 = [os.path.join(dirname, filename) for dirname, filename in zip(out_pathlist, out_new_name)]
+
+	# obs. THese lists needs to be sorted. they are not pairing up correctly!
+
+	input_dict_test2 = [{'forward': f, 'reverse': r, 'test_output': o} for f, r, o in zip(fastq_files_list_1.sort(), fastq_files_list_2.sort(), outdir_file_list_test2.sort())]
 	
-	 fastq_info file_1.fastq.gz file_2.fastq.gz    
+	 # fastq_info file_1.fastq.gz file_2.fastq.gz    
+	check_output_target = gwf.map(
+		#name=make_neutral_vcf,
+		template_func = check_fq_integrity,
+		inputs = input_dict_test2,
+		extra = {'test_summary_file': os.path.join(OUTPUT_DIR, f'integrity_issues_file_{date_time}.txt')})
+
 
 # additional templates to make:
 	# possibly after first screening (being gzip screening)
