@@ -12,6 +12,7 @@ gwf = fst_and_pi_wf()
 # gwf status
 # gwf logs --stderr make_genome_fai
 
-# maybe invent something that checks for new filtered vcf files, and edits yaml file
+# maybe invent something that checks for new filtered vcf files, and edits yaml file?
+    # This will not work if some shoulndt be included?
     # Ask Jeppe for good ideas
 

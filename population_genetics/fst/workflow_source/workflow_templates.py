@@ -192,11 +192,6 @@ def awk_time_column_by_number(file, outfile, column, number):
 	os.system (cmd)
 
 
-#def awk_runner(inputfile, outputfile):
- #   cmd = "awk 'FNR<=27{print;next} ++count%10==0{print;count}' " + inputfile + " > " + outputfile
-  #  os.system(cmd)
-
-
 
 def extract_allele_frq(vcf_file: str, working_directory: str):
 	"""
@@ -307,4 +302,83 @@ def common_sites_allele_frq(allele_freq_files: list, working_directory: str, fil
 	# use VCFtools 'vcf-annotate' to add the 1000 Genomes rs numbers, then 'grep' to keep the variants that were annotated as such.
 
 
-	# now I want to use an awk. How to do that within python? define function like above? then no f string thingy
+
+
+
+	
+
+def calculate_pi_template(allele_freq_files: list, working_directory: str, output_directory: str, neutral_position_count_file: str, positions_type: str):
+	"""
+	Template: Calculate pi from bed-style files with allele frequencies.
+	They look like this: Scaff Start_0-type_position End_0-type_position Variant_type AlleleFrequency 
+	
+	positions_type: string to add to outputs filename. Is it all / common / another subset of positions?  eg. 'all' 'common'
+	Template I/O::
+	
+		inputs = {}
+		outputs = {}
+	
+	:param
+	"""
+	inputs = {'freq_files': allele_freq_files, 
+		   		'number_of_positions_file': neutral_position_count_file}
+	# neutral_position_count should probably be given as a file some way. talk to jeppe
+	outputs = {'mean_pi_all_pops': f'{output_directory}/pi_mean_allPops_{positions_type}_positions.pi',
+				'pi_all_pops': f'{output_directory}/pi_mean_allPops_{positions_type}_positions.pi'}
+	options = {
+		'cores': 1,
+		'memory': '5g',
+		'walltime': '11:00:00'
+	}
+	spec = f"""
+	# Sources environment 										OBS EDIT:
+	source /home/"$USER"/.bashrc
+	conda activate ecogen_neutral_diversity_wf
+	if [ "$USER" == "jepe" ]; then
+		source /home/"$USER"/.bashrc
+		source activate popgen ########### OBS make dedicated env
+	fi
+
+	echo "START: $(date)"
+	echo "JobID: $SLURM_JOBID"
+
+	
+	mkdir -p {working_directory}
+	
+	neutral_position_count=`awk 'NR=2 {{print $4}}' {inputs['number_of_positions_file']}`
+		# modify which column to take, according to Jeppes file. also if line is 1 or 2, depending on header?
+
+	# For every file with allelefrequencies
+	for file in {inputs[allele_freq_files]}; 
+	do
+	    # add population name to file
+		popul=`basename $file|cut -d"." -f1`
+		echo $popul > {working_directory}/tmp/pi.$popul.tmp
+		
+    	# add pi calculated at every line
+		awk 'NR>1{{ first_pi=1-($5)^2-(1-$5)^2;
+            print first_pi
+		}}' $file >> {working_directory}/tmp/pi.$popul.tmp
+
+		# calculate mean pi across all available positions, by deviding with given positions count.
+		awk 'NR==1 {{print $0}};
+			NR>1{{ sumpi+=$1 }};
+			END {{print sumpi; print NR-1; print {neutral_position_count}; print sumpi/{neutral_position_count}}}
+        ' {working_directory}/tmp/pi.$popul.tmp > {working_directory}/tmp/pi_mean.$popul.tmp
+    	# prints 5 rows: Population, SUM_pi, N_variable_sites, N_variable_nonvariable_sites, MEAN_pi (SUM/N_variable_nonvariable_sites)
+
+	done
+
+	# add mean estimates to one file with all pops
+	paste -d'\t' {working_directory}/tmp/pi_mean.*.tmp > {outputs['mean_pi_all_pops']}
+
+	# add site estimates to one file with all pops
+	paste -d'\t' {working_directory}/tmp/pi.*.tmp > {outputs['pi_all_pops']}
+
+	rm {working_directory}/tmp/pi.*.tmp
+	rm {working_directory}/tmp/pi_mean.*.tmp
+	
+	echo "END: $(date)"
+	echo "$(jobinfo "$SLURM_JOBID")"
+	"""
+	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)

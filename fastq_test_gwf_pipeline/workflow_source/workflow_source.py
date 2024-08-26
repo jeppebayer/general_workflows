@@ -55,20 +55,23 @@ def fastq_test_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 	for direct in fastq_directories_list:
 		print(direct)
 		fastq_files_list.extend([f for f in glob.glob(direct + '/**', recursive=True) if os.path.isfile(f) & f.endswith(".fq.gz") & (not bool(re.search("erroneous/", f )))]	)
-		# somehow add if folder is not called "erroneous" maybe above works
+		# lists files in directories from yaml file, recursively
+			# checks if it is actually a file and not found within directory called "erronous" 
 	
+
+	#####
+	##### Performing gzip -t test on all fq.gz files in listed directories
+	#####
+
 	## modify the paths and file names for output
 	pathlist = [os.path.dirname(file).split("BACKUP/")[-1] for file in fastq_files_list]
 	out_pathlist = [ OUTPUT_DIR + '/' + pathis for pathis in pathlist]
 	out_path_filelist = [os.path.basename(file).replace('.fq.gz', '.txt') for file in fastq_files_list]
 	outdir_file_list = [os.path.join(dirname, filename) for dirname, filename in zip(out_pathlist, out_path_filelist)]
-	#print(os.path.dirname(fastq_files_list[10]))
-	#print(fastq_files_list[10])
-	#print(outdir_file_list)
+
 
 	## Make dictionary of input files, and modified file path for output folder
 	input_dict = [{'fastq_file': f, 'filename_output': d} for f, d in zip(fastq_files_list, outdir_file_list)]
-	#print(input_dict)
 		# fastq_file
 		# filename_output
 
@@ -78,8 +81,11 @@ def fastq_test_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 		inputs = input_dict,
 		extra = {})
 
-# make template that lists all files put in erroneous folders, dependent on the other one to finish
-# or make template that takes in outputs of the other template, and lists the names of the non-empty outputs, with fq.gz file ending. into file with date and time in name.
+	#####
+	##### Checking output of gzip tests:
+	#####
+	# will make a file called: erroneous_files_{date_time}.txt, where the erronous files are listed
+
 	date_time = datetime.datetime.now()
 	date_time = date_time.strftime("%d-%m-%Y_%H-%M")
 
@@ -87,16 +93,11 @@ def fastq_test_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 		# tested_files_output
 		# filename_fastq
 	input_dict_test = input_dict
-	#print(input_dict_test[1])
 	for elem in input_dict_test:
 		elem['filename_fastq'] = elem.pop('fastq_file')
 		elem['tested_files_output'] = elem.pop('filename_output')
 
-	#print(input_dict_test[1])
-	#input_dict_test['filename_fastq'] = input_dict_test.pop('fastq_file')
-	#input_dict_test['tested_files_output'] = input_dict_test.pop('filename_output')
-	
-		# del dictionary[old_key]
+
 	check_output_target = gwf.map(
 		#name=make_neutral_vcf,
 		template_func = check_output,
@@ -104,32 +105,62 @@ def fastq_test_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 		extra = {'filename_output': os.path.join(OUTPUT_DIR, f'erroneous_files_{date_time}.txt')})
 
 
+	#####
+	##### Performing integrity test on good files
+	#####
+	# will make a file listing bad files called: 
+	# 	integrity_issues_file_pairedend_{date_time}.txt
+	# 	integrity_issues_file_singleend_{date_time}.txt
 
-	print("Preparing for second check for fastq integrity:")
-	fastq_files_list_1 = [name for name in fastq_files_list if '_1.fq.gz' in name]
-	fastq_files_list_2 = [name for name in fastq_files_list if '_2.fq.gz' in name]
-	pathlist = [os.path.dirname(file).split("BACKUP/")[-1] for file in fastq_files_list_1]
-	out_pathlist = [ OUTPUT_DIR + '/' + pathis for pathis in pathlist]
-	out_new_name = [os.path.basename(file).replace('.fq.gz', '_fqInteg.txt') for file in fastq_files_list_1]
-	outdir_file_list_test2 = [os.path.join(dirname, filename) for dirname, filename in zip(out_pathlist, out_new_name)]
-
-	# obs. THese lists needs to be sorted. they are not pairing up correctly!
-
-	input_dict_test2 = [{'forward': f, 'reverse': r, 'test_output': o} for f, r, o in zip(fastq_files_list_1.sort(), fastq_files_list_2.sort(), outdir_file_list_test2.sort())]
+	print("Preparing for second check for fastq integrity of paired end and single end files:")
+	fastq_files_list_1 = [name for name in fastq_files_list if '1.fq.gz' in name]
+	fastq_files_list_1.sort()
+	fastq_files_list_2 = [name.replace("1.fq.gz", "2.fq.gz") for name in fastq_files_list_1]
+	fastq_files_list_2.sort()
 	
-	 # fastq_info file_1.fastq.gz file_2.fastq.gz    
-	check_output_target = gwf.map(
+	# double
+	fastq_files_list_2_double = [filepath for filepath in fastq_files_list_2 if os.path.isfile(filepath)]
+	fastq_files_list_1_double = [name.replace("2.fq.gz", "1.fq.gz") for name in fastq_files_list_2_double]
+	pathlist = [os.path.dirname(file).split("BACKUP/")[-1] for file in fastq_files_list_1_double]
+	out_pathlist = [ OUTPUT_DIR + '/' + pathis for pathis in pathlist]
+	out_new_name = [os.path.basename(file).replace('.fq.gz', '_fqInteg.txt') for file in fastq_files_list_1_double]
+	outdir_file_list_test2_double = [os.path.join(dirname, filename) for dirname, filename in zip(out_pathlist, out_new_name)]
+
+	input_dict_test2_double = [{'forward': f, 'reverse': r, 'test_output': o} for f, r, o in zip(fastq_files_list_1_double, fastq_files_list_2_double, outdir_file_list_test2_double)]
+	
+	#print(input_dict_test2_double[-10])
+	# fastq_info file_1.fastq.gz file_2.fastq.gz    
+	check_output_of_gzip_target = gwf.map(
 		#name=make_neutral_vcf,
-		template_func = check_fq_integrity,
-		inputs = input_dict_test2,
-		extra = {'test_summary_file': os.path.join(OUTPUT_DIR, f'integrity_issues_file_{date_time}.txt')})
+		template_func = check_fq_integrity_pairedend,
+		inputs = input_dict_test2_double,
+		extra = {'test_summary_file': os.path.join(OUTPUT_DIR, f'integrity_issues_file_pairedend_{date_time}.txt')})
+	
+
+	# single
+	fastq_files_list_2_single = [filepath for filepath in fastq_files_list_2 if not os.path.isfile(filepath)]
+	fastq_files_list_1_single = [name.replace("2.fq.gz", "1.fq.gz") for name in fastq_files_list_2_single]
+	pathlist = [os.path.dirname(file).split("BACKUP/")[-1] for file in fastq_files_list_1_single]
+	out_pathlist = [ OUTPUT_DIR + '/' + pathis for pathis in pathlist]
+	out_new_name = [os.path.basename(file).replace('.fq.gz', '_fqInteg.txt') for file in fastq_files_list_1_single]
+	outdir_file_list_test2_single = [os.path.join(dirname, filename) for dirname, filename in zip(out_pathlist, out_new_name)]
+
+	input_dict_test2_single = [{'forward': f, 'test_output': o} for f, o in zip(fastq_files_list_1_single, outdir_file_list_test2_single)]
+	
+	#print(input_dict_test2_single[-10])
+	 # fastq_info file_1.fastq.gz
+	integrity_check_target = gwf.map(
+		#name=make_neutral_vcf,
+		template_func = check_fq_integrity_singleend,
+		inputs = input_dict_test2_single,
+		extra = {'test_summary_file': os.path.join(OUTPUT_DIR, f'integrity_issues_file_singleend_{date_time}.txt')})
 
 
 # additional templates to make:
 	# possibly after first screening (being gzip screening)
 		# continues only on good files.
 	
-	# check MD5 screening
+	# check MD5 screening ( not worth it, i think. Company checks this on upload to harddisks)
 	# Check for four line and same length of seq and quality score
 
 # add template to check if all reverse and forward pairs are still present in main folders. if not, move loner to erroneous folder.

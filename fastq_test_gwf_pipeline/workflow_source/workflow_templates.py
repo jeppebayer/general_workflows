@@ -120,7 +120,7 @@ def check_output(tested_files_output: dict, filename_fastq: str, filename_output
         # The file is empty.
 		echo All good -  {inputs['fastq_file_path']}
 	fi
-	touch {outputs['check_done']}
+	echo.> {outputs['check_done']}
 
 	echo "END: $(date)"
 	echo "$(jobinfo "$SLURM_JOBID")"
@@ -131,9 +131,7 @@ def check_output(tested_files_output: dict, filename_fastq: str, filename_output
 
 
 
-
-
-def check_fq_integrity(forward: dict, reverse: str, test_output: str, test_summary_file: str):
+def check_fq_integrity_pairedend(forward: dict, reverse: str, test_output: str, test_summary_file: str):
 	"""
 	Template: Checks output of gzip template above, and adds filenames from temporary files to a new file.
 	
@@ -146,6 +144,64 @@ def check_fq_integrity(forward: dict, reverse: str, test_output: str, test_summa
 	"""
 	inputs = {	'forward_read': forward,
 		   'reverse_read': reverse}
+	outputs = {'check_done_file': test_output}
+	options = {
+		'cores': 1,
+		'memory': '20g',
+		'walltime': '11:00:00'
+	}
+	spec = f"""
+	# Sources environment 										OBS EDIT:
+	source /home/"$USER"/.bashrc
+	conda activate fastq_test_env
+
+	if [ "$USER" == "jepe" ]; then
+		source /home/"$USER"/.bashrc
+		source activate popgen ########### OBS make dedicated env
+	fi
+
+	echo "START: $(date)"
+	echo "JobID: $SLURM_JOBID"
+	
+	fastq_info {inputs['forward_read']} {inputs['reverse_read']} > {outputs['check_done_file']}
+
+	if grep -q " " {outputs['check_done_file']}; then
+		if [ -s {outputs['check_done_file']} ]; then
+			# The file is not-empty.
+			echo File or file pair not in regular fastq format - {inputs['forward_read']} {inputs['reverse_read']}
+			#exit 
+			
+			# add line with filename to file
+			echo "JobID: $SLURM_JOBID" {inputs['forward_read']} {inputs['reverse_read']} >> {test_summary_file}
+		fi
+	else
+		# The file only contain line breaks or something, but not text. However it is not truly empty.
+		# # make the file really be empty
+		echo.> {outputs['check_done_file']}
+		echo All good -  {inputs['forward_read']} {inputs['reverse_read']} 
+	fi
+
+	echo "END: $(date)"
+	echo "$(jobinfo "$SLURM_JOBID")"
+	"""
+	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
+
+
+
+
+
+def check_fq_integrity_singleend(forward: dict, test_output: str, test_summary_file: str):
+	"""
+	Template: Checks output of gzip template above, and adds filenames from temporary files to a new file.
+	
+	Template I/O::
+	
+		inputs = {}
+		outputs = {}
+	
+	:param
+	"""
+	inputs = {	'forward_read': forward}
 	outputs = {'check_done_file': test_output}
 	options = {
 		'cores': 1,
@@ -165,30 +221,25 @@ def check_fq_integrity(forward: dict, reverse: str, test_output: str, test_summa
 	echo "START: $(date)"
 	echo "JobID: $SLURM_JOBID"
 	
-	fastq_info {inputs['forward_read']} {inputs['reverse_read']} > {outputs['check_done_file']}
+	fastq_info {inputs['forward_read']} > {outputs['check_done_file']}
 
 	if [ -s {outputs['check_done_file']} ]; then
         # The file is not-empty.
-		echo File or file pair not in regular fastq format -  {inputs['forward_read']} {inputs['reverse_read']}
+		echo File or file pair not in regular fastq format - {inputs['forward_read']}
 		#exit 
 		
 		# add line with filename to file
-		echo {inputs['forward_read']} {inputs['reverse_read']} >> {test_summary_file}
+		echo "JobID: $SLURM_JOBID" {inputs['forward_read']} >> {test_summary_file}
 
 	else
         # The file is empty.
-		echo All good -  {inputs['forward_read']} {inputs['reverse_read']} 
+		echo All good -  {inputs['forward_read']}
 	fi
 
 	echo "END: $(date)"
 	echo "$(jobinfo "$SLURM_JOBID")"
 	"""
 	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
-
-
-
-
-
 
 
 

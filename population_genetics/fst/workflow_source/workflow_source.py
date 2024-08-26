@@ -18,13 +18,14 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 	CONFIG = yaml.safe_load(open(config_file)) #opens yml file for reading
 	ACCOUNT: str = CONFIG['account'] # gets the setting after account as string
 	SPECIES_NAME: str = CONFIG['species_name']
-	#OUTPUT_DIR: str = CONFIG['output_directory_path']
+	OUTPUT_DIR: str = CONFIG['output_directory_path']
 	WORK_DIR: str = CONFIG['working_directory_path']
 	#VCF_BASE_FOLDER: str = CONFIG['vcf_base_folder']
 	TAXONOMY: str = CONFIG['taxonomic_group']
 	BED_PATH: str = CONFIG['bed_files_path']
 	GENOME_PATH: str = CONFIG['reference_genome_path']
 	VCF_FILES: list = CONFIG['vcf_lists']
+	neutral_position_count_file: str = CONFIG['count_of_positions_file']
 
 
 	# --------------------------------------------------
@@ -39,7 +40,9 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 	### MAKE DIRECTORIES
 	
 	# make directories
-	new_wd=f'{WORK_DIR}/fst/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/genome_or_annot'
+	new_wd=f'{WORK_DIR}/fst_pi/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/genome_or_annot'
+	new_out_pi=f'{OUTPUT_DIR}/pi/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/'
+	new_out_fst=f'{OUTPUT_DIR}/fst/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/'
 	if not os.path.isdir(new_wd):
 		os.makedirs(new_wd)
 
@@ -109,7 +112,7 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 			neutral_vcf_list = [x['neutral_vcf'] for x in neutral_vcf_list[0]]	# make list of output vcf files, via accesing output. only file paths, not as dictionary or something else
 
 		# MAKING lists of new working directories, to output i personal folder
-			new_wd = f'{new_wd.replace("/fst/","/allele_frequencies/").replace("genome_or_annot","")}/'
+			new_wd = f'{new_wd.replace("/fst_pi/","/allele_frequencies/").replace("genome_or_annot","")}/'
 			wd_list = [ f'{new_wd}{re.split("//|/",el)[-5]}/{re.split("//|/",el)[-4]}' for el in neutral_vcf_list ]  # via list comprehension extract pop directory name (and name of dir before) and append it to the wkdirectory path
 			
 			input_dict = [{'vcf_file': f, 'working_directory': p} for f, p in zip(neutral_vcf_list, wd_list)] # making combined dictionary of files and new wd paths using list comprehension and zip
@@ -119,6 +122,8 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 					#name=make_neutral_vcf,
 					template_func = extract_allele_frq,
 					inputs = input_dict)
+
+
 
 			##############################
 			### GET COMMON ALLELE FRQ  ###
@@ -136,6 +141,10 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 				# count number of files to add to outputfile
 			freq_files = list(freq_files.values())[0] # made into a list
 
+			print()
+			print(concatenate_list_elements(freq_files[1:]))
+			#print(freq_files)
+
 			make_neutral_bed_target = gwf.target_from_template(
 				name = 'common_sites_allele_frq',
 				template = common_sites_allele_frq(
@@ -147,19 +156,48 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 
 			
 
+			#################################################################################
+			### Calculate pi on allele frequencies per population on all possible sites   ###
+			#################################################################################
+				# per neutral site
 
-			#print(neutral_vcf_list)
-			#print(new_wd)
-			#print(neutral_vcf_list)
-			#print()
-			#print(input_dict)
-			#inputs_and_new_wd_dict = neutral_vcf_collect
-			#result = [dict(item, **{'elem':'value'}) for item in neutral_vcf_list[0]]
+		# make a calc_pi template.
+			# input : AF files
+				# The output bed-style file from all files output from get_allele_freq_runtemplate_map
+					# Scaff 0-type_position 0-type_position variant_type AlleleFrequency 
+			new_wd = f'{WORK_DIR}/fst_pi/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/'
+
+			#make_neutral_bed_target = gwf.target_from_template(
+			#	name = 'pi_calculation_all_positions',
+			#	template = calculate_pi_template(
+			#		allele_freq_files = freq_files,
+			#		working_directory = new_wd,
+			#		output_directory = new_out_pi,
+			#		neutral_position_count = neutral_position_count_file,
+			#		positions_type = 'all')
+			#)
 
 
-			#get_allele_freqs = gwf.map(
-			#	template_func = extract_allele_frq,
-			#	inputs = inputs_and_new_wd_dict)
+			#################################################
+			### Calculate pi on COMMON allele frequencies ###
+			#################################################
+
+
+			new_wd = f'{WORK_DIR}/fst_pi/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/'
+
+			#make_neutral_bed_target = gwf.target_from_template(
+			#	name = 'pi_calculation_COMMON_positions',
+			#	template = calculate_pi_template(
+			#		allele_freq_files = freq_files_common,
+			#		working_directory = new_wd,
+			#		output_directory = new_out_pi,
+			#		neutral_position_count = neutral_position_count_file,
+			#		positions_type = 'common')
+			#)
+
+
+			
+
 
 
 	# collect outputs from neutral_vcf_files_runtemplate_map
