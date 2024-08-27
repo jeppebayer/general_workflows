@@ -177,7 +177,7 @@ def check_fq_integrity_pairedend(forward: dict, reverse: str, test_output: str, 
 	else
 		# The file only contain line breaks or something, but not text. However it is not truly empty.
 		# # make the file really be empty
-		echo.> {outputs['check_done_file']}
+		echo -n > {outputs['check_done_file']}
 		echo All good -  {inputs['forward_read']} {inputs['reverse_read']} 
 	fi
 
@@ -205,7 +205,7 @@ def check_fq_integrity_singleend(forward: dict, test_output: str, test_summary_f
 	outputs = {'check_done_file': test_output}
 	options = {
 		'cores': 1,
-		'memory': '16g',
+		'memory': '30g',
 		'walltime': '11:00:00'
 	}
 	spec = f"""
@@ -223,16 +223,19 @@ def check_fq_integrity_singleend(forward: dict, test_output: str, test_summary_f
 	
 	fastq_info {inputs['forward_read']} > {outputs['check_done_file']}
 
-	if [ -s {outputs['check_done_file']} ]; then
-        # The file is not-empty.
-		echo File or file pair not in regular fastq format - {inputs['forward_read']}
-		#exit 
-		
-		# add line with filename to file
-		echo "JobID: $SLURM_JOBID" {inputs['forward_read']} >> {test_summary_file}
-
+	if grep -q " " {outputs['check_done_file']}; then
+		if [ -s {outputs['check_done_file']} ]; then
+			# The file is not-empty.
+			echo File or file pair not in regular fastq format - {inputs['forward_read']}
+			#exit 
+			
+			# add line with filename to file
+			echo "JobID: $SLURM_JOBID" {inputs['forward_read']} >> {test_summary_file}
+		fi
 	else
-        # The file is empty.
+		# The file only contain line breaks or something, but not text. However it is not truly empty.
+		# # make the file really be empty
+		echo -n > {outputs['check_done_file']}
 		echo All good -  {inputs['forward_read']}
 	fi
 

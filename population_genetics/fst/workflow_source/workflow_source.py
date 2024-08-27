@@ -141,8 +141,8 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 				# count number of files to add to outputfile
 			freq_files = list(freq_files.values())[0] # made into a list
 
-			print()
-			print(concatenate_list_elements(freq_files[1:]))
+			#print()
+			#print(concatenate_list_elements(freq_files[1:]))
 			#print(freq_files)
 
 			make_neutral_bed_target = gwf.target_from_template(
@@ -167,7 +167,7 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 					# Scaff 0-type_position 0-type_position variant_type AlleleFrequency 
 			new_wd = f'{WORK_DIR}/fst_pi/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/'
 
-			#make_neutral_bed_target = gwf.target_from_template(
+			#pi_calculation_all_pos = gwf.target_from_template(
 			#	name = 'pi_calculation_all_positions',
 			#	template = calculate_pi_template(
 			#		allele_freq_files = freq_files,
@@ -185,7 +185,7 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 
 			new_wd = f'{WORK_DIR}/fst_pi/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/'
 
-			#make_neutral_bed_target = gwf.target_from_template(
+			#pi_calculation_common_pos = gwf.target_from_template(
 			#	name = 'pi_calculation_COMMON_positions',
 			#	template = calculate_pi_template(
 			#		allele_freq_files = freq_files_common,
@@ -197,7 +197,55 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 
 
 			
+			################################################################
+			### Make ready for FST-calculation with a combined AF file   ###
+			################################################################
+				# per neutral site
+			# input : AF files
+				# The output bed-style file from all files output from get_allele_freq_runtemplate_map
+					# Scaff 0-type_position 0-type_position variant_type AlleleFrequency 
+			new_wd = f'{WORK_DIR}/fst_pi/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/'
 
+			pate_allele_freqs_all_pops = gwf.target_from_template(
+				name = 'paste_af_files',
+				template = paste_allele_freq(
+					allele_freq_files = freq_files,
+					working_directory = new_wd,
+					output_directory = new_out_fst,
+					positions_type = 'all')
+			)
+
+
+
+
+			################################################################
+			### Estimate FST for all sites based on combined AF file	 ###
+			################################################################
+				# per neutral site
+			# input : AF files
+				# The output bed-style file from all files output from get_allele_freq_runtemplate_map
+					# Scaff 0-type_position 0-type_position variant_type AlleleFrequency 
+			new_wd = f'{WORK_DIR}/fst_pi/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/'
+			# define list of outputfiles:
+			#for file in freq_files:
+			#	popul = os.path.basename( file ).split(".")[0]
+			#	print(popul)
+			#	counter1 = freq_files.index(file) # get file position in list
+			#	print(counter1)
+			
+			print(freq_files[25])
+			for number1 in range(len(freq_files)):
+				for number2 in range(number1+1, len(freq_files)):
+					print(number1)
+					print(number2)
+			#pate_allele_freqs_all_pops = gwf.target_from_template(
+			#	name = 'calculate_fst',
+			#	template = calculate_fst_template(
+			#		allele_freq_files = freq_files,
+			#		working_directory = new_wd,
+			#		output_directory = new_out_fst,
+			#		positions_type = 'all')
+			#)
 
 
 	# collect outputs from neutral_vcf_files_runtemplate_map

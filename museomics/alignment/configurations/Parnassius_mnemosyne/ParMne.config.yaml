@@ -1,0 +1,77 @@
+# Tag identifying file association.
+TAG: jeppebayer:EcoGenetics,museomics,mapping:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Name of species being analyzed
+species_name: Parnassius mnemosyne
+# Path to reference genome file in FASTA format
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Parnassius_mnemosyne/GCA_963668995.1_Parnassius_mnemosyne_n_2023_11_genomic.fna
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/museomics/steps
+# # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics
+# AdapterRemoval settings.
+adapterremoval_settings:
+  min_quality: 25
+  min_length: 20
+  adaptersequence1: AAGTCGGAGGCCAAGCGGTCTTAGGAAGACAA
+  adaptersequence2: AAGTCGGATCGTAGCCATGTCGTTCTGTGAGCCAAGGAGTTG
+# Samtools filter settings.
+filter_settings:
+  flags_excluded: 3844
+  flags_required: 
+  min_mq: 20
+# List of path to sample folders containing resequencing data.
+# Data type: contemporary | historic | paired-end | single-end ...
+sample_lists:
+  -
+    time_period: 1958
+    data_type: historic, single-end
+    populations:
+      -
+        population_name: Zealand
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_01_S_1958
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_02_S_1958
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_03_S_1958
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_04_S_1958
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_05_S_1958
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_06_S_1958
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_07_S_1958
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_08_S_1958
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_09_S_1958
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_10_S_1958
+  -
+    time_period: 1940
+    data_type: historic, single-end
+    populations:
+      -
+        population_name: Zealand
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_11_S_1940
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_12_S_1940
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_13_S_1940
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_14_S_1940
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_15_S_1940
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_16_S_1940
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_17_S_1940
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_18_S_1940
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_19_S_1940
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_20_S_1940
+  -
+    time_period: 1915
+    data_type: historic, single-end
+    populations:
+      -
+        population_name: Zealand
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_21_S_1915
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_22_S_1915
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_23_S_1915
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_24_S_1915
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_25_S_1915
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_26_S_1915
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_27_S_1915
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_28_S_1915
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_29_S_1915
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Parnassius_mnemosyne/PaMn_30_S_1915
