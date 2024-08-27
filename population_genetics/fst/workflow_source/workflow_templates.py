@@ -449,7 +449,7 @@ def paste_allele_freq(allele_freq_files: list, working_directory: str, output_di
 
 
 
-def calculate_fst_template(allele_freq_files: list, working_directory: str, output_directory: str, neutral_position_count_file: str, positions_type: str):
+def calculate_fst_template(allele_freq_files: list, working_directory: str, output_file_name: str, pop_index_1: int, pop_index_2: int):
 	"""
 	Template: Calculate fst from bed-style files with allele frequencies.
 	Inputs look like this: Scaff Start_0-type_position End_0-type_position Variant_type AlleleFrequency 
@@ -462,11 +462,8 @@ def calculate_fst_template(allele_freq_files: list, working_directory: str, outp
 	
 	:param
 	"""
-	inputs = {'freq_files': allele_freq_files, 
-		   		'number_of_positions_file': neutral_position_count_file}
-	# neutral_position_count should probably be given as a file some way. talk to jeppe
-	outputs = {'mean_pi_all_pops': f'{output_directory}/pi_mean_allPops_{positions_type}_positions.pi',
-				'pi_all_pops': f'{output_directory}/pi_allPops_{positions_type}_positions.pi'}
+	inputs = {'af_files': allele_freq_files}
+	outputs = {'pop_pair_fst': f'{working_directory}/{output_file_name}'}
 	options = {
 		'cores': 1,
 		'memory': '5g',
@@ -486,27 +483,31 @@ def calculate_fst_template(allele_freq_files: list, working_directory: str, outp
 
 	mkdir -p {working_directory}
 	
-	# For every file with allelefrequencies
+	# For the input indices pairs:
+	#	{inputs['af_files'][pop_index_1]}
+	#	{inputs['af_files'][pop_index_2]}
+	popul_1 = `basename {inputs['af_files'][pop_index_1]}|cut -d"." -f1`
+	popul_2 = `basename {inputs['af_files'][pop_index_2]}|cut -d"." -f1`
+	echo {pop_index_1} - {pop_index_2} > {outputs['pop_pair_fst'].replace(".fst",".temp")}
+	echo $popul_1 - $popul_2 >> {outputs['pop_pair_fst'].replace(".fst",".temp")}
+		# get column header from file, this gives a check that thwy are indeed the same order.
+	echo $popul_1_fromfile - $popul_2_fromfile >> {outputs['pop_pair_fst'].replace(".fst",".temp")}
+
+	# No, it is easier getting the pasted file in, and just take the indices from the input?
 	
-	for file in {inputs['freq_files']}; 
-	do
-	    # add population name to file
-		popul=`basename $file|cut -d"." -f1`
-		echo $popul > {working_directory}/tmp/pi.$popul.tmp
-		
-    	# add pi calculated at every line
-		awk '{{ first_pi=1-($5)^2-(1-$5)^2;
-            print first_pi
-		}}' $file >> {working_directory}/tmp/pi.$popul.tmp
 
-		# calculate mean pi across all available positions, by deviding with given positions count.
-		awk 'NR==1 {{print $0}};
-			NR>1{{ sumpi+=$1 }};
-			END {{print sumpi; print NR-1; print {neutral_position_count}; print sumpi/{neutral_position_count}}}
-        ' {working_directory}/tmp/pi.$popul.tmp > {working_directory}/tmp/pi_mean.$popul.tmp
-    	# prints 5 rows: Population, SUM_pi, N_variable_sites, N_variable_nonvariable_sites, MEAN_pi (SUM/N_variable_nonvariable_sites)
 
-	done
+
+
+
+
+
+
+
+
+
+
+
 
 	# add mean estimates to one file with all pops
 	paste -d'\t' {working_directory}/tmp/pi_mean.*.tmp > {outputs['mean_pi_all_pops']}

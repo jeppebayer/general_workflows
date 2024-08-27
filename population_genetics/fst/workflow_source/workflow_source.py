@@ -215,7 +215,8 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 					positions_type = 'all')
 			)
 
-
+			# OBS may be needed for fst calc.
+			# But maybe keep it for potential construct?
 
 
 			################################################################
@@ -233,11 +234,28 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 			#	counter1 = freq_files.index(file) # get file position in list
 			#	print(counter1)
 			
-			print(freq_files[25])
+			counter = 0
 			for number1 in range(len(freq_files)):
+				#print(counter)
 				for number2 in range(number1+1, len(freq_files)):
 					print(number1)
 					print(number2)
+					counter = counter + 1
+					iteration_number_pad = f"{counter:0>3}" 
+					print(iteration_number_pad)
+					calculate_fst_pairs = gwf.target_from_template(
+						name = 'calculate_fst_pairs',
+						template = calculate_fst_template(
+							allele_freq_files = pate_allele_freqs_all_pops.outputs['AF_all_pops'],
+							pop_index_1 = number1,
+							pop_index_2 = number2,
+							working_directory = new_wd,
+							output_file_name = f'fst_pair_{iteration_number_pad}_all_positions.fst')
+						)
+
+#			print(calculate_fst_pairs.outputs[])
+			
+			
 			#pate_allele_freqs_all_pops = gwf.target_from_template(
 			#	name = 'calculate_fst',
 			#	template = calculate_fst_template(
