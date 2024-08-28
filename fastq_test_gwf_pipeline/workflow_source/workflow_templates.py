@@ -128,10 +128,31 @@ def check_output(tested_files_output: dict, filename_fastq: str, filename_output
 	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
+def check_file_size_return_memor_function(file: str):
+	size_is = os.path.getsize(file)
+	if size_is <= 10000000000:
+		memory_is = '16G'
+	elif  size_is > 80000000000:
+		memory_is = '90G'
+	elif  size_is > 70000000000:
+		memory_is = '80G'
+	elif  size_is > 60000000000:
+		memory_is = '70G'
+	elif  size_is > 50000000000:
+		memory_is = '60G'
+	elif  size_is > 40000000000:
+		memory_is = '50G'
+	elif  size_is > 30000000000:
+		memory_is = '40G'
+	elif  size_is > 20000000000:
+		memory_is = '30G'
+	else:
+		memory_is = '20G'
+	return memory_is
 
 
 
-def check_fq_integrity_pairedend(forward: dict, reverse: str, test_output: str, test_summary_file: str):
+def check_fq_integrity_pairedend(forward: str, reverse: str, test_output: str, test_summary_file: str):
 	"""
 	Template: Checks output of gzip template above, and adds filenames from temporary files to a new file.
 	
@@ -147,7 +168,7 @@ def check_fq_integrity_pairedend(forward: dict, reverse: str, test_output: str, 
 	outputs = {'check_done_file': test_output}
 	options = {
 		'cores': 1,
-		'memory': '20g',
+		'memory': check_file_size_return_memor_function(forward),
 		'walltime': '11:00:00'
 	}
 	spec = f"""
@@ -155,6 +176,8 @@ def check_fq_integrity_pairedend(forward: dict, reverse: str, test_output: str, 
 	source /home/"$USER"/.bashrc
 	conda activate fastq_test_env
 
+		# some ran fine at 16G, others did ok with 20g. pairs with a combined size around 60G failed at 20
+			# I could make a dynamic setting?
 	if [ "$USER" == "jepe" ]; then
 		source /home/"$USER"/.bashrc
 		source activate popgen ########### OBS make dedicated env

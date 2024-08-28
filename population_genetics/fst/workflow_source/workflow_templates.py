@@ -387,7 +387,7 @@ def calculate_pi_template(allele_freq_files: list, working_directory: str, outpu
 
 
 
-def paste_allele_freq(allele_freq_files: list, working_directory: str, output_directory: str, positions_type: str):
+def paste_allele_freq(allele_freq_files: list, working_directory: str, positions_type: str):
 	"""
 	Template: make a combined file with all variant positions allele frequencies.
 	Inputs look like this: Scaff Start_0-type_position End_0-type_position Variant_type AlleleFrequency 
@@ -403,7 +403,7 @@ def paste_allele_freq(allele_freq_files: list, working_directory: str, output_di
 	"""
 	inputs = {'freq_files': allele_freq_files }
 	# neutral_position_count should probably be given as a file some way. talk to jeppe
-	outputs = { 'AF_all_pops': f'{output_directory}/allele_freq_allPops_{positions_type}_positions.txt'}
+	outputs = { 'AF_all_pops': f'{working_directory}/allele_freq_allPops_{positions_type}_positions.txt'}
 	options = {
 		'cores': 1,
 		'memory': '5g',
@@ -422,10 +422,14 @@ def paste_allele_freq(allele_freq_files: list, working_directory: str, output_di
 	echo "JobID: $SLURM_JOBID"
 
 	mkdir -p {working_directory}
+	mkdir -p {working_directory}/tmp
 	
 	# For every file with allelefrequencies
-	
-	for file in {inputs['freq_files']}; 
+	echo {inputs['freq_files'][0]}
+	echo {inputs['freq_files']}
+	echo {concatenate_list_elements(inputs['freq_files'])}
+
+	for file in {concatenate_list_elements(inputs['freq_files'])}; 
 	do
 	    # add population name to file
 		popul=`basename $file|cut -d"." -f1`
@@ -446,10 +450,7 @@ def paste_allele_freq(allele_freq_files: list, working_directory: str, output_di
 
 
 
-
-
-
-def calculate_fst_template(allele_freq_files: list, working_directory: str, output_file_name: str, pop_index_1: int, pop_index_2: int):
+def calculate_fst_template(allele_freq_file: str, working_directory: str, output_file_name: str, pop_index_1: int, pop_index_2: int):
 	"""
 	Template: Calculate fst from bed-style files with allele frequencies.
 	Inputs look like this: Scaff Start_0-type_position End_0-type_position Variant_type AlleleFrequency 
@@ -462,7 +463,7 @@ def calculate_fst_template(allele_freq_files: list, working_directory: str, outp
 	
 	:param
 	"""
-	inputs = {'af_files': allele_freq_files}
+	inputs = {'af_file': allele_freq_file}
 	outputs = {'pop_pair_fst': f'{working_directory}/{output_file_name}'}
 	options = {
 		'cores': 1,
@@ -484,39 +485,41 @@ def calculate_fst_template(allele_freq_files: list, working_directory: str, outp
 	mkdir -p {working_directory}
 	
 	# For the input indices pairs:
-	#	{inputs['af_files'][pop_index_1]}
-	#	{inputs['af_files'][pop_index_2]}
-	popul_1 = `basename {inputs['af_files'][pop_index_1]}|cut -d"." -f1`
-	popul_2 = `basename {inputs['af_files'][pop_index_2]}|cut -d"." -f1`
-	echo {pop_index_1} - {pop_index_2} > {outputs['pop_pair_fst'].replace(".fst",".temp")}
-	echo $popul_1 - $popul_2 >> {outputs['pop_pair_fst'].replace(".fst",".temp")}
-		# get column header from file, this gives a check that thwy are indeed the same order.
-	echo $popul_1_fromfile - $popul_2_fromfile >> {outputs['pop_pair_fst'].replace(".fst",".temp")}
+	popul_1=`awk -v idx={pop_index_1} 'NR=1{{ print $idx; exit }}' {inputs['af_file']}`
+	popul_2=`awk -v idx={pop_index_2} 'NR=1{{ print $idx; exit }}' {inputs['af_file']}`
+	echo $popul_1 - $popul_2
+	echo {pop_index_1} - {pop_index_2}
 
-	# No, it is easier getting the pasted file in, and just take the indices from the input?
+	# write to temporary outputfile
+	echo "{pop_index_1}-{pop_index_2}" > {outputs['pop_pair_fst'].replace(".fst",".temp")}
+	#echo '$popul_1-$popul_2' >> {outputs['pop_pair_fst'].replace(".fst",".temp")}
+
+	# calculate fst from index columns
+
+	awk -v firstpop={pop_index_1} -v secondpop={pop_index_2} 'NR=1{{print $firstpop "-" $secondpop; exit
+		}}' {inputs['af_file']} >> {outputs['pop_pair_fst'].replace(".fst",".temp")}
 	
+	awk -v firstpop={pop_index_1} -v secondpop={pop_index_2} 'NR>1{{
+		first_pi=1-($firstpop)^2-(1-$firstpop)^2;
+		second_pi=1-($secondpop)^2-(1-$secondpop)^2;
+		
+		pi_within=(first_pi + second_pi)/2;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-	# add mean estimates to one file with all pops
-	paste -d'\t' {working_directory}/tmp/pi_mean.*.tmp > {outputs['mean_pi_all_pops']}
-
-	# add site estimates to one file with all pops
-	paste -d'\t' {working_directory}/tmp/pi.*.tmp > {outputs['pi_all_pops']}
-
-	rm {working_directory}/tmp/pi.*.tmp
-	rm {working_directory}/tmp/pi_mean.*.tmp
+		pi_total=1-(($firstpop + $secondpop)/2)^2-(((1-$firstpop) + (1-$secondpop))/2)^2;
+		
+		if (pi_total=="0")  # pi tot will be 0, thus zero devision
+			{{ 	fst=na; 
+				#print $firstpop, $secondpop, first_pi, second_pi, pi_within, pi_total, fst;
+				print fst;
+				first_pi=0; second_pi=0; pi_within=0; pi_total=0; fst=NA	}}
+		else 
+			{{ 	fst=(pi_total-pi_within)/pi_total;
+				#print $firstpop, $secondpop, first_pi, second_pi, pi_within, pi_total, fst;
+				print fst;
+				first_pi=0; second_pi=0; pi_within=0; pi_total=0; fst=NA  }}
+		}}' {inputs['af_file']} >> {outputs['pop_pair_fst'].replace(".fst",".temp")}
+	
+	mv {outputs['pop_pair_fst'].replace(".fst",".temp")} {outputs['pop_pair_fst']}
 	
 	echo "END: $(date)"
 	echo "$(jobinfo "$SLURM_JOBID")"

@@ -10,6 +10,7 @@ gwf = fst_and_pi_wf()
 # conda activate ecogen_neutral_diversity_wf
 # gwf run
 # gwf status
+# gwf status -f summary
 # gwf logs --stderr make_genome_fai
 
 # maybe invent something that checks for new filtered vcf files, and edits yaml file?

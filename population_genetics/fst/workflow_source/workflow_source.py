@@ -112,8 +112,9 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 			neutral_vcf_list = [x['neutral_vcf'] for x in neutral_vcf_list[0]]	# make list of output vcf files, via accesing output. only file paths, not as dictionary or something else
 
 		# MAKING lists of new working directories, to output i personal folder
-			new_wd = f'{new_wd.replace("/fst_pi/","/allele_frequencies/").replace("genome_or_annot","")}/'
-			wd_list = [ f'{new_wd}{re.split("//|/",el)[-5]}/{re.split("//|/",el)[-4]}' for el in neutral_vcf_list ]  # via list comprehension extract pop directory name (and name of dir before) and append it to the wkdirectory path
+			new_wd_alfq = f'{new_wd.replace("/fst_pi/","/allele_frequencies/").replace("genome_or_annot","")}/'
+			wd_list = [ f'{new_wd_alfq}{re.split("//|/",el)[-5]}/{re.split("//|/",el)[-4]}' for el in neutral_vcf_list ]  
+				# via list comprehension extract pop directory name (and name of dir before) and append it to the wkdirectory path
 			
 			input_dict = [{'vcf_file': f, 'working_directory': p} for f, p in zip(neutral_vcf_list, wd_list)] # making combined dictionary of files and new wd paths using list comprehension and zip
 
@@ -134,7 +135,7 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 			#print(list(freq_files.values())[0]) 	# to get first element of list within dictionary, get the values in from dict using values. then convert that to list. get first element of first element.[0]
 			#print(len(list(freq_files.values())[0])) 	# to get first element of list within dictionary, get the values in from dict using values. then convert that to list. get first element of first element.[0]
 			#print()
-			new_wd = os.path.dirname(os.path.dirname(list(freq_files.values())[0][0]))
+			new_wd_common_alfq = os.path.dirname(os.path.dirname(list(freq_files.values())[0][0]))
 				# to get first element of list within dictionary, get the values in from dict using values. then convert that to list. get first element of first element.[0]
 				# then take directory name twice, to get working directory
 			count_files = len(list(freq_files.values())[0])
@@ -149,7 +150,7 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 				name = 'common_sites_allele_frq',
 				template = common_sites_allele_frq(
 					allele_freq_files = freq_files,
-					working_directory = new_wd,
+					working_directory = new_wd_common_alfq,
 					files_count = count_files)
 			)
 
@@ -165,17 +166,19 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 			# input : AF files
 				# The output bed-style file from all files output from get_allele_freq_runtemplate_map
 					# Scaff 0-type_position 0-type_position variant_type AlleleFrequency 
-			new_wd = f'{WORK_DIR}/fst_pi/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/'
+			new_wd_fst_pi = f'{WORK_DIR}/fst_pi/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/'
 
 			#pi_calculation_all_pos = gwf.target_from_template(
 			#	name = 'pi_calculation_all_positions',
 			#	template = calculate_pi_template(
 			#		allele_freq_files = freq_files,
-			#		working_directory = new_wd,
+			#		working_directory = new_wd_fst_pi,
 			#		output_directory = new_out_pi,
 			#		neutral_position_count = neutral_position_count_file,
 			#		positions_type = 'all')
 			#)
+			
+			# Done, but needs the inputfile of neutral_position_count (maybe make a test)
 
 
 			#################################################
@@ -183,19 +186,19 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 			#################################################
 
 
-			new_wd = f'{WORK_DIR}/fst_pi/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/'
+			new_wd_fst_pi = f'{WORK_DIR}/fst_pi/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/'
 
 			#pi_calculation_common_pos = gwf.target_from_template(
 			#	name = 'pi_calculation_COMMON_positions',
 			#	template = calculate_pi_template(
 			#		allele_freq_files = freq_files_common,
-			#		working_directory = new_wd,
+			#		working_directory = new_wd_fst_pi,
 			#		output_directory = new_out_pi,
 			#		neutral_position_count = neutral_position_count_file,
 			#		positions_type = 'common')
 			#)
 
-
+			# Done??, but needs the inputfile of neutral_position_count (maybe make a test)
 			
 			################################################################
 			### Make ready for FST-calculation with a combined AF file   ###
@@ -204,14 +207,12 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 			# input : AF files
 				# The output bed-style file from all files output from get_allele_freq_runtemplate_map
 					# Scaff 0-type_position 0-type_position variant_type AlleleFrequency 
-			new_wd = f'{WORK_DIR}/fst_pi/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/'
-
-			pate_allele_freqs_all_pops = gwf.target_from_template(
+			# wd:			new_wd_alfq
+			paste_allele_freqs_all_pops = gwf.target_from_template(
 				name = 'paste_af_files',
 				template = paste_allele_freq(
 					allele_freq_files = freq_files,
-					working_directory = new_wd,
-					output_directory = new_out_fst,
+					working_directory = new_wd_alfq,
 					positions_type = 'all')
 			)
 
@@ -226,66 +227,40 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 			# input : AF files
 				# The output bed-style file from all files output from get_allele_freq_runtemplate_map
 					# Scaff 0-type_position 0-type_position variant_type AlleleFrequency 
-			new_wd = f'{WORK_DIR}/fst_pi/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/'
+			
 			# define list of outputfiles:
 			#for file in freq_files:
 			#	popul = os.path.basename( file ).split(".")[0]
 			#	print(popul)
 			#	counter1 = freq_files.index(file) # get file position in list
 			#	print(counter1)
-			
+			#print(paste_allele_freqs_all_pops.outputs['AF_all_pops'])
 			counter = 0
 			for number1 in range(len(freq_files)):
 				#print(counter)
 				for number2 in range(number1+1, len(freq_files)):
-					print(number1)
-					print(number2)
+					#print(number1)
+					#print(number2)
 					counter = counter + 1
 					iteration_number_pad = f"{counter:0>3}" 
-					print(iteration_number_pad)
-					calculate_fst_pairs = gwf.target_from_template(
-						name = 'calculate_fst_pairs',
+					#print(iteration_number_pad)
+					calculate_fst_pairs_target = gwf.target_from_template(
+						name = f'fst_estimation_{iteration_number_pad}',
 						template = calculate_fst_template(
-							allele_freq_files = pate_allele_freqs_all_pops.outputs['AF_all_pops'],
+							allele_freq_file = paste_allele_freqs_all_pops.outputs['AF_all_pops'],
 							pop_index_1 = number1,
 							pop_index_2 = number2,
-							working_directory = new_wd,
-							output_file_name = f'fst_pair_{iteration_number_pad}_all_positions.fst')
+							working_directory = new_wd_fst_pi,
+							output_file_name = f'fst_pair_{iteration_number_pad}_{number1}_{number2}_all_positions.fst')
 						)
 
-#			print(calculate_fst_pairs.outputs[])
+			# Done
 			
 			
-			#pate_allele_freqs_all_pops = gwf.target_from_template(
-			#	name = 'calculate_fst',
-			#	template = calculate_fst_template(
-			#		allele_freq_files = freq_files,
-			#		working_directory = new_wd,
-			#		output_directory = new_out_fst,
-			#		positions_type = 'all')
-			#)
-
-
-	# collect outputs from neutral_vcf_files_runtemplate_map
-	# from those output should be defined as:
-		# exported in : /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/pi/
-		# deciding where to put the intermediate
-
-
-	
-	# define target with input vcf and output neutral vcf
-		# files needed:
-			# bed file with genic positions, and repeats
-			# vcf filtered : "/faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic_aaRJ-C225/filtered_vcf/EntNic_aaRJ-C225.freebayes_n3_p100_minaltfrc0_minaltcnt2.bcftoolsfilter_SnpGap5_DP300_600_biallelic_AO1.vcf.gz"
-				# add to config file
-		# add to gwf.map() so it iterates over all the files
-
-	#sample_site_type = f'a' #obs fix this ON MONDAY THIS IS WHERE I GOT TO
-		# in this process I started listing VCF samples in config file, 
-		# since this info can be derived from their path.
-		# next is to access list, make new list or dict with sample_site_type information
-	 #maybe it is not nessesaey, since I may just move the path into fst output
-
+		#next 
+		# make template to add all fst_files together, and calculate mean fst
+		# Q: do we want to calculate pi/fst on scaffolds etc?
+			# then I will need to add such awk calculations in a new or one of the existing template
 	
 
 	return gwf
