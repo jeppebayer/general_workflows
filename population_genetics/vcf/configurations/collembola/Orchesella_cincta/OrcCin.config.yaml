@@ -23,7 +23,6 @@ freebayes_settings:
 # Filtering depths, limits included.
 filtering:
   minimum_depth: 200
-  maximum_depth: 600
 # Mode for creating VCF file (1 | 2 | 3 | 4).
 # 1 = Separate VCF files for each sample/BAM file. 2 = One VCF file per sample group. 3 = One VCF containing data for all samples/BAM files. 4 = Both.
 mode: 1

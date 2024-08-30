@@ -186,12 +186,6 @@ def make_neutral_vcf(vcf_file: str, working_directory: str, neutral_bed: str):
 	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
-def awk_time_column_by_number(file, outfile, column, number):
-    # Convert all elements to strings and concatenate them with a space as separator
-	cmd = "awk -v column=" + column + " -v number=" + number + " '{ for (x=1; x<column; x++) { print $1, $column*number}}' " + file + " > " + outfile 
-	os.system (cmd)
-
-
 
 def extract_allele_frq(vcf_file: str, working_directory: str):
 	"""
@@ -264,7 +258,7 @@ def common_sites_allele_frq(allele_freq_files: list, working_directory: str, fil
 	:param
 	"""
 	inputs = {'freq_files': allele_freq_files}
-	outputs = {'common_allele_frq_file': f'{working_directory}/{allele_freq_files[0].split("/")[-1].split(".")[-2]}.{files_count}.frq'}
+	outputs = {'common_sites': f'{working_directory}/{allele_freq_files[0].split("/")[-1].split(".")[-2]}.{files_count}_count_overlap.frq'}
 	options = {
 		'cores': 1,
 		'memory': '5g',
@@ -287,7 +281,20 @@ def common_sites_allele_frq(allele_freq_files: list, working_directory: str, fil
 	echo {working_directory}/{inputs['freq_files'][0].split("/")[-1].split(".")[-2]}.{files_count}.frq
 
 	
-	bedtools intersect -sorted -wa -wb -f 1.0 -C -a {inputs['freq_files'][0]} -b {concatenate_list_elements(inputs['freq_files'][1:])} > {outputs['common_allele_frq_file']}
+	number_of_files={len(inputs['freq_files'])}
+
+	bedtools intersect -sorted -wa -f 1.0 -c -a {inputs['freq_files'][0]} -b {concatenate_list_elements(inputs['freq_files'][1:])} > {outputs['common_sites'].replace(".frq", ".frq.temp")}
+	
+	echo `wc -l {outputs['common_sites'].replace(".frq", ".frq.temp")}`
+
+	number_of_files={len(inputs['freq_files'])}
+
+	awk -v number_of_files=$number_of_files '$6==(number_of_files-1) {{print $0}}' {outputs['common_sites'].replace(".frq", ".frq.temp")} > {outputs['common_sites']}
+
+	echo After keeping only common: `wc -l {outputs['common_sites']}`
+
+	#rm {outputs['common_sites'].replace(".frq", ".frq.temp")}
+
 
 	echo "END: $(date)"
 	echo "$(jobinfo "$SLURM_JOBID")"
@@ -303,16 +310,171 @@ def common_sites_allele_frq(allele_freq_files: list, working_directory: str, fil
 
 
 
-
-
 	
 
-def calculate_pi_template(allele_freq_files: list, working_directory: str, output_directory: str, neutral_position_count_file: str, positions_type: str):
+def calculate_pi_template(allele_freq_files: list, working_directory: str):
 	"""
 	Template: Calculate pi from bed-style files with allele frequencies.
 	They look like this: Scaff Start_0-type_position End_0-type_position Variant_type AlleleFrequency 
-	
 	positions_type: string to add to outputs filename. Is it all / common / another subset of positions?  eg. 'all' 'common'
+
+	Outputs one file:
+	pi per variant position: scaff pos pi_pop2	pi_pop3	pi_pop4 ...	
+
+
+	Template I/O::
+	
+		inputs = {}
+		outputs = {}
+	
+	:param
+	"""
+	inputs = {'freq_files_list': allele_freq_files }
+	# neutral_position_count should probably be given as a file some way. talk to jeppe
+	outputs = { 'pi_all_pops': f'{working_directory}/pi_allPops_variant_positions_long.pi' }
+	options = {
+		'cores': 1,
+		'memory': '5g',
+		'walltime': '11:00:00'
+	}
+	spec = f"""
+	# Sources environment 										OBS EDIT:
+	source /home/"$USER"/.bashrc
+	conda activate ecogen_neutral_diversity_wf
+	if [ "$USER" == "jepe" ]; then
+		source /home/"$USER"/.bashrc
+		source activate popgen ########### OBS make dedicated env
+	fi
+
+	echo "START: $(date)"
+	echo "JobID: $SLURM_JOBID"
+
+	mkdir -p {working_directory}
+	mkdir -p {working_directory}/tmp
+
+
+	# For every file with allelefrequencies
+	#echo -e -n scaffold'\t'0pos'\t'0pos'\t'type'\t'pi'\t' > {working_directory}/tmp/pi.header.tmp
+	echo -n > {working_directory}/tmp/pi.calc.tmp
+	file_counter=0
+	for file in {concatenate_list_elements(inputs['freq_files_list'])}; 
+	do
+	    file_counter=$((file_counter+1))
+		# add population name to file
+		popul=`basename $file|cut -d"." -f1`
+		#echo -e -n $popul'\t' >> {working_directory}/tmp/pi.header.tmp
+		echo $popul
+
+    	# add pi calculated at every line
+		awk -v popul=$popul -v file_counter=$file_counter '{{ AF=$5;
+			pi=1-(AF)^2-(1-AF)^2;
+            print $1, $2, $3, $4, pi, file_counter, popul
+		}}' $file >> {working_directory}/tmp/pi.calc.tmp
+	done
+
+
+	# sort file according to scaffold, position and population number
+	sort -k 1,1 -k2,2n -k6,6n {working_directory}/tmp/pi.calc.tmp > {working_directory}/tmp/pi.calc.sort.tmp 
+
+	# add header
+	echo -e scaffold'\t'0pos'\t'0pos'\t'type'\t'pi'\t'pop_nr'\t'pop_name > {working_directory}/tmp/pi.header_intermediate.tmp
+	cat {working_directory}/tmp/pi.header_intermediate.tmp {working_directory}/tmp/pi.calc.sort.tmp > {working_directory}/tmp/pi.calc.sort.header.tmp
+
+	# add to output file
+	mv {working_directory}/tmp/pi.calc.sort.header.tmp {outputs['pi_all_pops']}
+		
+	remove temporary things
+	#rm {working_directory}/tmp/*
+	rm {working_directory}/tmp/pi.header_intermediate.tmp
+	rm {working_directory}/tmp/pi.calc.sort.header.tmp
+	#rm {working_directory}/tmp/pi.header.tmp
+
+
+	echo "END: $(date)"
+	echo "$(jobinfo "$SLURM_JOBID")"
+	"""
+	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
+
+
+
+def long_to_wide_pi(pi_sorted_file: str, output_directory_file: str):
+	"""
+	Template: rearrange pi file, so we get this format:
+	Scaff pos0 pos0 type pi_pop1 pi_pop2 pi_pop3 pi_pop4 ...	
+
+	from this format:
+	Scaff Start_0-type_position End_0-type_position Variant_type AlleleFrequency pop_nr pop_name
+	
+	Template I/O::
+	
+		inputs = {}
+		outputs = {}
+	
+	:param
+	"""
+	inputs = {'sorted_pi': pi_sorted_file }
+	outputs = { 'pi_all_pops_positions': output_directory_file }
+	options = {
+		'cores': 1,
+		'memory': '5g',
+		'walltime': '11:00:00'
+	}
+	spec = f"""
+	# Sources environment 										OBS EDIT:
+	source /home/"$USER"/.bashrc
+	conda activate ecogen_neutral_diversity_wf
+	if [ "$USER" == "jepe" ]; then
+		source /home/"$USER"/.bashrc
+		source activate popgen ########### OBS make dedicated env
+	fi
+
+	echo "START: $(date)"
+	echo "JobID: $SLURM_JOBID"
+
+	mkdir -p {os.path.dirname(outputs['pi_all_pops_positions'])}
+	
+	python
+
+	import pandas as pd
+
+	# Read data from a file (assuming 'data.txt' is the file name)
+	data_file = '/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/tmp/pi.header_cat.test'
+	df = pd.read_csv({inputs['sorted_pi']}, sep='\s+')
+	df
+	# Pivot the data to wide format
+	wide_df = df.pivot(index=['scaffold', '0pos', '0pos.1', 'type' ], columns='pop_name', values='pi').reset_index()
+	wide_df_fill = wide_df.fillna('na')
+
+	# Write output to a file or print it
+	output_file = {outputs['pi_all_pops_positions']}
+	wide_df_fill.to_csv(output_file, sep='\t', index=False)
+
+	exit()
+
+
+	echo "END: $(date)"
+	echo "$(jobinfo "$SLURM_JOBID")"
+	"""
+	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
+
+
+
+
+
+
+# needs work:
+
+def calculate_mean_pi_template(pi_perpos_file: list, working_directory: str, output_directory: str, neutral_position_count_file: str, positions_type: str):
+	"""
+	Template: Calculate pi from bed-style files with allele frequencies.
+	They look like this: Scaff Start_0-type_position End_0-type_position Variant_type AlleleFrequency 
+	positions_type: string to add to outputs filename. Is it all / common / another subset of positions?  eg. 'all' 'common'
+
+	Outputs two files:
+	mean pi: pi_pop1	pi_pop2	pi_pop3	pi_pop4 ...	
+	pi per variant position: scaff pos pi_pop2	pi_pop3	pi_pop4 ...	
+
+
 	Template I/O::
 	
 		inputs = {}
@@ -344,8 +506,6 @@ def calculate_pi_template(allele_freq_files: list, working_directory: str, outpu
 
 	mkdir -p {working_directory}
 	
-	neutral_position_count=`awk 'NR=2 {{print $4}}' {inputs['number_of_positions_file']}`
-		# modify which column to take, according to Jeppes file. also if line is 1 or 2, depending on header?
 
 	# For every file with allelefrequencies
 	for file in {inputs['freq_files']}; 
@@ -357,33 +517,38 @@ def calculate_pi_template(allele_freq_files: list, working_directory: str, outpu
     	# add pi calculated at every line
 		awk '{{ first_pi=1-($5)^2-(1-$5)^2;
             print first_pi
-		}}' $file >> {working_directory}/tmp/pi.$popul.tmp
-
-		# calculate mean pi across all available positions, by deviding with given positions count.
-		awk 'NR==1 {{print $0}};
-			NR>1{{ sumpi+=$1 }};
-			END {{print sumpi; print NR-1; print {neutral_position_count}; print sumpi/{neutral_position_count}}}
-        ' {working_directory}/tmp/pi.$popul.tmp > {working_directory}/tmp/pi_mean.$popul.tmp
-    	# prints 5 rows: Population, SUM_pi, N_variable_sites, N_variable_nonvariable_sites, MEAN_pi (SUM/N_variable_nonvariable_sites)
-
+		}}' $file >> {working_directory}/tmp/pi.$popul.tmp	
 	done
-
-	# add mean estimates to one file with all pops
-	paste -d'\t' {working_directory}/tmp/pi_mean.*.tmp > {outputs['mean_pi_all_pops']}
-
+	
 	# add site estimates to one file with all pops
 	paste -d'\t' {working_directory}/tmp/pi.*.tmp > {outputs['pi_all_pops']}
 
 	rm {working_directory}/tmp/pi.*.tmp
-	rm {working_directory}/tmp/pi_mean.*.tmp
 	
 	echo "END: $(date)"
 	echo "$(jobinfo "$SLURM_JOBID")"
 	"""
 	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
+"""
+
+	neutral_position_count=`awk 'NR=2 {{print $4}}' {inputs['number_of_positions_file']}`
+		# modify which column to take, according to Jeppes file. also if line is 1 or 2, depending on header?
+
+	# calculate mean pi across all available positions, by deviding with given positions count.
+		awk -v neutral_position_count=$neutral_position_count 'NR==1 {{print $0}};
+			NR>1{{ sumpi+=$1 }};
+			END {{print sumpi; print NR-1; print neutral_position_count; print sumpi/neutral_position_count}}
+        ' {working_directory}/tmp/pi.$popul.tmp > {working_directory}/tmp/pi_mean.$popul.tmp
+    	# prints 5 rows: Population, SUM_pi, N_variable_sites, N_variable_nonvariable_sites, MEAN_pi (SUM/N_variable_nonvariable_sites)
+	# this should be modified to be run on each colum of file
+
+	rm {working_directory}/tmp/pi_mean.*.tmp
+	# add mean estimates to one file with all pops
+	paste -d'\t' {working_directory}/tmp/pi_mean.*.tmp > {outputs['mean_pi_all_pops']}
 
 
+"""
 
 
 
@@ -425,7 +590,6 @@ def paste_allele_freq(allele_freq_files: list, working_directory: str, positions
 	mkdir -p {working_directory}/tmp
 	
 	# For every file with allelefrequencies
-	echo {inputs['freq_files'][0]}
 	echo {inputs['freq_files']}
 	echo {concatenate_list_elements(inputs['freq_files'])}
 
@@ -491,15 +655,18 @@ def calculate_fst_template(allele_freq_file: str, working_directory: str, output
 	echo {pop_index_1} - {pop_index_2}
 
 	# write to temporary outputfile
-	echo "{pop_index_1}-{pop_index_2}" > {outputs['pop_pair_fst'].replace(".fst",".temp")}
+	echo "index: {pop_index_1}-{pop_index_2}" > {outputs['pop_pair_fst'].replace(".fst",".temp")}
+	echo "colnr: {pop_index_1+1}-{pop_index_2+1}" > {outputs['pop_pair_fst'].replace(".fst",".temp")}
 	#echo '$popul_1-$popul_2' >> {outputs['pop_pair_fst'].replace(".fst",".temp")}
 
 	# calculate fst from index columns
 
-	awk -v firstpop={pop_index_1} -v secondpop={pop_index_2} 'NR=1{{print $firstpop "-" $secondpop; exit
-		}}' {inputs['af_file']} >> {outputs['pop_pair_fst'].replace(".fst",".temp")}
+	#awk -v firstpop={pop_index_1} -v secondpop={pop_index_2} 'NR==1{{print $firstpop "-" $secondpop; exit
+	#	}}' {inputs['af_file']} >> {outputs['pop_pair_fst'].replace(".fst",".temp")}
 	
-	awk -v firstpop={pop_index_1} -v secondpop={pop_index_2} 'NR>1{{
+	awk -v firstpop={pop_index_1+1} -v secondpop={pop_index_2+1} '
+		NR==1{{print $firstpop "-" $secondpop }};
+		NR>1{{
 		first_pi=1-($firstpop)^2-(1-$firstpop)^2;
 		second_pi=1-($secondpop)^2-(1-$secondpop)^2;
 		
@@ -508,7 +675,7 @@ def calculate_fst_template(allele_freq_file: str, working_directory: str, output
 		pi_total=1-(($firstpop + $secondpop)/2)^2-(((1-$firstpop) + (1-$secondpop))/2)^2;
 		
 		if (pi_total=="0")  # pi tot will be 0, thus zero devision
-			{{ 	fst=na; 
+			{{ 	fst=NA; 
 				#print $firstpop, $secondpop, first_pi, second_pi, pi_within, pi_total, fst;
 				print fst;
 				first_pi=0; second_pi=0; pi_within=0; pi_total=0; fst=NA	}}

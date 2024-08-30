@@ -24,7 +24,7 @@ vcf_base_folder: /home/anneaa/EcoGenetics/general_workflow_outputs/population_ge
 vcf_base_folder: /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland
 # VCF filter settings? (threshold depth per pop or across pops, or across 70% of pops?)
 # count of positions for calculating pi (only variants are called, thus we need a count of all sites, to calculate pi)
-count_of_positions_file: /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/XXXX
+count_of_positions_file: /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/pi/collembola/Entomobrya_nicoleti/test.txt
 
 vcf_lists:
   -

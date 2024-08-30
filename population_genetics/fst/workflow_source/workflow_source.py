@@ -126,80 +126,66 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 
 
 
-			##############################
-			### GET COMMON ALLELE FRQ  ###
-			##############################
-
-			freq_files = collect(get_allele_freq_runtemplate_map.outputs, ['allele_frq_file']) # dict with allele_frq_files: [list of files]
-			#print(freq_files)
-			#print(list(freq_files.values())[0]) 	# to get first element of list within dictionary, get the values in from dict using values. then convert that to list. get first element of first element.[0]
-			#print(len(list(freq_files.values())[0])) 	# to get first element of list within dictionary, get the values in from dict using values. then convert that to list. get first element of first element.[0]
-			#print()
-			new_wd_common_alfq = os.path.dirname(os.path.dirname(list(freq_files.values())[0][0]))
-				# to get first element of list within dictionary, get the values in from dict using values. then convert that to list. get first element of first element.[0]
-				# then take directory name twice, to get working directory
-			count_files = len(list(freq_files.values())[0])
-				# count number of files to add to outputfile
-			freq_files = list(freq_files.values())[0] # made into a list
-
-			#print()
-			#print(concatenate_list_elements(freq_files[1:]))
-			#print(freq_files)
-
-			make_neutral_bed_target = gwf.target_from_template(
-				name = 'common_sites_allele_frq',
-				template = common_sites_allele_frq(
-					allele_freq_files = freq_files,
-					working_directory = new_wd_common_alfq,
-					files_count = count_files)
-			)
-
-
-			
-
 			#################################################################################
 			### Calculate pi on allele frequencies per population on all possible sites   ###
 			#################################################################################
 				# per neutral site
 
-		# make a calc_pi template.
-			# input : AF files
-				# The output bed-style file from all files output from get_allele_freq_runtemplate_map
-					# Scaff 0-type_position 0-type_position variant_type AlleleFrequency 
+			freq_files = collect(get_allele_freq_runtemplate_map.outputs, ['allele_frq_file']) # dict with allele_frq_files: [list of files]
+			freq_files = freq_files['allele_frq_files']		# changing into list instead of dict
 			new_wd_fst_pi = f'{WORK_DIR}/fst_pi/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/'
 
-			#pi_calculation_all_pos = gwf.target_from_template(
+			pi_calculation_all_pos = gwf.target_from_template(
+				name = 'pi_calculation_all_positions',
+				template = calculate_pi_template(
+					allele_freq_files = freq_files,
+					working_directory = new_wd_fst_pi)
+			)
+			
+			pi_rearrangement_all_pos = gwf.target_from_template(
+				name = 'pi_rearrangement_all_pos',
+				template = long_to_wide_pi(
+					pi_sorted_file = pi_calculation_all_pos.outputs['pi_all_pops'],
+					neutral_position_count_file = os.path.join(new_out_pi/os.path.basename(pi_calculation_all_pos.outputs['pi_all_pops']).replace("_long.pi", ".pi")))
+			)
+
+
+			#pi_rearrangement_all_pos = gwf.target_from_template(
+			#	name = 'pi_rearrangement_all_pos',
+			#	template = calculate_pi_template(
+			#		pi_sorted_file = pi_calculation_all_pos.outputs['pi_all_pops'],
+			#		neutral_position_count_file = new_out_pi/os.path.basename(pi_calculation_all_pos.outputs['pi_all_pops']).replace("_long.pi", ".pi"))
+			#)
+			#Make this template into a "add non-variable positions as well" 
+			# potentially using a bed-file? cat and sort.
+				# could maybe more successfully be added in the earlier step?
+					# what about the na's in this file. should they indeed be 0?
+					# if the variant does not exist in the population, then I guess it should count as a 0-pi-position, because it does not add to pi
+					# if this is the case, which I think right now,then colMeans should be na.rm=FALSE. indicating that na is included in the calculation. or to be sure do: colSums/nrow
+
+
+
+
+			# 
+			# 
+			# 
+			# 
+			# 	#pi_calculation_all_pos = gwf.target_from_template(
 			#	name = 'pi_calculation_all_positions',
 			#	template = calculate_pi_template(
 			#		allele_freq_files = freq_files,
 			#		working_directory = new_wd_fst_pi,
 			#		output_directory = new_out_pi,
-			#		neutral_position_count = neutral_position_count_file,
+			#		neutral_position_count_file = neutral_position_count_file,
 			#		positions_type = 'all')
 			#)
-			
+
+
+			# OR: make this one without calculating the mean.
+			# Calculate mean in new template
 			# Done, but needs the inputfile of neutral_position_count (maybe make a test)
 
 
-			#################################################
-			### Calculate pi on COMMON allele frequencies ###
-			#################################################
-
-
-			new_wd_fst_pi = f'{WORK_DIR}/fst_pi/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/'
-
-			#pi_calculation_common_pos = gwf.target_from_template(
-			#	name = 'pi_calculation_COMMON_positions',
-			#	template = calculate_pi_template(
-			#		allele_freq_files = freq_files_common,
-			#		working_directory = new_wd_fst_pi,
-			#		output_directory = new_out_pi,
-			#		neutral_position_count = neutral_position_count_file,
-			#		positions_type = 'common')
-			#)
-
-			# Done??, but needs the inputfile of neutral_position_count (maybe make a test)
-			
 			################################################################
 			### Make ready for FST-calculation with a combined AF file   ###
 			################################################################
