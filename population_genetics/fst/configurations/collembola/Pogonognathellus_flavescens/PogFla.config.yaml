@@ -1,0 +1,42 @@
+# Tag identifying file association.
+TAG: anneaa:EcoGenetics,population_genetics,DiversityEstimates:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Taxonomic group
+taxonomic_group: Collembola
+# Name of species being analyzed
+species_name: Pogonognathellus flavescens
+# Path to reference genome file in FASTA format
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Pogonognathellus_flavescens/EG_PogFla_23072024_genomic.fna
+# Directory for intermediary files.
+working_directory_path: /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps
+  #/faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps
+# # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
+  # this is where new fst/taxonomy or pi/taxonomy directories with outputs will be placed
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics
+
+# Make neutral VCF settings: (intergenic and rm repetitive)
+# Bed file path
+bed_files_path: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Pogonognathellus_flavescens/annotation/
+# VCF folders
+vcf_base_folder: /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf
+# vcf tip folders
+vcf_base_folder: /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Pogonognathellus_flavescens/grassland
+# VCF filter settings? (threshold depth per pop or across pops, or across 70% of pops?)
+# count of positions for calculating pi (only variants are called, thus we need a count of all sites, to calculate pi)
+count_of_positions_file: /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/pi/collembola/Pogonognathellus_flavescens/test.txt
+
+vcf_lists:
+  -
+    group_name: grassland
+    vcf_files_list:
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Pogonognathellus_flavescens/grassland/PogFla_FaaJ-C7/vcf/PogFla_FaaJ-C7.freebayes_n3_p100_minaltfrc0_minaltcnt2.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Pogonognathellus_flavescens/grassland/PogFla_KLJ-C125/vcf/PogFla_KLJ-C125.freebayes_n3_p100_minaltfrc0_minaltcnt2.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Pogonognathellus_flavescens/grassland/PogFla_MYS-C279/vcf/PogFla_MYS-C279.freebayes_n3_p100_minaltfrc0_minaltcnt2.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Pogonognathellus_flavescens/grassland/PogFla_NOJ-C113/vcf/PogFla_NOJ-C113.freebayes_n3_p100_minaltfrc0_minaltcnt2.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Pogonognathellus_flavescens/grassland/PogFla_NYS-F-C115/vcf/PogFla_NYS-F-C115.freebayes_n3_p100_minaltfrc0_minaltcnt2.vcf.gz
+    - /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Pogonognathellus_flavescens/grassland/PogFla_RYJ-C44-1/vcf/PogFla_RYJ-C44-1.freebayes_n3_p100_minaltfrc0_minaltcnt2.vcf.gz
+  -
+    group_name: bad_samples
+    vcf_files_list:
+

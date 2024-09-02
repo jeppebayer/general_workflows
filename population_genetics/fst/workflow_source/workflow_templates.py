@@ -312,6 +312,17 @@ def common_sites_allele_frq(allele_freq_files: list, working_directory: str, fil
 
 	
 
+# notes from monday:
+#ok .
+# estimate pi:
+#   I need to estimate pi on all called variants, not just neutral, as I have done so far.
+#   then I can make a file like this:
+
+        # scaf  pos1    pos2    NsitesCov   comment pia pib pic pid pif ...
+        # scaf1 5       2005    2000        CDS; gene;
+        # scaf1 37920   37920   1        variant; neutral .1  .001    .002
+
+
 def calculate_pi_template(allele_freq_files: list, working_directory: str):
 	"""
 	Template: Calculate pi from bed-style files with allele frequencies.

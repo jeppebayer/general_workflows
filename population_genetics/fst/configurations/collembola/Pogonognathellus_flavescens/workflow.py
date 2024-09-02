@@ -6,10 +6,11 @@ from workflow_source import *
 gwf = fst_and_pi_wf()
 
 # conda create -n ecogen_neutral_diversity_wf python samtools bamtools vcftools R gwf bedtools bcftools pyyaml
-# cd /home/anneaa/EcoGenetics/general_workflows/population_genetics/fst/configurations/collembola/Entomobrya_nicoleti
+# cd /home/anneaa/EcoGenetics/general_workflows/population_genetics/fst/configurations/collembola/Pogonognathellus_flavescens/
 # conda activate ecogen_neutral_diversity_wf
 # gwf run
 # gwf status
 # gwf status -f summary
 # gwf logs --stderr make_genome_fai
+
 

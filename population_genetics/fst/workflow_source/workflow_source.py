@@ -80,15 +80,19 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 	for GROUP in VCF_FILES:
 		#if not GROUP['vcf_files_list']:
 		#	continue
-
-		if GROUP['group_name'] == 'good_samples':
+		# make this run on all groups, except if called "bad_samples"
+		if not GROUP['vcf_files_list']:
+			continue
+		if GROUP['group_name'] == 'bad_samples':
+			continue
+		if GROUP['group_name'] == 'grassland':
 			#print('yes')
 
 			########################
 			### MAKE NEUTRAL VCF ###
 			########################
 
-			files_list = GROUP['vcf_files_list'] # access the good samples GROUP and get the list of vcf files
+			files_list = GROUP['vcf_files_list'] 
 			#print(files_list)
 			# files_popdir=[ f'{new_wd}/{os.path.dirname(el).split("/")[-2]}' for el in files_list ]  # via list comprehension extract pop directory name and append it to the wkdirectory path
 			files_popdir=[ f'{os.path.dirname(el)}/neutral_vcf/' for el in files_list ]  # via list comprehension extract pop directory name and append it to the wkdirectory path
@@ -146,7 +150,7 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 				name = 'pi_rearrangement_all_pos',
 				template = long_to_wide_pi(
 					pi_sorted_file = pi_calculation_all_pos.outputs['pi_all_pops'],
-					neutral_position_count_file = os.path.join(new_out_pi/os.path.basename(pi_calculation_all_pos.outputs['pi_all_pops']).replace("_long.pi", ".pi")))
+					output_directory_file = os.path.join(new_out_pi,os.path.basename(pi_calculation_all_pos.outputs['pi_all_pops']).replace("_long.pi", ".pi")))
 			)
 
 
