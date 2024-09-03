@@ -379,22 +379,22 @@ def calculate_pi_template(allele_freq_files: list, working_directory: str):
     	# add pi calculated at every line
 		awk -v popul=$popul -v file_counter=$file_counter '{{ AF=$5;
 			pi=1-(AF)^2-(1-AF)^2;
-            print $1, $2, $3, $4, pi, file_counter, popul
+            print $1, $2, $3, popul, pi
 		}}' $file >> {working_directory}/tmp/pi.calc.tmp
 	done
 
 
 	# sort file according to scaffold, position and population number
-	sort -k 1,1 -k2,2n -k6,6n {working_directory}/tmp/pi.calc.tmp > {working_directory}/tmp/pi.calc.sort.tmp 
+	sort -k 1,1 -k2,2n -k3,3n -k4,4 {working_directory}/tmp/pi.calc.tmp > {working_directory}/tmp/pi.calc.sort.tmp 
 
 	# add header
-	echo -e scaffold'\t'0pos'\t'0pos'\t'type'\t'pi'\t'pop_nr'\t'pop_name > {working_directory}/tmp/pi.header_intermediate.tmp
+	echo -e scaffold'\t'0pos'\t'0pos'\t'pop_name'\t'pi' > {working_directory}/tmp/pi.header_intermediate.tmp
 	cat {working_directory}/tmp/pi.header_intermediate.tmp {working_directory}/tmp/pi.calc.sort.tmp > {working_directory}/tmp/pi.calc.sort.header.tmp
 
 	# add to output file
 	mv {working_directory}/tmp/pi.calc.sort.header.tmp {outputs['pi_all_pops']}
 		
-	remove temporary things
+	# remove temporary things
 	#rm {working_directory}/tmp/*
 	rm {working_directory}/tmp/pi.header_intermediate.tmp
 	rm {working_directory}/tmp/pi.calc.sort.header.tmp
@@ -449,15 +449,21 @@ def long_to_wide_pi(pi_sorted_file: str, output_directory_file: str):
 	import pandas as pd
 
 	# Read data from a file (assuming 'data.txt' is the file name)
-	data_file = '/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/tmp/pi.header_cat.test'
-	df = pd.read_csv({inputs['sorted_pi']}, sep='\s+')
+	data_file = '/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/tmp/pi.header_cat.test1'
+	#data_file = '/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions_long.pi'
+	
+	
+	#df = pd.read_csv({inputs['sorted_pi']}, sep='\s+')
+	df = pd.read_csv(data_file, sep='\s+')
 	df
 	# Pivot the data to wide format
 	wide_df = df.pivot(index=['scaffold', '0pos', '0pos.1', 'type' ], columns='pop_name', values='pi').reset_index()
+	wide_df.info()
 	wide_df_fill = wide_df.fillna('na')
 
 	# Write output to a file or print it
-	output_file = {outputs['pi_all_pops_positions']}
+	#output_file = {outputs['pi_all_pops_positions']}
+	output_file = '/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions.pi'
 	wide_df_fill.to_csv(output_file, sep='\t', index=False)
 
 	exit()
