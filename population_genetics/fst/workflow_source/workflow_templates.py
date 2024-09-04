@@ -386,13 +386,39 @@ def calculate_pi_template(allele_freq_files: list, working_directory: str):
 
 	# sort file according to scaffold, position and population number
 	sort -k 1,1 -k2,2n -k3,3n -k4,4 {working_directory}/tmp/pi.calc.tmp > {working_directory}/tmp/pi.calc.sort.tmp 
+	rm {working_directory}/tmp/pi.calc.tmp
+
+	# Add zero pi lines for populations with no pi at a given site
+	echo -n > {working_directory}/tmp/pi.calc.sort.zerolines.tmp
+	for file in {concatenate_list_elements(inputs['freq_files_list'])};
+	do
+		# add population name to file
+		popul=`basename $file|cut -d"." -f1`
+		echo $popul
+		awk -v popul=$popul 'BEGIN {{ getline; key = $1 "\t" $2 "\t" $3; found = 0}}
+			{{ new_key = $1 "\t" $2 "\t" $3;
+			if ($4 == popul) {{
+				found = 1 }};
+			if (found == 1 && new_key == key) {{
+				next }};
+			if (found == 0 && new_key == key) {{
+				next }};
+			if (found == 0 && new_key != key) {{
+				print key "\t" popul "\t" 0 }};
+			if (found == 1 && new_key != key) {{
+				found = 0 }};
+			key = new_key }}' {working_directory}/tmp/pi.calc.sort.tmp >> {working_directory}/tmp/pi.calc.sort.zerolines.tmp
+	done
+
+	#concatenate files with pop specific variants and file with 0 pi for pops missing that variant (but stil have coverage)
+	cat {working_directory}/tmp/pi.calc.sort.tmp {working_directory}/tmp/pi.calc.sort.zerolines.tmp | sort -k1,1 -k2,2n -k3,3n -k4,4 > {working_directory}/tmp/pi.calc.sort.zerolines.sort.tmp
 
 	# add header
-	echo -e scaffold'\t'0pos'\t'0pos'\t'pop_name'\t'pi' > {working_directory}/tmp/pi.header_intermediate.tmp
-	cat {working_directory}/tmp/pi.header_intermediate.tmp {working_directory}/tmp/pi.calc.sort.tmp > {working_directory}/tmp/pi.calc.sort.header.tmp
+	sed -i '1i scaffold\t0pos\t0pos\tpop_name\tpi' {working_directory}/tmp/pi.calc.sort.zerolines.sort.tmp
+	# echo -e scaffold'\t'0pos'\t'0pos'\t'pop_name'\t'pi' > {working_directory}/tmp/pi.header_intermediate.tmp
 
 	# add to output file
-	mv {working_directory}/tmp/pi.calc.sort.header.tmp {outputs['pi_all_pops']}
+	mv {working_directory}/tmp/pi.calc.sort.zerolines.sort.tmp {outputs['pi_all_pops']}
 		
 	# remove temporary things
 	#rm {working_directory}/tmp/*
