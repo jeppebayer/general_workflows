@@ -145,13 +145,23 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 					allele_freq_files = freq_files,
 					working_directory = new_wd_fst_pi)
 			)
-			
+				# outputs two files: 
+				# 		one with: scaf 0pos 0pos pi1 pi2 pi3 pi4 ...
+				# 		one with: scaf 0pos 0pos 'name' and 'score'
+				#				name consists of a comma separated list of population names
+				#				score consists of a comma separated list of pi scores
+
+
+
+			# deprecated 
+			#  change to bed file combination thingy
 			pi_rearrangement_all_pos = gwf.target_from_template(
-				name = 'pi_rearrangement_all_pos',
-				template = long_to_wide_pi(
-					pi_sorted_file = pi_calculation_all_pos.outputs['pi_all_pops'],
-					output_directory_file = os.path.join(new_out_pi,os.path.basename(pi_calculation_all_pos.outputs['pi_all_pops']).replace("_long.pi", ".pi")))
+				name = 'pi_add_context',
+				template = add_context_info_pi(
+					pi_sorted_file = pi_calculation_all_pos.outputs['pi_all_pops_bed'],
+					output_directory_file = new_wd_fst_pi)
 			)
+
 
 
 			#pi_rearrangement_all_pos = gwf.target_from_template(

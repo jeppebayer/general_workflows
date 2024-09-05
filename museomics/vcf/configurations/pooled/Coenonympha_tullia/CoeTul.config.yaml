@@ -16,7 +16,7 @@ output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs
 partition_size: 100000
 # Freebayes settings.
 freebayes_settings:
-  sample_ploidy: 100
+  sample_ploidy: 72
   best_n_alleles: 3
   min_alternate_fraction: 0
   min_alternate_count: 2

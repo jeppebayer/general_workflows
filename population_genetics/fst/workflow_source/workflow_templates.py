@@ -341,8 +341,8 @@ def calculate_pi_template(allele_freq_files: list, working_directory: str):
 	:param
 	"""
 	inputs = {'freq_files_list': allele_freq_files }
-	# neutral_position_count should probably be given as a file some way. talk to jeppe
-	outputs = { 'pi_all_pops': f'{working_directory}/pi_allPops_variant_positions_long.pi' }
+	outputs = { 'pi_all_pops_pi': f'{working_directory}/pi_allPops_variant_positions.pi',
+			'pi_all_pops_bed': f'{working_directory}/pi_allPops_variant_positions.bed'}
 	options = {
 		'cores': 1,
 		'memory': '5g',
@@ -365,15 +365,13 @@ def calculate_pi_template(allele_freq_files: list, working_directory: str):
 
 
 	# For every file with allelefrequencies
-	#echo -e -n scaffold'\t'0pos'\t'0pos'\t'type'\t'pi'\t' > {working_directory}/tmp/pi.header.tmp
 	echo -n > {working_directory}/tmp/pi.calc.tmp
 	file_counter=0
 	for file in {concatenate_list_elements(inputs['freq_files_list'])}; 
 	do
 	    file_counter=$((file_counter+1))
-		# add population name to file
+
 		popul=`basename $file|cut -d"." -f1`
-		#echo -e -n $popul'\t' >> {working_directory}/tmp/pi.header.tmp
 		echo $popul
 
     	# add pi calculated at every line
@@ -388,45 +386,79 @@ def calculate_pi_template(allele_freq_files: list, working_directory: str):
 	sort -k 1,1 -k2,2n -k3,3n -k4,4 {working_directory}/tmp/pi.calc.tmp > {working_directory}/tmp/pi.calc.sort.tmp 
 	rm {working_directory}/tmp/pi.calc.tmp
 
-	# Add zero pi lines for populations with no pi at a given site
-	echo -n > {working_directory}/tmp/pi.calc.sort.zerolines.tmp
-	for file in {concatenate_list_elements(inputs['freq_files_list'])};
-	do
-		# add population name to file
-		popul=`basename $file|cut -d"." -f1`
-		echo $popul
-		awk -v popul=$popul 'BEGIN {{ getline; key = $1 "\t" $2 "\t" $3; found = 0}}
-			{{ new_key = $1 "\t" $2 "\t" $3;
-			if ($4 == popul) {{
-				found = 1 }};
-			if (found == 1 && new_key == key) {{
-				next }};
-			if (found == 0 && new_key == key) {{
-				next }};
-			if (found == 0 && new_key != key) {{
-				print key "\t" popul "\t" 0 }};
-			if (found == 1 && new_key != key) {{
-				found = 0 }};
-			key = new_key }}' {working_directory}/tmp/pi.calc.sort.tmp >> {working_directory}/tmp/pi.calc.sort.zerolines.tmp
-	done
-
-	#concatenate files with pop specific variants and file with 0 pi for pops missing that variant (but stil have coverage)
-	cat {working_directory}/tmp/pi.calc.sort.tmp {working_directory}/tmp/pi.calc.sort.zerolines.tmp | sort -k1,1 -k2,2n -k3,3n -k4,4 > {working_directory}/tmp/pi.calc.sort.zerolines.sort.tmp
-
 	# add header
-	sed -i '1i scaffold\t0pos\t0pos\tpop_name\tpi' {working_directory}/tmp/pi.calc.sort.zerolines.sort.tmp
-	# echo -e scaffold'\t'0pos'\t'0pos'\t'pop_name'\t'pi' > {working_directory}/tmp/pi.header_intermediate.tmp
+	sed -i '1i chrom\tchromStart\tchromEnd\tpop_name\tpi' {working_directory}/tmp/pi.calc.sort.tmp 
 
-	# add to output file
-	mv {working_directory}/tmp/pi.calc.sort.zerolines.sort.tmp {outputs['pi_all_pops']}
+
+	## section in python
+
+	python
+
+	import pandas as pd
+	import numpy as np
+
+	# Read data from a file (assuming 'data.txt' is the file name)
+	data_file = {working_directory}/tmp/pi.calc.sort.tmp 
+	df = pd.read_csv(data_file, sep='\s+')
+	#df.info()
+
+	# Pivot the data to wide format
+	wide_df = df.pivot(index=['chrom', 'chromStart', 'chromEnd'], columns='pop_name', values='pi').reset_index()
+	df = []	# reducing memory impact of dataframe
+
+	# reindex to remove nan column
+	wide_df = wide_df.reindex(index=wide_df.index.difference([np.nan]), columns=wide_df.columns.difference([np.nan]))
+	#wide_df.info()
+
+	# fill nas with 0
+	wide_df_fill = wide_df.fillna('0')
+	#wide_df_fill.info()
+
+	wide_df = []	# reducing memory impact of dataframe
+
+	# sort columns
+	# separate dataset to sort on pop cols
+	wide_df_fill_first = wide_df_fill[['chrom','chromStart','chromEnd']]
+	wide_df_fill_second = wide_df_fill[wide_df_fill.columns.difference(['chrom','chromStart','chromEnd'])].sort_index(axis = 'columns', key=lambda col: col.str.lower())
+	#wide_df_fill_second.info()
+
+	# combine split sets
+	wide_df_fill = pd.concat([ wide_df_fill_first, wide_df_fill_second ], ignore_index=False, axis=1)	#reusing df name
+
+	wide_df_fill_second = []	# reducing memory impact of dataframe
+
+	# Write output to a file or print it
+	output_file = {outputs['pi_all_pops_pi']}
+	# output_file = '/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions.pi'
+	wide_df_fill.to_csv(output_file, sep='\t', index=False)
+
+	# make comma separated list for "name" and "score" columns in bed format
+	wide_df_fill_concatPi = wide_df_fill.apply(lambda row: ", ".join(row.iloc[3:].astype(str)), axis = 'columns')
+	wide_df_fill_concatPops = ", ".join(wide_df_fill.columns[3:].astype(str))
+
+	wide_df_fill = []	# reducing memory impact of dataframe
+
+	# make new pd dataframe of score and name columns
+	new_df = pd.DataFrame({{
+		'name': [wide_df_fill_concatPops] * len(wide_df_fill_concatPi),  # Repeat header for all rows
+		'score': wide_df_fill_concatPi}})
+
+	wide_df_fill_concatPops = []	# reducing memory impact of dataframe
+	wide_df_fill_concatPi = []	# reducing memory impact of dataframe
+
 		
-	# remove temporary things
-	#rm {working_directory}/tmp/*
-	rm {working_directory}/tmp/pi.header_intermediate.tmp
-	rm {working_directory}/tmp/pi.calc.sort.header.tmp
-	#rm {working_directory}/tmp/pi.header.tmp
+	wide_df_bed = pd.concat([ wide_df_fill_first, new_df ], ignore_index=False, axis=1)
 
+	# write to bedfile
+	output_file = {outputs['pi_all_pops_bed']}
+	# output_file = '/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions.bed'
+	wide_df_bed.to_csv(output_file, sep='\t', index=False)
 
+	exit()
+
+	## End of python
+
+	
 	echo "END: $(date)"
 	echo "$(jobinfo "$SLURM_JOBID")"
 	"""
@@ -434,7 +466,7 @@ def calculate_pi_template(allele_freq_files: list, working_directory: str):
 
 
 
-def long_to_wide_pi(pi_sorted_file: str, output_directory_file: str):
+def add_context_info_pi(pi_bedfile: str, working_directory: str, output_directory: str, species_gtf: str, bed_directory: str):
 	"""
 	Template: rearrange pi file, so we get this format:
 	Scaff pos0 pos0 type pi_pop1 pi_pop2 pi_pop3 pi_pop4 ...	
@@ -449,8 +481,12 @@ def long_to_wide_pi(pi_sorted_file: str, output_directory_file: str):
 	
 	:param
 	"""
-	inputs = {'sorted_pi': pi_sorted_file }
-	outputs = { 'pi_all_pops_positions': output_directory_file }
+	inputs = {'pi_bed': pi_bedfile,
+		   	'gtf_species': species_gtf, 
+			'neutral_bed': f'{bed_directory}/*genomic.neutral.bed',
+			'genes_bed': f'{bed_directory}/*genomic.genes.bed',
+			'repeats_bed': f'{bed_directory}/*genomic.repeats.bed' }
+	outputs = { 'pi_extended_bed': f'{output_directory}/' }
 	options = {
 		'cores': 1,
 		'memory': '5g',
@@ -468,8 +504,68 @@ def long_to_wide_pi(pi_sorted_file: str, output_directory_file: str):
 	echo "START: $(date)"
 	echo "JobID: $SLURM_JOBID"
 
-	mkdir -p {os.path.dirname(outputs['pi_all_pops_positions'])}
+	mkdir -p {os.path.dirname(outputs['pi_extended_bed'])}
+
+	# first make various bed-files, if they do not already exist.
+	# hmm. no, This should be done in another template.
+		# already made:
+		# *genome.genes.bed
+		# *genome.repeats.bed
+		# *genome.neutral.bed
+	# or I could stream it?
+		# couldn't stream it in, for some reson
+	mkdir -p {working_directory}/annotate_pi
+
+	awk 'OFS="\t" {{if ($3 == "CDS") {{print $1, $4-1, $5, $3}}}}' {inputs['gtf_species']} > {working_directory}/annotate_pi/genomic_CDS.bed
+	awk 'OFS="\t" {{if ($3 == "intron") {{print $1, $4-1, $5, $3}}}}' {inputs['gtf_species']} > {working_directory}/annotate_pi/genomic_intron.bed
+	awk 'OFS="\t" {{if ($3 == "exon") {{print $1, $4-1, $5, $3}}}}' {inputs['gtf_species']} > {working_directory}/annotate_pi/genomic_exon.bed
+
+
+
+	# Use bedtools to add context to input pi bedfile
+	tail -n 33339 /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions.bed > /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions_MOD.bed
+	# Chekc if this bedfile is 0pos? it should be, but check.
+	bedtools annotate -i /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions_MOD.bed \
+		-files {inputs['neutral_bed']} \
+			{inputs['repeats_bed']} \
+			{working_directory}/annotate_pi/genomic_CDS.bed \
+			{working_directory}/annotate_pi/genomic_intron.bed \
+			{working_directory}/annotate_pi/genomic_exon.bed \
+			{inputs['neutral_bed']}
+	# column 6:11 will be: genes, repeats, CDS, intron, exon, neutral
+	# if the number is above 0, the regions are overalpping
+		/home/anneaa/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/annotation/EG_EntNic_05092024_genomic.repeats.bed \
+		/home/anneaa/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/annotation/EG_EntNic_05092024_genomic.genes.bed 
 	
+	# run intersect to check if it is ok
+
+
+	bedtools intersect {inputs['pi_bed']} ?
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	python
 
 	import pandas as pd
