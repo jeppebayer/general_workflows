@@ -99,8 +99,8 @@ def make_neutral_bed(genes_bed_file: str, repeats_bed_file: str, neutral_bed_out
 		> {outputs['neutral_bed'].replace("neutral.","neutralTEMP.")}
 			# when done test running, this should end up in same folder as genes_bed_file
 
-	    # only keep neutral file
-    rm {outputs['neutral_bed'].replace("neutral.","neutralTEMP.").replace(".bed", "_sort.bed")}
+		# only keep neutral file
+	rm {outputs['neutral_bed'].replace("neutral.","neutralTEMP.").replace(".bed", "_sort.bed")}
 	mv {outputs['neutral_bed'].replace("neutral.","neutralTEMP.")} {outputs['neutral_bed']}
 	
 	
@@ -239,9 +239,9 @@ def extract_allele_frq(vcf_file: str, working_directory: str):
 
 
 def concatenate_list_elements(input_list):
-    # Convert all elements to strings and concatenate them with a space as separator
-    result = ' '.join(str(element) for element in input_list)
-    return result
+	# Convert all elements to strings and concatenate them with a space as separator
+	result = ' '.join(str(element) for element in input_list)
+	return result
 
 
 
@@ -320,9 +320,9 @@ def common_sites_allele_frq(allele_freq_files: list, working_directory: str, fil
 #   I need to estimate pi on all called variants, not just neutral, as I have done so far.
 #   then I can make a file like this:
 
-        # scaf  pos1    pos2    NsitesCov   comment pia pib pic pid pif ...
-        # scaf1 5       2005    2000        CDS; gene;
-        # scaf1 37920   37920   1        variant; neutral .1  .001    .002
+		# scaf  pos1    pos2    NsitesCov   comment pia pib pic pid pif ...
+		# scaf1 5       2005    2000        CDS; gene;
+		# scaf1 37920   37920   1        variant; neutral .1  .001    .002
 
 
 def calculate_pi_template(allele_freq_files: list, working_directory: str):
@@ -371,15 +371,15 @@ def calculate_pi_template(allele_freq_files: list, working_directory: str):
 	file_counter=0
 	for file in {concatenate_list_elements(inputs['freq_files_list'])}; 
 	do
-	    file_counter=$((file_counter+1))
+		file_counter=$((file_counter+1))
 
 		popul=`basename $file|cut -d"." -f1`
 		echo $popul
 
-    	# add pi calculated at every line
+		# add pi calculated at every line
 		awk -v popul=$popul -v file_counter=$file_counter '{{ AF=$5;
 			pi=1-(AF)^2-(1-AF)^2;
-            print $1, $2, $3, popul, pi
+			print $1, $2, $3, popul, pi
 		}}' $file >> {working_directory}/tmp/pi.calc.tmp
 	done
 
@@ -468,7 +468,7 @@ def calculate_pi_template(allele_freq_files: list, working_directory: str):
 
 
 
-def add_context_info_pi(pi_bedfile: str, working_directory: str, output_directory: str, species_gtf: str, bed_directory: str):
+def add_context_info_pi(pi_bedfile: str, working_directory: str, output_directory: str, species_gtf: str, covered_sites_across_genome: str, neutral_bed: str, genes_bed: str, repeats_bed: str):
 	"""
 	Template: rearrange pi file, so we get this format:
 	Scaff pos0 pos0 type pi_pop1 pi_pop2 pi_pop3 pi_pop4 ...	
@@ -485,10 +485,12 @@ def add_context_info_pi(pi_bedfile: str, working_directory: str, output_director
 	"""
 	inputs = {'pi_bed': pi_bedfile,
 		   	'gtf_species': species_gtf, 
-			'neutral_bed': f'{bed_directory}/*genomic.neutral.bed',
-			'genes_bed': f'{bed_directory}/*genomic.genes.bed',
-			'repeats_bed': f'{bed_directory}/*genomic.repeats.bed' }
-	outputs = { 'pi_extended_bed': f'{output_directory}/' }
+			'neutral_bed': neutral_bed,
+			'genes_bed': genes_bed,
+			'repeats_bed': repeats_bed, 
+			'covered_sites': covered_sites_across_genome }
+	outputs = { 'pi_extended_bed': f'{output_directory}/{"_".join(os.path.basename(species_gtf).split("_")[:2])}_pi_annot_allSites.pi',
+			'pi_mean_extended_bed': f'{output_directory}/{"_".join(os.path.basename(species_gtf).split("_")[:2])}_pi_mean.pi' }
 	options = {
 		'cores': 1,
 		'memory': '5g',
@@ -509,13 +511,6 @@ def add_context_info_pi(pi_bedfile: str, working_directory: str, output_director
 	mkdir -p {os.path.dirname(outputs['pi_extended_bed'])}
 
 	# first make various bed-files, if they do not already exist.
-	# hmm. no, This should be done in another template.
-		# already made:
-		# *genome.genes.bed
-		# *genome.repeats.bed
-		# *genome.neutral.bed
-	# or I could stream it?
-		# couldn't stream it in, for some reson
 	mkdir -p {working_directory}/annotate_pi
 
 	awk 'OFS="\t" {{if ($3 == "CDS") {{print $1, $4-1, $5, $3}}}}' {inputs['gtf_species']} > {working_directory}/annotate_pi/genomic_CDS.bed
@@ -528,115 +523,195 @@ def add_context_info_pi(pi_bedfile: str, working_directory: str, output_director
 		# Now expand to have a file with per site info
 		awk '{{ scaf = $1; start = $2; end = $3; OFS=FS="\t"; 
 			 for (i = start; i < end; i++)
-		        {{print scaf, i, i }}}}' /home/anneaa/EcoGenetics/people/Jeppe_Bayer/population_genetics/test_data/depthdist/multibam.test.merge.bed > /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/expand_covSites.bed
+				{{print scaf, i, i+1 }}}}' {inputs['covered_sites']} \
+					> {working_directory}/annotate_pi/expand_covered_sites.bed.temp
+					#/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/expand_covSites.bed
 
 					# consider using -sorted
-	bedtools intersect -loj -wa -wb -sorted \
-		-a /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/expand_covSites.bed \
-		-b /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions_MOD.bed \
-		> /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_MOD.bed
-	bedtools intersect -wao -sorted \
-		-a /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/expand_covSites.bed \
-		-b /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions_MOD.bed \
-		> /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_MOD.bed
+
+	# quick fix of bed-error for test data:
+		awk -v FS="\t" '$2==$3{{OFS=FS; print $1, $2, $3+1, $4, $5}}' /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions_MOD.bed > /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions_MOD1.bed
 
 	bedtools intersect -loj -wa -wb -sorted \
-		-b /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/expand_covSites.bed \
-		-a /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions_MOD.bed \
-		> /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_MOD_inversetest.bed
+		-a {working_directory}/annotate_pi/expand_covered_sites.bed.temp \
+		-b {inputs['pi_bed']} \
+		> {working_directory}/annotate_pi/pi_allPops_all_positions.bed.temp
 
-		# check if there is any missing, using the reverse (for each variant site, a site should be in the cov file, if not, something is up)
-	if grep -e '-1' /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_MOD_inversetest.bed |head -1
+	bedtools intersect -loj -wa -wb -sorted \
+	#	-a /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/expand_covSites.bed \
+	#	-b /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions_MOD1.bed \
+	#	> /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_MOD.bed
+
+	# check reverse result
+	bedtools intersect -loj -wa -wb -sorted \
+		-b {working_directory}/annotate_pi/expand_covered_sites.bed.temp \
+		-a {inputs['pi_bed']} \
+		> {working_directory}/annotate_pi/pi_allPops_all_positions_inversetest.bed.temp
+
+	#bedtools intersect -loj -wa -wb -sorted \
+	#	-b /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/expand_covSites.bed \
+	#	-a /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions_MOD1.bed \
+	#	> /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_MOD_inversetest.bed
+
+	#	# check if there is any missing, using the reverse (for each variant site, a site should be in the cov file, if not, something is up)
+	#if grep -e '-1' /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_MOD_inversetest.bed |head -1
+	#then
+		#echo ERROR: Lines from the variants file, is not present in the file with sufficiently covered sites!
+		#echo Check this file for "-1", indicating missing match from bedtools intersect: /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_MOD_inversetest.bed
+	#else
+		#rm /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_MOD_inversetest.bed
+	#fi
+
+	if grep -e '-1' {working_directory}/annotate_pi/pi_allPops_all_positions_inversetest.bed.temp |head -1
 	then
 		echo ERROR: Lines from the variants file, is not present in the file with sufficiently covered sites!
-		echo Check this file for "-1", indicating missing match from bedtools intersect: /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_MOD_inversetest.bed
+		echo Check this file for "-1", indicating missing match from bedtools intersect: {working_directory}/annotate_pi/pi_allPops_all_positions_inversetest.bed.temp
 	else
-		rm /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_MOD_inversetest.bed
+		rm {working_directory}/annotate_pi/pi_allPops_all_positions_inversetest.bed.temp
 	fi
 
-	# modify intersect file to become standard bedfile again.
-
-	awk 'NF == 8 {print }'
+	# modify intersect file to become  bedfile again.
+		# do this while adding 0 pi values to all positions that were within coverage thresholds - since only variants have pi estimates here
+	pops=`awk 'BEGIN {{ FS = "\t" }}; NF == 8 && $8 != "." {{print $7; exit}}' {working_directory}/annotate_pi/pi_allPops_all_positions.bed.temp`
+	zeros=`awk 'BEGIN {{ FS = "\t" }}; NF == 8 && $8 != "." {{print $7; exit}}' {working_directory}/annotate_pi/pi_allPops_all_positions.bed.temp| awk '{{print NF}}'`
+		# counts the number of populations
+	zeros=`awk -v number=$zeros 'BEGIN{{ for(c=1; c<number ;c++) printf "0%s", (c < number-1 ? ", " : ""); printf "\n"}}'`
+		# make the zero-string for the new bed file
 	
+	## modify intersect file to become  bedfile again.
+#		# do this while adding 0 pi values to all positions that were within coverage thresholds - since only variants have pi estimates here
+#	pops=`awk 'BEGIN {{ FS = "\t" }}; NF == 8 && $8 != "." {{print $7; exit}}' /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_MOD.bed`
+#	zeros=`awk 'BEGIN {{ FS = "\t" }}; NF == 8 && $8 != "." {{print $7; exit}}' /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_MOD.bed| awk '{{print NF}}'`
+#		# counts the number of populations
+#	zeros=`awk -v number=$zeros 'BEGIN{{ for(c=1; c<number ;c++) printf "0%s", (c < number-1 ? ", " : ""); printf "\n"}}'`
+#		# make the zero-string for the new bed file
 
 
-	# Use bedtools to add context to input pi bedfile
-	tail -n 33339 /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions.bed > /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions_MOD.bed
+	awk -v pops="$pops" -v zeros="$zeros" 'BEGIN {{OFS = FS = "\t" }};
+		NF == 8 && $8 != "."  {{print $4, $5, $6, $7, $8 }};
+		NF == 8 && $8 == "." {{print $1, $2, $3, pops, zeros}}' \
+		{working_directory}/annotate_pi/pi_allPops_all_positions.bed.temp \
+		> {working_directory}/annotate_pi/pi_allPops_all_positions_addPiZeroPos.bed.temp
+
+#	awk -v pops="$pops" -v zeros="$zeros" 'BEGIN {{OFS = FS = "\t" }};
+#		NF == 8 && $8 != "."  {{print $4, $5, $6, $7, $8 }};
+#		NF == 8 && $8 == "." {{print $1, $2, $3, pops, zeros}}' \
+#		/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_MOD.bed \
+#		> /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_zeroadd.bed
+
+
+		
+
+	# Now, Use bedtools to add context to input pi bedfile
+	#tail -n 33339 /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions.bed > /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions_MOD.bed
 	# Chekc if this bedfile is 0pos? it should be, but check.
-	bedtools annotate -i /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions_MOD.bed \
-		-files {inputs['genes_bed']} \
-			{inputs['repeats_bed']} \
-			{working_directory}/annotate_pi/genomic_CDS.bed \
-			{working_directory}/annotate_pi/genomic_intron.bed \
-			{working_directory}/annotate_pi/genomic_exon.bed \
-			{inputs['neutral_bed']}
+	#/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_zeroadd.bed
 
+	bedtools annotate -i {working_directory}/annotate_pi/pi_allPops_all_positions_addPiZeroPos.bed.temp \
+		-files {{inputs['genes_bed']}} \
+			{{inputs['repeats_bed']}} \
+			{{working_directory}}/annotate_pi/genomic_CDS.bed \
+			{{working_directory}}/annotate_pi/genomic_intron.bed \
+			{{working_directory}}/annotate_pi/genomic_exon.bed \
+			{{inputs['neutral_bed']}} \
+		> {working_directory}/annotate_pi/pi_allPops_all_positions_addPiZeroPos_annot.bed.temp
 	# column 6:11 will be: genes, repeats, CDS, intron, exon, neutral
-	# if the number is above 0, the regions are overalpping
-	bedtools annotate -i /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions_MOD.bed \
-		-files /home/anneaa/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/annotation/EG_EntNic_05092024_genomic.repeats.bed \
-		/home/anneaa/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/annotation/EG_EntNic_05092024_genomic.genes.bed > /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions_MOD_annot.bed
+	# if the number is above 0, the regions are overalpping	( there should only be 0.000 or 1.000)
+
+	# test code:
+	#bedtools annotate -i /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_zeroadd.bed \
+	#	-files /home/anneaa/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/annotation/EG_EntNic_05092024_genomic.repeats.bed \
+	#	/home/anneaa/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/annotation/EG_EntNic_05092024_genomic.genes.bed \
+	#	> /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_zeroadd_annot.bed
 	
+	# NEXT
+	# The name column should be annotation column instead:
+	# 	Remove the pops from the name column they are similar in all fields after all.O
+	#		potentially just store one file where the order of populations are clear. (export one field of one line)		
+	#	Add column 6:11 to name column, as tab separated, adding names for annotation: gene, rep, cds, int, ex, neu
+	
+	awk 'BEGIN {{FS="\t"; OFS="\t"}} {{
+		string = "";    # Initialize the string variable
+
+		# Check if field 6 > 0 and add "gene"
+		if ($6 > 0) string = "gene";
 		
-			# if the number is above 0, the regions are overalpping
-	bedtools intersect -wa -wb -a /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions_MOD.bed \
-		-b /home/anneaa/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/annotation/EG_EntNic_05092024_genomic.repeats.bed |head
-		\
-		/home/anneaa/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/annotation/EG_EntNic_05092024_genomic.genes.bed > /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions_MOD_annot.bed
+		# Check if field 7 > 0 and add "repeat"
+		if ($7 > 0) {{
+			if (string != "") string = string ", repeat";
+			else string = "repeat";
+		}}
+
+		# Check if field 8 > 0 and add "exon"
+		if ($8 > 0) {{
+			if (string != "") string = string ", exon";
+			else string = "exon";
+		}}
+
+		# Check if field 9 > 0 and add "intron"
+		if ($9 > 0) {{
+			if (string != "") string = string ", intron";
+			else string = "intron";
+		}}
+
+		# Check if field 10 > 0 and add "neutral"
+		if ($10 > 0) {{
+			if (string != "") string = string ", neutral";
+			else string = "neutral";
+		}}
+
+		# Check if field 11 > 0 and add "upstream"
+		if ($11 > 0) {{
+			if (string != "") string = string ", upstream";
+			else string = "upstream";
+		}}
+
+		print $1, $2, $3, string, $5    # Output fields $1, $2, $3, the string, and $5
+	}}' {working_directory}/annotate_pi/pi_allPops_all_positions_addPiZeroPos_annot.bed.temp \
+		> {working_directory}/annotate_pi/pi_allPops_all_positions_addPiZeroPos_annot_condenced.bed.temp
+
 	
-		
-	# run intersect to check if it is ok
+	# calculates average pi:
+
+	awk -v pops=$pops 'BEGIN {{FS = OFS = "\t"}} 
+		{{	split($5, values, ", ");	# Split field 5 (comma-separated values) into an array
+			
+			if (NR == 1) {{				# Initialize the sum array on the first run
+				for (i = 1; i <= length(values); i++) {{
+					sum[i] = 0;
+				}}
+			}}
+			
+			# Add the values of field 5 to the corresponding positions in the sum array
+			for (i = 1; i <= length(values); i++) {{
+				sum[i] += values[i];
+			}}
+			
+			# Increment the count of lines
+			count++;
+		}}
+		END {{
+			# Calculate the average for each element in the sum array
+			for (i = 1; i <= length(sum); i++) {{
+				avg[i] = sum[i] / count;
+				#avg[i] = sprintf("%.2f", avg[i]);  # Format the average to 2 decimal places
+			}}
+			
+			# Join the averages into a comma-separated string
+			avg_values = avg[1];
+			for (i = 2; i <= length(avg); i++) {{
+				avg_values = avg_values ", " avg[i];
+			}}
+			
+			# Output the last line's fields $1, $2, $3, the calculated averages for field 5, $6 and the rest of the fields
+			print pops \n avg_values;
+		}}' {working_directory}/annotate_pi/pi_allPops_all_positions_addPiZeroPos_annot_condenced.bed.temp > {outputs['pi_mean_extended_bed']}
 
 
-	bedtools intersect {inputs['pi_bed']} ?
-
+	mv {working_directory}/annotate_pi/pi_allPops_all_positions_addPiZeroPos_annot_condenced.bed.temp {outputs['pi_extended_bed']}
 	
+	rm {working_directory}/annotate_pi/*.temp
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	python
-
-	import pandas as pd
-
-	# Read data from a file (assuming 'data.txt' is the file name)
-	data_file = '/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/tmp/pi.header_cat.test1'
-	#data_file = '/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions_long.pi'
-	
-	
-	#df = pd.read_csv({inputs['sorted_pi']}, sep='\s+')
-	df = pd.read_csv(data_file, sep='\s+')
-	df
-	# Pivot the data to wide format
-	wide_df = df.pivot(index=['scaffold', '0pos', '0pos.1', 'type' ], columns='pop_name', values='pi').reset_index()
-	wide_df.info()
-	wide_df_fill = wide_df.fillna('na')
-
-	# Write output to a file or print it
-	#output_file = {outputs['pi_all_pops_positions']}
-	output_file = '/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions.pi'
-	wide_df_fill.to_csv(output_file, sep='\t', index=False)
-
-	exit()
 
 
 	echo "END: $(date)"
@@ -697,13 +772,13 @@ def calculate_mean_pi_template(pi_perpos_file: list, working_directory: str, out
 	# For every file with allelefrequencies
 	for file in {inputs['freq_files']}; 
 	do
-	    # add population name to file
+		# add population name to file
 		popul=`basename $file|cut -d"." -f1`
 		echo $popul > {working_directory}/tmp/pi.$popul.tmp
 		
-    	# add pi calculated at every line
+		# add pi calculated at every line
 		awk '{{ first_pi=1-($5)^2-(1-$5)^2;
-            print first_pi
+			print first_pi
 		}}' $file >> {working_directory}/tmp/pi.$popul.tmp	
 	done
 	
@@ -726,8 +801,8 @@ def calculate_mean_pi_template(pi_perpos_file: list, working_directory: str, out
 		awk -v neutral_position_count=$neutral_position_count 'NR==1 {{print $0}};
 			NR>1{{ sumpi+=$1 }};
 			END {{print sumpi; print NR-1; print neutral_position_count; print sumpi/neutral_position_count}}
-        ' {working_directory}/tmp/pi.$popul.tmp > {working_directory}/tmp/pi_mean.$popul.tmp
-    	# prints 5 rows: Population, SUM_pi, N_variable_sites, N_variable_nonvariable_sites, MEAN_pi (SUM/N_variable_nonvariable_sites)
+		' {working_directory}/tmp/pi.$popul.tmp > {working_directory}/tmp/pi_mean.$popul.tmp
+		# prints 5 rows: Population, SUM_pi, N_variable_sites, N_variable_nonvariable_sites, MEAN_pi (SUM/N_variable_nonvariable_sites)
 	# this should be modified to be run on each colum of file
 
 	rm {working_directory}/tmp/pi_mean.*.tmp
@@ -782,7 +857,7 @@ def paste_allele_freq(allele_freq_files: list, working_directory: str, positions
 
 	for file in {concatenate_list_elements(inputs['freq_files'])}; 
 	do
-	    # add population name to file
+		# add population name to file
 		popul=`basename $file|cut -d"." -f1`
 		echo $popul > {working_directory}/tmp/allele_freq.$popul.tmp
 		# add allelefrequencies
@@ -815,7 +890,7 @@ def calculate_fst_template(allele_freq_file: str, working_directory: str, output
 	:param
 	"""
 	inputs = {'af_file': allele_freq_file}
-	outputs = {'pop_pair_fst': f'{working_directory}/{output_file_name}'}
+	outputs = {'pop_pair_fst': f'{working_directory}/fst_pair_estimates/{output_file_name}'}
 	options = {
 		'cores': 1,
 		'memory': '5g',
@@ -834,6 +909,7 @@ def calculate_fst_template(allele_freq_file: str, working_directory: str, output
 	echo "JobID: $SLURM_JOBID"
 
 	mkdir -p {working_directory}
+	mkdir -p {working_directory}/fst_pair_estimates/
 	
 	# For the input indices pairs:
 	popul_1=`awk -v idx={pop_index_1} 'NR=1{{ print $idx; exit }}' {inputs['af_file']}`
@@ -879,3 +955,63 @@ def calculate_fst_template(allele_freq_file: str, working_directory: str, output
 	echo "$(jobinfo "$SLURM_JOBID")"
 	"""
 	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
+
+
+def paste_fst_calc_mean(fst_files: list, output_directory: str, species_short: str):
+	"""
+	Template: make a combined file with all variant positions fst calculations.
+	
+	Positions_type: string to add to outputs filename. Is it all / common / another subset of positions?  eg. 'all' 'common'
+	Template I/O::
+	
+		inputs = {}
+		outputs = {}
+	
+	:param
+	"""
+	inputs = {'fst_files': fst_files }
+	# neutral_position_count should probably be given as a file some way. talk to jeppe
+	outputs = { 'fst_allPos': f'{os.path.join(output_directory, f'{species_short}_fst_allPos.fst')}',
+			'fst_mean': f'{os.path.join(output_directory, f'{species_short}_fst_mean.fst')}'}
+	options = {
+		'cores': 1,
+		'memory': '5g',
+		'walltime': '11:00:00'
+	}
+	spec = f"""
+	# Sources environment 										OBS EDIT:
+	source /home/"$USER"/.bashrc
+	conda activate ecogen_neutral_diversity_wf
+	if [ "$USER" == "jepe" ]; then
+		source /home/"$USER"/.bashrc
+		source activate popgen ########### OBS make dedicated env
+	fi
+
+	echo "START: $(date)"
+	echo "JobID: $SLURM_JOBID"
+
+	mkdir -p {output_directory}
+	
+	# add fst estimantes to one file with all pops
+	paste -d'\t' {inputs['fst_files'][0]} > {outputs['fst_allPos']}
+
+	# calculate mean:
+	awk 'BEGIN{{ FS = OFS = "\t"}};
+		NR == 1 || NR==2 {{print $0}}
+		NR > 2 {{ 
+			for (i=1; i<=NF; i++) {{
+				sum[i] += $i }};
+			row_count++
+		}}
+		END {{
+			for (i=1; i<=NF; i++) {{
+				print sum[i] / row_count
+			}}
+	}}' {outputs['fst_allPos']} > {outputs['fst_mean']}
+
+	
+	echo "END: $(date)"
+	echo "$(jobinfo "$SLURM_JOBID")"
+	"""
+	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
+
