@@ -331,8 +331,8 @@ def calculate_pi_template(allele_freq_files: list, working_directory: str):
 	They look like this: Scaff Start_0-type_position End_0-type_position Variant_type AlleleFrequency 
 	positions_type: string to add to outputs filename. Is it all / common / another subset of positions?  eg. 'all' 'common'
 
-	Outputs one file:
-	pi per variant position: scaff pos pi_pop2	pi_pop3	pi_pop4 ...	
+	Outputs one file with sorted variant positions for all populations :
+	pi per variant position: scaff pos pi
 
 
 	Template I/O::
@@ -343,8 +343,7 @@ def calculate_pi_template(allele_freq_files: list, working_directory: str):
 	:param
 	"""
 	inputs = {'freq_files_list': allele_freq_files }
-	outputs = { 'pi_all_pops_pi': f'{working_directory}/pi_allPops_variant_positions.pi',
-			'pi_all_pops_bed': f'{working_directory}/pi_allPops_variant_positions.bed'}
+	outputs = { 'sorted_pi_file': f'{working_directory}/tmp/pi_sorted.pi'}
 	options = {
 		'cores': 1,
 		'memory': '5g',
@@ -390,17 +389,90 @@ def calculate_pi_template(allele_freq_files: list, working_directory: str):
 
 	# add header
 	sed -i '1i chrom\tchromStart\tchromEnd\tpop_name\tpi' {working_directory}/tmp/pi.calc.sort.tmp 
+	mv {working_directory}/tmp/pi.calc.sort.tmp {outputs['sorted_pi_file']}
+
+	
+	echo "END: $(date)"
+	echo "$(jobinfo "$SLURM_JOBID")"
+	"""
+	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
-	## section in python
 
-	python
+# potential make this one, which should basically be the python part of calculate pi above.
+def modify_pi_file_template(sorted_pi_file: list, working_directory: str):
+	"""
+	Template: Remodel pi file from per
+	They look like this: Scaff Start_0-type_position End_0-type_position Variant_type AlleleFrequency 
+	positions_type: string to add to outputs filename. Is it all / common / another subset of positions?  eg. 'all' 'common'
+
+	Outputs one file:
+	pi per variant position: scaff pos pi_pop2	pi_pop3	pi_pop4 ...	
+
+
+	Template I/O::
+	
+		inputs = {}
+		outputs = {}
+	
+	:param
+	"""
+	inputs = {'sorted_pi_file': sorted_pi_file }
+	outputs = { 'pi_all_pops_pi': f'{working_directory}/pi_allPops_variant_positions.pi',
+			'pi_all_pops_bed': f'{working_directory}/pi_allPops_variant_positions.bed'}
+	options = {
+		'cores': 1,
+		'memory': '5g',
+		'walltime': '11:00:00'
+	}
+	spec = f"""
+	# Sources environment 										OBS EDIT:
+	source /home/"$USER"/.bashrc
+	conda activate ecogen_neutral_diversity_wf
+	if [ "$USER" == "jepe" ]; then
+		source /home/"$USER"/.bashrc
+		source activate popgen ########### OBS make dedicated env
+	fi
+
+	echo "START: $(date)"
+	echo "JobID: $SLURM_JOBID"
+
+	mkdir -p {working_directory}
+	
+	echo Starting to change the format from long to wide, and output both wide and a bed-format
+	long_to_wide_pi_changeToBed( sorted_pi_file={inputs['sorted_pi_file']},
+	 							output_wide_pi={outputs['pi_all_pops_pi']},
+								output_bed_pi={outputs['pi_all_pops_bed']})
+
+	## End of python
+	
+	echo "END: $(date)"
+	echo "$(jobinfo "$SLURM_JOBID")"
+	"""
+	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
+
+
+
+
+
+def long_to_wide_pi_changeToBed(sorted_pi_file: str, output_wide_pi: str, output_bed_pi: str):
+	"""
+	Function: Changes pi data from long to wide format, and make the output bedformat.
+
+	Input is a sorted list of pi calculated at all variable positions in each population. 
+	Format: chrom\tchromStart\tchromEnd\tpop_name\tpi
+
+	Output is like this: scaffold 0posStart 0posEnd name_col pi_col
+	name_col = popname, popname1, popname, ...
+	pi_col = pi_popname, pi_popname1, pi_popname2, ... 
+
+	"""
 
 	import pandas as pd
 	import numpy as np
 
 	# Read data from a file (assuming 'data.txt' is the file name)
-	data_file = {working_directory}/tmp/pi.calc.sort.tmp 
+	data_file = sorted_pi_file
 	df = pd.read_csv(data_file, sep='\s+')
 	#df.info()
 
@@ -430,7 +502,7 @@ def calculate_pi_template(allele_freq_files: list, working_directory: str):
 	wide_df_fill_second = []	# reducing memory impact of dataframe
 
 	# Write output to a file or print it
-	output_file = {outputs['pi_all_pops_pi']}
+	output_file = output_wide_pi
 	# output_file = '/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions.pi'
 	wide_df_fill.to_csv(output_file, sep='\t', index=False)
 
@@ -452,19 +524,11 @@ def calculate_pi_template(allele_freq_files: list, working_directory: str):
 	wide_df_bed = pd.concat([ wide_df_fill_first, new_df ], ignore_index=False, axis=1)
 
 	# write to bedfile
-	output_file = {outputs['pi_all_pops_bed']}
+	output_file = output_bed_pi
 	# output_file = '/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions.bed'
 	wide_df_bed.to_csv(output_file, sep='\t', index = False, header = False)
 
-	exit()
 
-	## End of python
-
-	
-	echo "END: $(date)"
-	echo "$(jobinfo "$SLURM_JOBID")"
-	"""
-	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
 
@@ -993,19 +1057,25 @@ def paste_fst_calc_mean(fst_files: list, output_directory: str, species_short: s
 	mkdir -p {output_directory}
 	
 	# add fst estimantes to one file with all pops
-	paste -d'\t' {inputs['fst_files'][0]} > {outputs['fst_allPos']}
+	paste -d'\t' {concatenate_list_elements(inputs['fst_files'])} > {outputs['fst_allPos']}
 
 	# calculate mean:
 	awk 'BEGIN{{ FS = OFS = "\t"}};
 		NR == 1 || NR==2 {{print $0}}
 		NR > 2 {{ 
 			for (i=1; i<=NF; i++) {{
+				if ($i != "") {{count++}}
 				sum[i] += $i }};
-			row_count++
+			#row_count++
 		}}
 		END {{
 			for (i=1; i<=NF; i++) {{
-				print sum[i] / row_count
+				#print sum[i] / row_count
+				if (i == NF){{
+					printf "%f", sum[i] / count
+				}}else{{
+					printf "%f\t", sum[i] / count
+				}}
 			}}
 	}}' {outputs['fst_allPos']} > {outputs['fst_mean']}
 
@@ -1014,4 +1084,56 @@ def paste_fst_calc_mean(fst_files: list, output_directory: str, species_short: s
 	echo "$(jobinfo "$SLURM_JOBID")"
 	"""
 	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
+
+
+# When making plotting scripts, how to call R scrips with inputs from python cod eblocks?
+	# # subprocess.call ("/pathto/MyrScript.r")
+# # No, I just do it as I would from commandline (within the f sentence in gwf)
+	# Rscript rscript.r input1 input2
+		# with bin/bash/R	(#! /usr/bin/Rscript)
+	
+
+def fst_plots(fst_file: str, distance_file: str, output_directory: str, species_short: str):
+	"""
+	Template: make a combined file with all variant positions fst calculations.
+	
+	Positions_type: string to add to outputs filename. Is it all / common / another subset of positions?  eg. 'all' 'common'
+	Template I/O::
+	
+		inputs = {}
+		outputs = {}
+	
+	:param
+	"""
+	inputs = {'fst_file': fst_file,
+		   		'distance': distance_file  }
+	# neutral_position_count should probably be given as a file some way. talk to jeppe
+	outputs = { 'ibd': f'{os.path.join(output_directory, f'{species_short}_fst_ibd.png')}',
+			'cladogram_neigbor': f'{os.path.join(output_directory, f'{species_short}_fst_cladogram_neighbor.png')}',
+			'cladogram_UPGMA': f'{os.path.join(output_directory, f'{species_short}_fst_cladogram_UPGMA.png')}'}
+	options = {
+		'cores': 1,
+		'memory': '5g',
+		'walltime': '11:00:00'
+	}
+	spec = f"""
+	# Sources environment 										OBS EDIT:
+	source /home/"$USER"/.bashrc
+	conda activate ecogen_neutral_diversity_wf
+	if [ "$USER" == "jepe" ]; then
+		source /home/"$USER"/.bashrc
+		source activate popgen ########### OBS make dedicated env
+	fi
+
+	echo "START: $(date)"
+	echo "JobID: $SLURM_JOBID"
+
+	Rscript /home/anneaa/EcoGenetics/general_workflows/population_genetics/fst/workflow_source/fst_plots.r {inputs['fst_file']} {inputs['distance']} {outputs['ibd']} {outputs['cladogram_neigbor']} {outputs['cladogram_UPGMA']}
+		# now make script
+	
+	echo "END: $(date)"
+	echo "$(jobinfo "$SLURM_JOBID")"
+	"""
+	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
+
 

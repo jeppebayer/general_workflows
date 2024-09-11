@@ -26,6 +26,7 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
     GENOME_PATH: str = CONFIG['reference_genome_path']
     ANNOTATION_GTF: str = CONFIG['annotation_gtf']
     VCF_FILES: list = CONFIG['vcf_lists']
+    COLLECTION_SITES_FILE: str = CONFIG['collection_sites_file']
     neutral_position_count_file: str = CONFIG['count_of_positions_file']
 
 
@@ -152,14 +153,19 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
                 #				name consists of a comma separated list of population names
                 #				score consists of a comma separated list of pi scores
 
-
+            pi_remodelling = gwf.target_from_template(
+                name = 'pi_remodelling_file',
+                template = modify_pi_file_template(
+                    sorted_pi_file = pi_calculation_all_pos.outputs['sorted_pi_file'],
+                    working_directory = new_wd_fst_pi)
+            )
 
             # deprecated 
             #  change to bed file combination thingy
             pi_rearrangement_all_pos = gwf.target_from_template(
                 name = 'pi_add_context',
                 template = add_context_info_pi(
-                    pi_bedfile = pi_calculation_all_pos.outputs['pi_all_pops_bed'],
+                    pi_bedfile = pi_remodelling.outputs['pi_all_pops_bed'],
                     working_directory = new_wd_fst_pi,
                     output_directory = new_out_pi, 
                     species_gtf = ANNOTATION_GTF, 
@@ -170,6 +176,7 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
             )
                 # modify
 
+            # ADD PLOTTING SCRIPT?
 
 
             #pi_rearrangement_all_pos = gwf.target_from_template(
@@ -271,11 +278,11 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
             
             # collect makes it into dict, the last [] takes the dict element with a list in it, and returns the list
             fst_files_list = collect(outputlist_calculate_fst_pairs_target, ['pop_pair_fst'])['pop_pair_fsts']
-            print(fst_files_list)
+            #print(fst_files_list)
             #fst_files_list = fst_files_list['pop_pair_fst']
             #print(fst_files_list)
 
-            paste_allele_freqs_all_pops = gwf.target_from_template(
+            paste_fst_files = gwf.target_from_template(
                 name = 'paste_fst_files',
                 template = paste_fst_calc_mean(
                     fst_files = fst_files_list,
@@ -284,8 +291,21 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
             )
 
 
+            # Add plotting script?
+                # For isolation by distance plot
+                    #    add distance data - I already have this file somewhere, it should be placed in a logical way
+                # Cladogram
+                
+            plot_fst = gwf.target_from_template(
+                name = 'fst_plots',
+                template = fst_plots(
+                    fst_file = paste_fst_files.outputs['fst_allPos'],
+                    distance_file = COLLECTION_SITES_FILE, 
+                    output_directory = new_out_fst,
+                    species_short = species_abbreviation(SPECIES_NAME))
+            )
+
         #next 
-        # make template to add all fst_files together, and calculate mean fst
         # Q: do we want to calculate pi/fst on scaffolds etc?
             # then I will need to add such awk calculations in a new or one of the existing template
 
