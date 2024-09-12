@@ -1,5 +1,5 @@
 # Tag identifying file association.
-TAG: jeppebayer:EcoGenetics,population_genetics,vcf:workflowconfiguration
+TAG: jeppebayer:EcoGenetics,museomics,vcf:workflowconfiguration
 # The name of the relevant project account.
 account: EcoGenetics
 # Taxonomic group.
@@ -10,6 +10,8 @@ species_name: Maniola jurtina
 reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Maniola_jurtina/GCF_905333055.1_ilManJurt1.1_genomic.fna
 # BED file indicating intergenic regions of reference genome.
 intergenic_bed_file: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Maniola_jurtina/annotation/GCF_905333055.1_ilManJurt1.1_genomic.intergenic.bed
+# (str). BED file indicating repetitive regions of the reference genome.
+repeats_bed_file: 
 # Directory for intermediary files.
 working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/museomics/steps
 # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path').
@@ -22,13 +24,13 @@ freebayes_settings:
   best_n_alleles: 3
   min_alternate_fraction: 0
   min_alternate_count: 2
-  memory: 35
+  memory: 55
   time: '24:00:00'
 # Filtering depths, limits included.
 filtering:
   minimum_depth: 200
 # Mode for creating VCF file (1 | 2 | 3 | 4).
-# 1 = Separate VCF files for each sample/BAM file. 2 = One VCF file per sample group. 3 = One VCF containing data for all samples/BAM files. 4 = Both.
+# 1 = Separate VCF files for each sample/BAM file. 2 = One VCF file per sample group. 3 = One VCF containing data for all samples/BAM files. 4 = All.
 mode: 1
 # Sample setup. List of dictionaries listing the configuration for each sample.
 sample_list:

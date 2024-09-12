@@ -8,6 +8,10 @@ taxonomic_group: collembola
 species_name: Pogonognathellus flavescens
 # Path to reference genome.
 reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Pogonognathellus_flavescens/EG_PogFla_23072024_genomic.fna
+# BED file indicating intergenic regions of reference genome.
+intergenic_bed_file: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Pogonognathellus_flavescens/annotation/EG_PogFla_23072024_genomic.intergenic.bed
+# (str). BED file indicating repetitive regions of the reference genome.
+repeats_bed_file: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Pogonognathellus_flavescens/annotation/EG_PogFla_23072024_genomic.repeats.bed
 # Directory for intermediary files.
 working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps/
 # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path').
@@ -20,12 +24,13 @@ freebayes_settings:
   best_n_alleles: 3
   min_alternate_fraction: 0
   min_alternate_count: 2
+  memory: 35
+  time: '24:00:00'
 # Filtering depths, limits included.
 filtering:
   minimum_depth: 200
-  maximum_depth: 600
 # Mode for creating VCF file (1 | 2 | 3 | 4).
-# 1 = Separate VCF files for each sample/BAM file. 2 = One VCF file per sample group. 3 = One VCF containing data for all samples/BAM files. 4 = Both.
+# 1 = Separate VCF files for each sample/BAM file. 2 = One VCF file per sample group. 3 = One VCF containing data for all samples/BAM files. 4 = All.
 mode: 1
 # Sample setup. List of dictionaries listing the configuration for each sample.
 sample_list:
