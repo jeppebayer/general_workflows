@@ -2,6 +2,7 @@
 from gwf import AnonymousTarget
 import os, glob
 
+
 ########################## Functions ##########################
 
 def species_abbreviation(species_name: str) -> str:
@@ -13,81 +14,6 @@ def species_abbreviation(species_name: str) -> str:
 	genus = genus[0].upper() + genus[1:3] # returns first character ([0]) as upper case? apparently python 1:3 does not include the last number. it means "up until"
 	species = species[0].upper() + species[1:3]
 	return genus + species
-
-
-def long_to_wide_pi_changeToBed(sorted_pi_file: str, output_wide_pi: str, output_bed_pi: str):
-	"""
-	Function: Changes pi data from long to wide format, and make the output bedformat.
-
-	Input is a sorted list of pi calculated at all variable positions in each population. 
-	Format: chrom\tchromStart\tchromEnd\tpop_name\tpi
-
-	Output is like this: scaffold 0posStart 0posEnd name_col pi_col
-	name_col = popname, popname1, popname, ...
-	pi_col = pi_popname, pi_popname1, pi_popname2, ... 
-
-	"""
-
-	import pandas as pd
-	import numpy as np
-
-	# Read data from a file (assuming 'data.txt' is the file name)
-	data_file = sorted_pi_file
-	df = pd.read_csv(data_file, sep='\\s+')
-	#df.info()
-
-	# Pivot the data to wide format
-	wide_df = df.pivot(index=['chrom', 'chromStart', 'chromEnd'], columns='pop_name', values='pi').reset_index()
-	df = []	# reducing memory impact of dataframe
-
-	# reindex to remove nan column
-	wide_df = wide_df.reindex(index=wide_df.index.difference([np.nan]), columns=wide_df.columns.difference([np.nan]))
-	#wide_df.info()
-
-	# fill nas with 0
-	wide_df_fill = wide_df.fillna('0')
-	#wide_df_fill.info()
-
-	wide_df = []	# reducing memory impact of dataframe
-
-	# sort columns
-	# separate dataset to sort on pop cols
-	wide_df_fill_first = wide_df_fill[['chrom','chromStart','chromEnd']]
-	wide_df_fill_second = wide_df_fill[wide_df_fill.columns.difference(['chrom','chromStart','chromEnd'])].sort_index(axis = 'columns', key=lambda col: col.str.lower())
-	#wide_df_fill_second.info()
-
-	# combine split sets
-	wide_df_fill = pd.concat([ wide_df_fill_first, wide_df_fill_second ], ignore_index=False, axis=1)	#reusing df name
-
-	wide_df_fill_second = []	# reducing memory impact of dataframe
-
-	# Write output to a file or print it
-	output_file = output_wide_pi
-	# output_file = '/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions.pi'
-	wide_df_fill.to_csv(output_file, sep='\t', index=False)
-
-	# make comma separated list for "name" and "score" columns in bed format
-	wide_df_fill_concatPi = wide_df_fill.apply(lambda row: ", ".join(row.iloc[3:].astype(str)), axis = 'columns')
-	wide_df_fill_concatPops = ", ".join(wide_df_fill.columns[3:].astype(str))
-
-	wide_df_fill = []	# reducing memory impact of dataframe
-
-	# make new pd dataframe of score and name columns
-	new_df = pd.DataFrame({{
-		'name': [wide_df_fill_concatPops] * len(wide_df_fill_concatPi),  # Repeat header for all rows
-		'score': wide_df_fill_concatPi}})
-
-	wide_df_fill_concatPops = []	# reducing memory impact of dataframe
-	wide_df_fill_concatPi = []	# reducing memory impact of dataframe
-
-		
-	wide_df_bed = pd.concat([ wide_df_fill_first, new_df ], ignore_index=False, axis=1)
-
-	# write to bedfile
-	output_file = output_bed_pi
-	# output_file = '/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions.bed'
-	wide_df_bed.to_csv(output_file, sep='\t', index = False, header = False)
-	return("Done pivoting and making bed")
 
 
 def make_genome_fai(ref_genome_file: str, fasta_fai_output: str):
@@ -472,11 +398,9 @@ def calculate_pi_template(allele_freq_files: list, working_directory: str):
 
 
 
-
-# potential make this one, which should basically be the python part of calculate pi above.
-def modify_pi_file_template(sorted_pi_file: list, working_directory: str):
+def modify_pi_file_template(sorted_pi_file: str, working_directory: str):
 	"""
-	Template: Remodel pi file from per
+	Template: Remodel pi file
 	They look like this: Scaff Start_0-type_position End_0-type_position Variant_type AlleleFrequency 
 	positions_type: string to add to outputs filename. Is it all / common / another subset of positions?  eg. 'all' 'common'
 
@@ -492,11 +416,11 @@ def modify_pi_file_template(sorted_pi_file: list, working_directory: str):
 	:param
 	"""
 	inputs = {'sorted_pi_file': sorted_pi_file }
-	outputs = { 'pi_all_pops_pi': f'{working_directory}/pi_allPops_variant_positions.pi',
-			'pi_all_pops_bed': f'{working_directory}/pi_allPops_variant_positions.bed'}
+	outputs = { 'pi_all_pops_pi': f'{working_directory}/pi/pi_allPops_variant_positions.pi',
+			'pi_all_pops_bed': f'{working_directory}/pi/pi_allPops_variant_positions.bed'}
 	options = {
 		'cores': 1,
-		'memory': '5g',
+		'memory': '70g',
 		'walltime': '11:00:00'
 	}
 	spec = f"""
@@ -512,20 +436,26 @@ def modify_pi_file_template(sorted_pi_file: list, working_directory: str):
 	echo "JobID: $SLURM_JOBID"
 
 	mkdir -p {working_directory}
+	mkdir -p {working_directory}/pi
 	
-	echo Starting to change the format from long to wide, and output both wide and a bed-format
-	{long_to_wide_pi_changeToBed(sorted_pi_file=inputs['sorted_pi_file'],
-	 							output_wide_pi=outputs['pi_all_pops_pi'],
-								output_bed_pi=outputs['pi_all_pops_bed'])}
+	echo Starting to change the format from long to wide, and output both wide and a bed-format, using python script
 
-	## End of python
+	sorted_pi_file={inputs['sorted_pi_file']}
+	output_wide_pi={outputs['pi_all_pops_pi'].replace(".pi", ".pi.temp")}
+	output_bed_pi={outputs['pi_all_pops_bed'].replace(".bed", ".bed.temp")}
+
+	../../../workflow_source/scripts/long_to_wide_pi_changeBed.py $sorted_pi_file $output_wide_pi $output_bed_pi
+	
+	echo $status
+	
+	mv $output_wide_pi {outputs['pi_all_pops_pi']}
+	mv $output_bed_pi {outputs['pi_all_pops_bed']}
+
 	
 	echo "END: $(date)"
 	echo "$(jobinfo "$SLURM_JOBID")"
 	"""
 	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
-
-
 
 
 
@@ -1126,7 +1056,7 @@ def fst_plots(fst_file: str, distance_file: str, output_directory: str, species_
 	echo "START: $(date)"
 	echo "JobID: $SLURM_JOBID"
 
-	Rscript /home/anneaa/EcoGenetics/general_workflows/population_genetics/fst/workflow_source/fst_plots.r {inputs['fst_file']} {inputs['distance']} {outputs['ibd']} {outputs['cladogram_neigbor']} {outputs['cladogram_UPGMA']}
+	Rscript ../../../workflow_source/scripts/fst_plots.r {inputs['fst_file']} {inputs['distance']} {outputs['ibd']} {outputs['cladogram_neigbor']} {outputs['cladogram_UPGMA']}
 		# now make script
 	
 	echo "END: $(date)"

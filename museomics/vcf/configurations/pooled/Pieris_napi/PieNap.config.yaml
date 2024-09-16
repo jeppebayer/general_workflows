@@ -1,7 +1,7 @@
 # Tag identifying file association.
 TAG: jeppebayer:EcoGenetics,museomics,vcf:workflowconfiguration
 # The name of the relevant project account.
-account: spider2
+account: EcoGenetics
 # Taxonomic group.
 taxonomic_group: 
 # Name of species being analyzed.
@@ -24,7 +24,7 @@ freebayes_settings:
   best_n_alleles: 3
   min_alternate_fraction: 0
   min_alternate_count: 2
-  memory: 35
+  memory: 55
   time: '24:00:00'
 # Filtering depths, limits included.
 filtering:

@@ -40,7 +40,7 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
     
 
     ### MAKE DIRECTORIES
-    
+    #print("making directories")
     # make directories
     new_wd=f'{WORK_DIR}/fst_pi/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/genome_or_annot'
     new_out_pi=f'{OUTPUT_DIR}/pi/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/'
@@ -76,8 +76,6 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
     )
 
 # Target to deminish VCF to only contain neutral sites
-# iterating files using .map
-
     # make list of dictionary with :new_wd + file directory name
     for GROUP in VCF_FILES:
         #if not GROUP['vcf_files_list']:
@@ -89,7 +87,7 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
             continue
         if GROUP['group_name'] == 'grassland':
             #print('yes')
-
+            print(f'Group being submitted: {GROUP['group_name']}')
             ########################
             ### MAKE NEUTRAL VCF ###
             ########################
@@ -129,7 +127,7 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
                     #name=make_neutral_vcf,
                     template_func = extract_allele_frq,
                     inputs = input_dict)
-
+            #print("Allele freqs run")
 
 
             #################################################################################
@@ -159,8 +157,8 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
                     sorted_pi_file = pi_calculation_all_pos.outputs['sorted_pi_file'],
                     working_directory = new_wd_fst_pi)
             )
+            #print("Remodelled pi")
 
-            # deprecated 
             #  change to bed file combination thingy
             pi_rearrangement_all_pos = gwf.target_from_template(
                 name = 'pi_add_context',
@@ -177,42 +175,6 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
                 # modify
 
             # ADD PLOTTING SCRIPT?
-
-
-            #pi_rearrangement_all_pos = gwf.target_from_template(
-            #	name = 'pi_rearrangement_all_pos',
-            #	template = calculate_pi_template(
-            #		pi_sorted_file = pi_calculation_all_pos.outputs['pi_all_pops'],
-            #		neutral_position_count_file = new_out_pi/os.path.basename(pi_calculation_all_pos.outputs['pi_all_pops']).replace("_long.pi", ".pi"))
-            #)
-            #Make this template into a "add non-variable positions as well" 
-            # potentially using a bed-file? cat and sort.
-                # could maybe more successfully be added in the earlier step?
-                    # what about the na's in this file. should they indeed be 0?
-                    # if the variant does not exist in the population, then I guess it should count as a 0-pi-position, because it does not add to pi
-                    # if this is the case, which I think right now,then colMeans should be na.rm=FALSE. indicating that na is included in the calculation. or to be sure do: colSums/nrow
-
-
-
-
-            # 
-            # 
-            # 
-            # 
-            # 	#pi_calculation_all_pos = gwf.target_from_template(
-            #	name = 'pi_calculation_all_positions',
-            #	template = calculate_pi_template(
-            #		allele_freq_files = freq_files,
-            #		working_directory = new_wd_fst_pi,
-            #		output_directory = new_out_pi,
-            #		neutral_position_count_file = neutral_position_count_file,
-            #		positions_type = 'all')
-            #)
-
-
-            # OR: make this one without calculating the mean.
-            # Calculate mean in new template
-            # Done, but needs the inputfile of neutral_position_count (maybe make a test)
 
 
             ################################################################
@@ -244,12 +206,6 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
                     # Scaff 0-type_position 0-type_position variant_type AlleleFrequency 
             
             # define list of outputfiles:
-            #for file in freq_files:
-            #	popul = os.path.basename( file ).split(".")[0]
-            #	print(popul)
-            #	counter1 = freq_files.index(file) # get file position in list
-            #	print(counter1)
-            #print(paste_allele_freqs_all_pops.outputs['AF_all_pops'])
             counter = 0
             outputlist_calculate_fst_pairs_target = []
             for number1 in range(len(freq_files)):
@@ -271,16 +227,11 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
                         )
                     outputlist_calculate_fst_pairs_target.append(calculate_fst_pairs_target.outputs)
 
-            # Done
             
             # paste fst. estimates together into one bigger file and calculate mean
-            #print(collect(outputlist_calculate_fst_pairs_target, ['pop_pair_fst']))
-            
+
             # collect makes it into dict, the last [] takes the dict element with a list in it, and returns the list
             fst_files_list = collect(outputlist_calculate_fst_pairs_target, ['pop_pair_fst'])['pop_pair_fsts']
-            #print(fst_files_list)
-            #fst_files_list = fst_files_list['pop_pair_fst']
-            #print(fst_files_list)
 
             paste_fst_files = gwf.target_from_template(
                 name = 'paste_fst_files',
@@ -295,15 +246,17 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
                 # For isolation by distance plot
                     #    add distance data - I already have this file somewhere, it should be placed in a logical way
                 # Cladogram
-                
-            plot_fst = gwf.target_from_template(
-                name = 'fst_plots',
-                template = fst_plots(
-                    fst_file = paste_fst_files.outputs['fst_allPos'],
-                    distance_file = COLLECTION_SITES_FILE, 
-                    output_directory = new_out_fst,
-                    species_short = species_abbreviation(SPECIES_NAME))
-            )
+                # needs mending:
+            #plot_fst = gwf.target_from_template(
+             #   name = 'fst_plots',
+              #  template = fst_plots(
+               #     fst_file = paste_fst_files.outputs['fst_allPos'],
+                #    distance_file = COLLECTION_SITES_FILE, 
+                 #   output_directory = new_out_fst,
+                  #  species_short = species_abbreviation(SPECIES_NAME))
+            #)
+
+
 
         #next 
         # Q: do we want to calculate pi/fst on scaffolds etc?
