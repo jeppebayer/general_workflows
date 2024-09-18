@@ -54,6 +54,144 @@ def make_genome_fai(ref_genome_file: str, fasta_fai_output: str):
 	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
+def make_various_intergene_beds(intergenes_bed_file: str, repeats_bed_file: str, working_directory: str, genome_path: str):
+	"""
+	Template: Create netural bed file from genes and repeats bed for species.
+	
+	Template I/O::
+	
+		inputs = {}
+		outputs = {}
+	
+	:param
+	"""
+	inputs = {'intergenes_bed': intergenes_bed_file, 
+		   'bed_stype_genome':genome_path,
+		   'repeats_bed': repeats_bed_file}
+	outputs = {'percent_graph': f'working_directory/',
+			'nbases_graph': f'working_directory/'}
+	options = {
+		'cores': 1,
+		'memory': '5g',
+		'walltime': '11:00:00'
+	}
+	spec = f"""
+	# Sources environment 										OBS EDIT:
+	source /home/"$USER"/.bashrc
+	conda activate ecogen_neutral_diversity_wf
+	if [ "$USER" == "jepe" ]; then
+		source /home/"$USER"/.bashrc
+		source activate popgen ########### OBS make dedicated env
+	fi
+
+	echo "START: $(date)"
+	echo "JobID: $SLURM_JOBID"
+
+	# for each interval: 
+	# 	make new intergene bed: 
+	# 	make new neutral bed : 
+	# 	intersect with variants called - for each pop?
+	# 	count lines
+
+	mkdir -p {working_directory}
+	echo Starting R script
+	../../../scripts/intergenic_length_investigations.r {inputs['intergenes_bed']} {working_directory}
+	echo Finihsed R script
+
+	#rename '.temp' '' {working_directory}/intergenic_*_percent_rem.bed.temp 	
+	#rename '.temp' '' {working_directory}/intergenic_*_bases_rem.bed.temp 
+	echo Making new neutral bed file and counting population variants
+	# 	take the complement of repeats
+	bedtools complement -i {repeats_bed_file} -g {genome_path} > {working_directory}/repeat_complement_temp.bed
+
+	for pop_filt_vcf in ...
+	do
+		pop_vcf_base=`basename $pop_filt_vcf`
+		echo -n {working_directory}/${{pop_vcf_base/.vcf/.varcount}}
+		for percent_file in {working_directory}/intergenic_*_percent_rem.bed.temp
+		do
+			#	Overlaps between percentage intergene file and repeat complement
+			percent_file_name=`basename $percent_file`
+			bedtools intersect -a $percent_file -b {working_directory}/repeat_complement_temp.bed > {working_directory}/${{percent_file_name/.bed.temp/_neutral.bed}}
+				# this is new neutral file
+		
+			# get overlap with population filtered VCF file, and count lines (only output lines where vcf overlaps)
+			count=`bedtools intersect -a $pop_filt_vcf -b {working_directory}/${{percent_file_name/.bed.temp/_neutral.bed}} |wc -l`
+			echo $percent_file_name'\\t'$count >> {working_directory}/${{pop_vcf_base/.vcf/.varcount}}
+		done
+	done
+
+	
+	# maybe the output should be a graph? with all pops on same graph, using alpha coloring. lines combining y values. plot(type = 'l')
+	# two graphs, one with percentage, one with n bases
+
+	../../../scripts/plot_neutral_regions_saturation.r varcount {working_directory}
+
+	# pdf(paste0(working_directory, "/snps_neutral_region_Nbases_rem.pdf"))
+	# pdf(paste0(working_directory, "/snps_neutral_region_percentage_rem.pdf"))
+	# check bedtools above, not done
+
+	echo "END: $(date)"
+	echo "$(jobinfo "$SLURM_JOBID")"
+	"""
+	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
+
+
+def make_neutral_bed_inters(intergenes_bed_file: str, repeats_bed_file: str, neutral_bed_out: str, genome_bedstyle: str):
+	"""
+	Template: Create netural bed file from genes and repeats bed for species.
+	
+	Template I/O::
+	
+		inputs = {}
+		outputs = {}
+	
+	:param
+	"""
+	inputs = {'intergenes_bed': intergenes_bed_file,
+		   	  'repeats_bed': repeats_bed_file,
+			  'genome_bed_style': genome_bedstyle}
+	outputs = {'neutral_bed': neutral_bed_out}
+	options = {
+		'cores': 1,
+		'memory': '5g',
+		'walltime': '11:00:00'
+	}
+	spec = f"""
+	# Sources environment 										OBS EDIT:
+	source /home/"$USER"/.bashrc
+	conda activate ecogen_neutral_diversity_wf
+	if [ "$USER" == "jepe" ]; then
+		source /home/"$USER"/.bashrc
+		source activate popgen ########### OBS make dedicated env
+	fi
+
+	echo "START: $(date)"
+	echo "JobID: $SLURM_JOBID"
+
+	cat {inputs['intergenes_bed']} > {outputs['neutral_bed'].replace("neutral.","neutralTEMP.")}
+	cat {inputs['repeats_bed']} >> {outputs['neutral_bed'].replace("neutral.","neutralTEMP.")}
+		
+	bedtools sort -i {outputs['neutral_bed'].replace("neutral.","neutralTEMP.")} \
+		> {outputs['neutral_bed'].replace("neutral.","neutralTEMP.").replace(".bed", "_sort.bed")}
+		
+	# Now get the reverse complement, ie. only neutral and non repetitive parts.
+	bedtools complement \
+		-i {outputs['neutral_bed'].replace("neutral.","neutralTEMP.").replace(".bed", "_sort.bed")} \
+		-g {inputs['genome_bed_style']} \
+		> {outputs['neutral_bed'].replace("neutral.","neutralTEMP.")}
+			# when done test running, this should end up in same folder as genes_bed_file
+
+		# only keep neutral file
+	rm {outputs['neutral_bed'].replace("neutral.","neutralTEMP.").replace(".bed", "_sort.bed")}
+	mv {outputs['neutral_bed'].replace("neutral.","neutralTEMP.")} {outputs['neutral_bed']}
+	
+	
+	echo "END: $(date)"
+	echo "$(jobinfo "$SLURM_JOBID")"
+	"""
+	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
+
 
 def make_neutral_bed(genes_bed_file: str, repeats_bed_file: str, neutral_bed_out: str, genome_bedstyle: str):
 	"""
@@ -420,7 +558,7 @@ def modify_pi_file_template(sorted_pi_file: str, working_directory: str):
 			'pi_all_pops_bed': f'{working_directory}/pi/pi_allPops_variant_positions.bed'}
 	options = {
 		'cores': 1,
-		'memory': '70g',
+		'memory': '100g',
 		'walltime': '11:00:00'
 	}
 	spec = f"""
@@ -485,7 +623,7 @@ def add_context_info_pi(pi_bedfile: str, working_directory: str, output_director
 			'pi_mean_extended_bed': f'{output_directory}/{"_".join(os.path.basename(species_gtf).split("_")[:2])}_pi_mean.pi' }
 	options = {
 		'cores': 1,
-		'memory': '5g',
+		'memory': '30g',
 		'walltime': '11:00:00'
 	}
 	spec = f"""
@@ -513,47 +651,28 @@ def add_context_info_pi(pi_bedfile: str, working_directory: str, output_director
 	# First bed combination should be adding all covered sites
 		# sites covered sufficiently in all pops (testfile): /home/anneaa/EcoGenetics/people/Jeppe_Bayer/population_genetics/test_data/depthdist/multibam.test.merge.bed
 		# Now expand to have a file with per site info
-		awk '{{ scaf = $1; start = $2; end = $3; OFS=FS="\t"; 
-			 for (i = start; i < end; i++)
-				{{print scaf, i, i+1 }}}}' {inputs['covered_sites']} \
-					> {working_directory}/annotate_pi/expand_covered_sites.bed.temp
-					#/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/expand_covSites.bed
+		
+	awk '{{ scaf = $1; start = $2; end = $3; OFS=FS="\t"; 
+			for (i = start; i < end; i++)
+			{{print scaf, i, i+1 }}}}' {inputs['covered_sites']} \
+				> {working_directory}/annotate_pi/expand_covered_sites.bed.temp
+	#/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/expand_covSites.bed
 
-					# consider using -sorted
-
-	# quick fix of bed-error for test data:
-		awk -v FS="\t" '$2==$3{{OFS=FS; print $1, $2, $3+1, $4, $5}}' /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions_MOD.bed > /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions_MOD1.bed
-
+		
 	bedtools intersect -loj -wa -wb -sorted \
 		-a {working_directory}/annotate_pi/expand_covered_sites.bed.temp \
 		-b {inputs['pi_bed']} \
 		> {working_directory}/annotate_pi/pi_allPops_all_positions.bed.temp
 
-	bedtools intersect -loj -wa -wb -sorted \
-	#	-a /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/expand_covSites.bed \
-	#	-b /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions_MOD1.bed \
-	#	> /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_MOD.bed
-
-	# check reverse result
+		
+	# check reverse result to see if we only have variant sites that are within coverage thresholds
 	bedtools intersect -loj -wa -wb -sorted \
 		-b {working_directory}/annotate_pi/expand_covered_sites.bed.temp \
 		-a {inputs['pi_bed']} \
 		> {working_directory}/annotate_pi/pi_allPops_all_positions_inversetest.bed.temp
 
-	#bedtools intersect -loj -wa -wb -sorted \
-	#	-b /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/expand_covSites.bed \
-	#	-a /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions_MOD1.bed \
-	#	> /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_MOD_inversetest.bed
-
-	#	# check if there is any missing, using the reverse (for each variant site, a site should be in the cov file, if not, something is up)
-	#if grep -e '-1' /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_MOD_inversetest.bed |head -1
-	#then
-		#echo ERROR: Lines from the variants file, is not present in the file with sufficiently covered sites!
-		#echo Check this file for "-1", indicating missing match from bedtools intersect: /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_MOD_inversetest.bed
-	#else
-		#rm /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_MOD_inversetest.bed
-	#fi
-
+		
+	# check if there is any missing, using the reverse (for each variant site, a site should be in the cov file, if not, something is up)
 	if grep -e '-1' {working_directory}/annotate_pi/pi_allPops_all_positions_inversetest.bed.temp |head -1
 	then
 		echo ERROR: Lines from the variants file, is not present in the file with sufficiently covered sites!
@@ -562,35 +681,23 @@ def add_context_info_pi(pi_bedfile: str, working_directory: str, output_director
 		rm {working_directory}/annotate_pi/pi_allPops_all_positions_inversetest.bed.temp
 	fi
 
+	
 	# modify intersect file to become  bedfile again.
-		# do this while adding 0 pi values to all positions that were within coverage thresholds - since only variants have pi estimates here
+		# do this while adding 0 pi values to all positions that were within coverage thresholds - ( only variants have pi estimates here )
+
 	pops=`awk 'BEGIN {{ FS = "\t" }}; NF == 8 && $8 != "." {{print $7; exit}}' {working_directory}/annotate_pi/pi_allPops_all_positions.bed.temp`
-	zeros=`awk 'BEGIN {{ FS = "\t" }}; NF == 8 && $8 != "." {{print $7; exit}}' {working_directory}/annotate_pi/pi_allPops_all_positions.bed.temp| awk '{{print NF}}'`
+	zeros=`awk 'BEGIN {{ FS = "\t" }}; NF == 8 && $8 != "." {{print $8; exit}}' {working_directory}/annotate_pi/pi_allPops_all_positions.bed.temp| awk '{{print NF}}'`
+	echo Number of populations: $zeros
 		# counts the number of populations
-	zeros=`awk -v number=$zeros 'BEGIN{{ for(c=1; c<number ;c++) printf "0%s", (c < number-1 ? ", " : ""); printf "\n"}}'`
+	zeros=`awk -v number=$zeros 'BEGIN{{ for(c=1; c<=number ;c++) printf "0%s", (c < number ? ", " : ""); printf "\\n"}}'`
 		# make the zero-string for the new bed file
 	
-	## modify intersect file to become  bedfile again.
-#		# do this while adding 0 pi values to all positions that were within coverage thresholds - since only variants have pi estimates here
-#	pops=`awk 'BEGIN {{ FS = "\t" }}; NF == 8 && $8 != "." {{print $7; exit}}' /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_MOD.bed`
-#	zeros=`awk 'BEGIN {{ FS = "\t" }}; NF == 8 && $8 != "." {{print $7; exit}}' /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_MOD.bed| awk '{{print NF}}'`
-#		# counts the number of populations
-#	zeros=`awk -v number=$zeros 'BEGIN{{ for(c=1; c<number ;c++) printf "0%s", (c < number-1 ? ", " : ""); printf "\n"}}'`
-#		# make the zero-string for the new bed file
-
-
+	
 	awk -v pops="$pops" -v zeros="$zeros" 'BEGIN {{OFS = FS = "\t" }};
 		NF == 8 && $8 != "."  {{print $4, $5, $6, $7, $8 }};
 		NF == 8 && $8 == "." {{print $1, $2, $3, pops, zeros}}' \
 		{working_directory}/annotate_pi/pi_allPops_all_positions.bed.temp \
 		> {working_directory}/annotate_pi/pi_allPops_all_positions_addPiZeroPos.bed.temp
-
-#	awk -v pops="$pops" -v zeros="$zeros" 'BEGIN {{OFS = FS = "\t" }};
-#		NF == 8 && $8 != "."  {{print $4, $5, $6, $7, $8 }};
-#		NF == 8 && $8 == "." {{print $1, $2, $3, pops, zeros}}' \
-#		/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_MOD.bed \
-#		> /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_zeroadd.bed
-
 
 		
 
@@ -600,21 +707,16 @@ def add_context_info_pi(pi_bedfile: str, working_directory: str, output_director
 	#/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_zeroadd.bed
 
 	bedtools annotate -i {working_directory}/annotate_pi/pi_allPops_all_positions_addPiZeroPos.bed.temp \
-		-files {{inputs['genes_bed']}} \
-			{{inputs['repeats_bed']}} \
-			{{working_directory}}/annotate_pi/genomic_CDS.bed \
-			{{working_directory}}/annotate_pi/genomic_intron.bed \
-			{{working_directory}}/annotate_pi/genomic_exon.bed \
-			{{inputs['neutral_bed']}} \
+		-files {inputs['genes_bed'][0]} \
+		{inputs['repeats_bed'][0]} \
+		{working_directory}/annotate_pi/genomic_CDS.bed \
+		{working_directory}/annotate_pi/genomic_intron.bed \
+		{working_directory}/annotate_pi/genomic_exon.bed \
+		{inputs['neutral_bed'][0]} \
 		> {working_directory}/annotate_pi/pi_allPops_all_positions_addPiZeroPos_annot.bed.temp
 	# column 6:11 will be: genes, repeats, CDS, intron, exon, neutral
 	# if the number is above 0, the regions are overalpping	( there should only be 0.000 or 1.000)
 
-	# test code:
-	#bedtools annotate -i /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_zeroadd.bed \
-	#	-files /home/anneaa/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/annotation/EG_EntNic_05092024_genomic.repeats.bed \
-	#	/home/anneaa/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/annotation/EG_EntNic_05092024_genomic.genes.bed \
-	#	> /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_all_positions_zeroadd_annot.bed
 	
 	# NEXT
 	# The name column should be annotation column instead:
@@ -631,32 +733,27 @@ def add_context_info_pi(pi_bedfile: str, working_directory: str, output_director
 		# Check if field 7 > 0 and add "repeat"
 		if ($7 > 0) {{
 			if (string != "") string = string ", repeat";
-			else string = "repeat";
-		}}
+			else string = "repeat"	}}
 
 		# Check if field 8 > 0 and add "exon"
 		if ($8 > 0) {{
 			if (string != "") string = string ", exon";
-			else string = "exon";
-		}}
+			else string = "exon"	}}
 
 		# Check if field 9 > 0 and add "intron"
 		if ($9 > 0) {{
 			if (string != "") string = string ", intron";
-			else string = "intron";
-		}}
+			else string = "intron"	}}
 
 		# Check if field 10 > 0 and add "neutral"
 		if ($10 > 0) {{
 			if (string != "") string = string ", neutral";
-			else string = "neutral";
-		}}
+			else string = "neutral"	}}
 
 		# Check if field 11 > 0 and add "upstream"
 		if ($11 > 0) {{
 			if (string != "") string = string ", upstream";
-			else string = "upstream";
-		}}
+			else string = "upstream"}}
 
 		print $1, $2, $3, string, $5    # Output fields $1, $2, $3, the string, and $5
 	}}' {working_directory}/annotate_pi/pi_allPops_all_positions_addPiZeroPos_annot.bed.temp \
@@ -667,21 +764,16 @@ def add_context_info_pi(pi_bedfile: str, working_directory: str, output_director
 
 	awk -v pops=$pops 'BEGIN {{FS = OFS = "\t"}} 
 		{{	split($5, values, ", ");	# Split field 5 (comma-separated values) into an array
-			
 			if (NR == 1) {{				# Initialize the sum array on the first run
 				for (i = 1; i <= length(values); i++) {{
-					sum[i] = 0;
-				}}
-			}}
+					sum[i] = 0	}}		}}
 			
 			# Add the values of field 5 to the corresponding positions in the sum array
 			for (i = 1; i <= length(values); i++) {{
-				sum[i] += values[i];
-			}}
+				sum[i] += values[i]		}}
 			
 			# Increment the count of lines
-			count++;
-		}}
+			count++		}}
 		END {{
 			# Calculate the average for each element in the sum array
 			for (i = 1; i <= length(sum); i++) {{

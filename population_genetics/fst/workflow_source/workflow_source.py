@@ -50,6 +50,7 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 
     # defines new files/directories base on config
     bed_genes = glob.glob(f'{BED_PATH}/*_genomic.genes.bed')[0]
+    bed_intergenes = glob.glob(f'{BED_PATH}/*_genomic.intergenic.bed')[0]
     bed_repeats = glob.glob(f'{BED_PATH}/*_genomic.repeats.bed')[0]
     bed_neutral = f'{new_wd}/{os.path.basename(bed_genes).replace("genes","neutral")}'
     # f'{bed_repeats.replace("repeats","neutral")}'
@@ -64,12 +65,45 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
                 fasta_fai_output=f'{new_wd}/{GENOME_PATH.split('/')[-1].replace(".fna", ".fna.fai")}')
         )
 
+    ########################
+    ### MAKE NEUTRAL BED ###
+    ########################
+
     # Define target with input genes and repeats bed
         # output neutral bed
     make_neutral_bed_target = gwf.target_from_template(
         name='make_neutral_bed',
         template=make_neutral_bed(
             genes_bed_file = bed_genes,
+            repeats_bed_file = bed_repeats,
+            genome_bedstyle = make_fna_fai_target.outputs['genome_fai'],
+            neutral_bed_out = bed_neutral)
+    )
+
+    # make varying intervals of intergenic region beds
+    interbed_wd = f'{WORK_DIR}/fst_pi/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/intergene_neutrality'
+    percentage_list = list(range(0,10+1))
+    bp_list = list(range(0,5000+1,500))
+    output_list = [ os.path.join(interbed_wd,'intergenic_' + str(n) + '_percent_rem.bed') for n in percentage_list]
+
+    make_neutral_bed_inter = gwf.target_from_template(
+        name='make_various_intergene_beds',
+        template=make_various_intergene_beds(
+            intergenes_bed_file = bed_intergenes,
+            repeats_bed_file = bed_repeats,
+            working_directory = interbed_wd,
+            percentage_list = percentage_list,
+            bp_list = bp_list,
+            output_list = output_list,
+            genome_path = make_fna_fai_target.outputs['genome_fai'])
+    )
+    # The several bed outputs should go in here, and we map over them to create netural beds
+    # make a list of dictionaries with input intergenic beds and output neutral bed names
+    bed_neutral = f'{new_wd}/{os.path.basename(bed_intergenes).replace("genes","neutral")}'
+    make_neutral_bed_target_fromIntergene = gwf.target_from_template(
+        name='make_neutral_bed_from_intergene',
+        template=make_neutral_bed_inter(
+            intergenes_bed_file = bed_intergenes,
             repeats_bed_file = bed_repeats,
             genome_bedstyle = make_fna_fai_target.outputs['genome_fai'],
             neutral_bed_out = bed_neutral)
@@ -160,6 +194,12 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
             #print("Remodelled pi")
 
             #  change to bed file combination thingy
+            print(make_neutral_bed_target.outputs['neutral_bed'])
+            print(glob.glob(os.path.join(BED_PATH,'*genomic.genes.bed'))[0])
+            print(glob.glob(os.path.join(BED_PATH,'*genomic.repeats.bed'))[0])
+            print(pi_remodelling.outputs['pi_all_pops_bed'])
+            print(ANNOTATION_GTF)
+            print(GENOME_PATH)
             pi_rearrangement_all_pos = gwf.target_from_template(
                 name = 'pi_add_context',
                 template = add_context_info_pi(
@@ -168,8 +208,8 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
                     output_directory = new_out_pi, 
                     species_gtf = ANNOTATION_GTF, 
                     neutral_bed = make_neutral_bed_target.outputs['neutral_bed'],
-                    genes_bed = glob.glob(os.path.join(BED_PATH,'*genomic.genes.bed')),
-                    repeats_bed = glob.glob(os.path.join(BED_PATH,'*genomic.repeats.bed')),
+                    genes_bed = glob.glob(os.path.join(BED_PATH,'*genomic.genes.bed'))[0],
+                    repeats_bed = glob.glob(os.path.join(BED_PATH,'*genomic.repeats.bed'))[0],
                     covered_sites_across_genome = f'/home/anneaa/EcoGenetics/people/Jeppe_Bayer/population_genetics/test_data/depthdist/multibam.test.merge.bed')
             )
                 # modify

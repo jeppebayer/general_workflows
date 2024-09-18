@@ -56,9 +56,13 @@ del wide_df_fill_second 	# reducing memory impact of dataframe
 #wide_df_fill_second = []	# reducing memory impact of dataframe
 
 # Write output to a file or print it
-output_file = output_wide_pi
-# output_file = '/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions.pi'
-wide_df_fill.to_csv(output_file, sep='\t', index=False)
+#output_file = output_wide_pi
+# output_wide_pi = '/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions.pi'
+wide_df_fill.to_csv(output_wide_pi, sep='\t', index=False)
+
+
+## Make bed file
+
 
 # make comma separated list for "name" and "score" columns in bed format
 wide_df_fill_concatPi = wide_df_fill.apply(lambda row: ", ".join(row.iloc[3:].astype(str)), axis = 'columns')
@@ -69,10 +73,10 @@ del wide_df_fill	# reducing memory impact of dataframe
 
 # make new pd dataframe of score and name columns
 new_df = pd.DataFrame({
-    'name': [wide_df_fill_concatPops] * len(wide_df_fill_concatPi),  # Repeat header for all rows
+    'name': 'pi' * len(wide_df_fill_concatPi),  # Repeat header for all rows
     'score': wide_df_fill_concatPi})
 
-del wide_df_fill_concatPops 	# reducing memory impact of dataframe
+#del wide_df_fill_concatPops 	# reducing memory impact of dataframe
 del wide_df_fill_concatPi	# reducing memory impact of dataframe
 #wide_df_fill_concatPops = []	# reducing memory impact of dataframe
 #wide_df_fill_concatPi = []	# reducing memory impact of dataframe
@@ -80,9 +84,13 @@ del wide_df_fill_concatPi	# reducing memory impact of dataframe
     
 wide_df_bed = pd.concat([ wide_df_fill_first, new_df ], ignore_index=False, axis=1)
 
+del wide_df_fill_first
+del new_df
 # write to bedfile
-output_file = output_bed_pi
-# output_file = '/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions.bed'
-wide_df_bed.to_csv(output_file, sep='\t', index = False, header = False)
+#output_file = output_bed_pi
+# output_bed_pi = '/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/Entomobrya_nicoleti/pi_allPops_variant_positions.bed'
+wide_df_bed.to_csv(output_bed_pi, sep='\t', index = False, header = False)
+# output population order for the pi list
+wide_df_fill_concatPops.to_csv(output_bed_pi.replace(".bed", "_populationOrder.txt"), sep='\t', index = False, header = False)
 
 print('Finished remodelling data')
