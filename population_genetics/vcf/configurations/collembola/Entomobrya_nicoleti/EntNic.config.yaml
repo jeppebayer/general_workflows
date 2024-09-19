@@ -1,0 +1,64 @@
+# Tag identifying file association.
+TAG: jeppebayer:EcoGenetics,population_genetics,vcf:workflowconfiguration
+# (str). The name of the relevant project account.
+account: EcoGenetics
+# (str). Taxonomic group. Can be left empty.
+taxonomic_group: Collembola
+# (str). Name of species being analyzed.
+species_name: Entomobrya nicoleti
+# (str). Path to reference genome.
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/EG_EntNic_05092024_genomic.fna
+# (str). BED file indicating intergenic regions of the reference genome.
+intergenic_bed_file: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/annotation/EG_EntNic_05092024_genomic.intergenic.bed
+# (str). BED file indicating repetitive regions of the reference genome. If left empty workflow will try to extract repetitive regions from reference genome.
+repeats_bed_file: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/annotation/EG_EntNic_05092024_genomic.repeats.bed
+# (str). Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps
+# (str). Directory for final output files. (If left empty, output file will be placed within 'working_directory_path').
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics
+# (int). Partition size of genome in base pairs. If left empty defaults to '500000'.
+partition_size: 100000
+# Variant caller, Freebayes settings.
+freebayes_settings:
+  # (int). sample_ploidy = ploidy * n_individials. If left empty defaults to '100'.
+  sample_ploidy: 100
+  # (int). Number of variants to consider and report when multiple are available. If left empty defaults to '3'.
+  best_n_alleles: 3
+  # (0 | float). Lower threshold fraction for variant to be considered. If left empty defaults to '0'.
+  min_alternate_fraction: 0
+  # (int). Lower threshold count for variant to be considered. If left empty defaults to '2'.
+  min_alternate_count: 2
+  # (int). Amount of memory, in GB, to reserve per VCF partition. If left empty defaults to '80'.
+  memory: 35
+  # (str). Amount of time to reserve per VCF partition in format: 'tt:mm:ss'. If left empty defaults to '48:00:00'.
+  time: 24:00:00
+# Filtering settings.
+filtering:
+  # (int). Minimum required depth, inclusive.
+  minimum_depth: 200
+# (int). Mode for creating VCF file (1 | 2 | 3 | 4).
+# 1 = Separate VCF files for each sample/BAM file. 2 = One VCF file per sample group. 3 = One VCF containing data for all samples/BAM files. 4 = All.
+mode: 1
+# (list). Sample setup. List of dictionaries listing the configuration for each sample.
+sample_list:
+  - 
+    # (str). Name of sample group.
+    group_name: Grassland
+    # (list). List of paths to BAM files.
+    bam_file_list:
+      - 
+  - 
+    # (str). Name of sample group.
+    group_name: Conventional_agriculture
+    # (list). List of paths to BAM files.
+    bam_file_list:
+  - 
+    # (str). Name of sample group.
+    group_name: Conservation_agriculture
+    # (list). List of paths to BAM files.
+    bam_file_list:
+  - 
+    # (str). Name of sample group.
+    group_name: Outgroup_Entomobrya_nivalis
+    # (list). List of paths to BAM files.
+    bam_file_list:

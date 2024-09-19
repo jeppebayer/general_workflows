@@ -50,7 +50,7 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
 
     # defines new files/directories base on config
     bed_genes = glob.glob(f'{BED_PATH}/*_genomic.genes.bed')[0]
-    bed_intergenes = glob.glob(f'{BED_PATH}/*_genomic.intergenic.bed')[0]
+    #bed_intergenes = glob.glob(f'{BED_PATH}/*_genomic.intergenic.bed')[0]
     bed_repeats = glob.glob(f'{BED_PATH}/*_genomic.repeats.bed')[0]
     bed_neutral = f'{new_wd}/{os.path.basename(bed_genes).replace("genes","neutral")}'
     # f'{bed_repeats.replace("repeats","neutral")}'
@@ -86,28 +86,26 @@ def fst_and_pi_wf(config_file: str = glob.glob('*config.y*ml')[0]):
     bp_list = list(range(0,5000+1,500))
     output_list = [ os.path.join(interbed_wd,'intergenic_' + str(n) + '_percent_rem.bed') for n in percentage_list]
 
-    make_neutral_bed_inter = gwf.target_from_template(
-        name='make_various_intergene_beds',
-        template=make_various_intergene_beds(
-            intergenes_bed_file = bed_intergenes,
-            repeats_bed_file = bed_repeats,
-            working_directory = interbed_wd,
-            percentage_list = percentage_list,
-            bp_list = bp_list,
-            output_list = output_list,
-            genome_path = make_fna_fai_target.outputs['genome_fai'])
-    )
+    #make_neutral_bed_inter = gwf.target_from_template(
+     #   name='make_various_intergene_beds',
+      #  template=make_various_intergene_beds(
+       #     intergenes_bed_file = bed_intergenes,
+        #    repeats_bed_file = bed_repeats,
+         #   working_directory = interbed_wd,
+          #  genome_path = make_fna_fai_target.outputs['genome_fai'])
+    #)
+
     # The several bed outputs should go in here, and we map over them to create netural beds
     # make a list of dictionaries with input intergenic beds and output neutral bed names
-    bed_neutral = f'{new_wd}/{os.path.basename(bed_intergenes).replace("genes","neutral")}'
-    make_neutral_bed_target_fromIntergene = gwf.target_from_template(
-        name='make_neutral_bed_from_intergene',
-        template=make_neutral_bed_inter(
-            intergenes_bed_file = bed_intergenes,
-            repeats_bed_file = bed_repeats,
-            genome_bedstyle = make_fna_fai_target.outputs['genome_fai'],
-            neutral_bed_out = bed_neutral)
-    )
+    #bed_neutral = f'{new_wd}/{os.path.basename(bed_intergenes).replace("genes","neutral")}'
+    #make_neutral_bed_target_fromIntergene = gwf.target_from_template(
+     #   name='make_neutral_bed_from_intergene',
+      #  template=make_neutral_bed_inter(
+       #     intergenes_bed_file = bed_intergenes,
+        #    repeats_bed_file = bed_repeats,
+         #   genome_bedstyle = make_fna_fai_target.outputs['genome_fai'],
+          #  neutral_bed_out = bed_neutral)
+    #)
 
 # Target to deminish VCF to only contain neutral sites
     # make list of dictionary with :new_wd + file directory name

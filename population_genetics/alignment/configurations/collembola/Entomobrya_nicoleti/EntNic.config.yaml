@@ -1,4 +1,4 @@
-	# Tag identifying file association.
+# Tag identifying file association.
 TAG: jeppebayer:EcoGenetics,population_genetics,mapping:workflowconfiguration
 # The name of the relevant project account.
 account: EcoGenetics
@@ -7,7 +7,7 @@ taxonomic_group: Collembola
 # Name of species being analyzed
 species_name: Entomobrya nicoleti
 # Path to reference genome file in FASTA format
-reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/EG_EntNic_19022024_genome.fna
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/EG_EntNic_05092024_genomic.fna
 # Directory for intermediary files.
 working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps
 # # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
@@ -42,18 +42,23 @@ sample_lists:
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_GSJ-C274
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_GUS-C41
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_HAS-C59
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_HHJ-C162
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_JEJ-C119
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_JHJ-C220
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_JoeJ-C252
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_KLJ-C127
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_KoeJ-C212
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_KOS-C293
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_KRS-C23
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_LEJ-C64
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_LVJ-C76
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_MMS-C295
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_MSJ-C2
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_NOJ-C37
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_ORoe-C299
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_RDJ-C344
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_RYJ-C139
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_SBJ-C52
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_SHJ-C48
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_SKJ-C16
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_SKJ-C216
@@ -65,6 +70,7 @@ sample_lists:
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_ULJ-C122
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_ULJ-C60
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_UTJ-C22
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_VAJ-C24
   -
     group_name: Conservation_agriculture
     sample_folder_list:
@@ -75,15 +81,6 @@ sample_lists:
     group_name: Conventional_agriculture
     sample_folder_list:
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_K-JES-C323
-  - 
-    group_name: bad_samples
-    sample_folder_list:
-      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_HHJ-C162
-      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_JEJ-C119
-      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_KoeJ-C212
-      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_LVJ-C76
-      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_SBJ-C52
-      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Entomobrya_nicoleti/EntNic_VAJ-C24
   -
     group_name: Outgroup_Entomobrya_nivalis
     sample_folder_list:

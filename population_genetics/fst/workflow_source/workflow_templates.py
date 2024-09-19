@@ -68,8 +68,8 @@ def make_various_intergene_beds(intergenes_bed_file: str, repeats_bed_file: str,
 	inputs = {'intergenes_bed': intergenes_bed_file, 
 		   'bed_stype_genome':genome_path,
 		   'repeats_bed': repeats_bed_file}
-	outputs = {'percent_graph': f'working_directory/',
-			'nbases_graph': f'working_directory/'}
+	outputs = {'percent_graph': f'{working_directory}/snps_neutral_region_percentage_rem.pdf',
+			'nbases_graph': f'{working_directory}/snps_neutral_region_Nbases_rem.pdf'}
 	options = {
 		'cores': 1,
 		'memory': '5g',
@@ -100,6 +100,7 @@ def make_various_intergene_beds(intergenes_bed_file: str, repeats_bed_file: str,
 
 	#rename '.temp' '' {working_directory}/intergenic_*_percent_rem.bed.temp 	
 	#rename '.temp' '' {working_directory}/intergenic_*_bases_rem.bed.temp 
+
 	echo Making new neutral bed file and counting population variants
 	# 	take the complement of repeats
 	bedtools complement -i {repeats_bed_file} -g {genome_path} > {working_directory}/repeat_complement_temp.bed
@@ -116,20 +117,31 @@ def make_various_intergene_beds(intergenes_bed_file: str, repeats_bed_file: str,
 				# this is new neutral file
 		
 			# get overlap with population filtered VCF file, and count lines (only output lines where vcf overlaps)
-			count=`bedtools intersect -a $pop_filt_vcf -b {working_directory}/${{percent_file_name/.bed.temp/_neutral.bed}} |wc -l`
-			echo $percent_file_name'\\t'$count >> {working_directory}/${{pop_vcf_base/.vcf/.varcount}}
+			count=`bedtools intersect -a $pop_filt_vcf -b {working_directory}/${{percent_file_name/.bed.temp/_neutral.bed}} |wc -l | awk '{{print $1}}'`
+			echo -e $percent_file_name'\t'$count >> {working_directory}/${{pop_vcf_base/.vcf/.varcount}}
+		done
+
+		for bases_file in {working_directory}/intergenic_*_bases_rem.bed.temp
+		do
+			#	Overlaps between percentage intergene file and repeat complement
+			bases_file_name=`basename $bases_file`
+			bedtools intersect -a $bases_file -b {working_directory}/repeat_complement_temp.bed > {working_directory}/${{bases_file_name/.bed.temp/_neutral.bed}}
+				# this is new neutral file
+		
+			# get overlap with population filtered VCF file, and count lines (only output lines where vcf overlaps)
+			count=`bedtools intersect -a $pop_filt_vcf -b {working_directory}/${{bases_file_name/.bed.temp/_neutral.bed}} |wc -l| awk '{{print $1}}'`
+			echo -e $bases_file_name'\t'$count >> {working_directory}/${{pop_vcf_base/.vcf/.varcount}}
 		done
 	done
 
-	
 	# maybe the output should be a graph? with all pops on same graph, using alpha coloring. lines combining y values. plot(type = 'l')
 	# two graphs, one with percentage, one with n bases
 
 	../../../scripts/plot_neutral_regions_saturation.r varcount {working_directory}
-
-	# pdf(paste0(working_directory, "/snps_neutral_region_Nbases_rem.pdf"))
-	# pdf(paste0(working_directory, "/snps_neutral_region_percentage_rem.pdf"))
-	# check bedtools above, not done
+		# makes the output files in temp version
+	
+	mv {working_directory}/snps_neutral_region_percentage_rem.pdf {outputs['percent_graph']}
+	mv {working_directory}/snps_neutral_region_Nbases_rem.pdf {outputs['nbases_graph']}
 
 	echo "END: $(date)"
 	echo "$(jobinfo "$SLURM_JOBID")"
@@ -558,7 +570,7 @@ def modify_pi_file_template(sorted_pi_file: str, working_directory: str):
 			'pi_all_pops_bed': f'{working_directory}/pi/pi_allPops_variant_positions.bed'}
 	options = {
 		'cores': 1,
-		'memory': '100g',
+		'memory': '120g',
 		'walltime': '11:00:00'
 	}
 	spec = f"""

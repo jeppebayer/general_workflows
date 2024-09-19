@@ -33,13 +33,18 @@ df <- data.frame()
 for( file in files_variant_counts_perc ){
     # read in data
     data <- read.table(file, header = F)
-    df <- data.frame(df, data)
-    colnames(df) <- c(colnames(df, basename(file)))
+    if( file == files_variant_counts_perc[1] ){
+        df <- data.frame(df, data)
+    }else{
+        df <- data.frame(df, data[,2])
+        colnames(df) <- c(colnames(df, basename(file)))
+    }
 }
 head(df)
-
+rownmaes(df) <- df[,1]
+df <- df[,-1]
 # Where to output this?
-pdf(paste0(working_directory, "/snps_neutral_region_percentage_rem.pdf"))
+pdf(paste0(working_directory, "/snps_neutral_region_percentage_rem.pdf.temp"))
 plot(df[,1], yaxt= 'n', xpd=NA, ylab = NA, main = NA, col = alpha("grey50", .6), type = 'l', xlab = "Percentage removed")
 axis(2, las = 2)
 title(ylab="Variant count", mgp = c(4.5, 1, 0), xpd = NA)
@@ -57,13 +62,18 @@ df <- data.frame()
 for( file in files_variant_counts_bases ){
     # read in data
     data <- read.table(file, header = F)
-    df <- data.frame(df, data)
-    colnames(df) <- c(colnames(df, basename(file)))
+    if( file == files_variant_counts_bases[1] ){
+        df <- data.frame(df, data)
+    }else{
+        df <- data.frame(df, data[,2])
+        colnames(df) <- c(colnames(df, basename(file)))
+    }
 }
 head(df)
-
+rownmaes(df) <- df[,1]
+df <- df[,-1]
 # Where to output this?
-pdf(paste0(working_directory, "/snps_neutral_region_Nbases_rem.pdf"))
+pdf(paste0(working_directory, "/snps_neutral_region_Nbases_rem.pdf.temp"))
 plot(df[,1], yaxt= 'n', xpd=NA, ylab = NA, main = NA, col = alpha("grey50", .6), type = 'l', xlab = "Bases removed")
 axis(2, las = 2)
 title(ylab="Variant count", mgp = c(4.5, 1, 0), xpd = NA)
