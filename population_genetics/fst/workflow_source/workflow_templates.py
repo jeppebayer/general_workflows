@@ -571,7 +571,7 @@ def modify_pi_file_template(sorted_pi_file: str, working_directory: str):
 	options = {
 		'cores': 1,
 		'memory': '120g',
-		'walltime': '11:00:00'
+		'walltime': '20:00:00'
 	}
 	spec = f"""
 	# Sources environment 										OBS EDIT:
