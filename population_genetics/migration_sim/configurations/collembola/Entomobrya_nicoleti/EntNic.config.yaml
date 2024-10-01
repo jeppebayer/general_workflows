@@ -1,0 +1,80 @@
+# For making migration rate estimation
+# Tag identifying file association.
+TAG: anneaa:EcoGenetics,population_genetics,DiversityEstimates:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Taxonomic group
+taxonomic_group: Collembola
+# Name of species being analyzed
+species_name: Entomobrya nicoleti
+# # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
+  # this is where new fst/taxonomy or pi/taxonomy directories with outputs will be placed
+output_directory_path: /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/Entomobrya_nicoleti
+  # /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics
+# Directory for intermediary files.
+working_directory_path: /home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/
+  #/faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps
+# Maximum amount of generations back in time, where the migration divide should be estimated
+max_generations_migration_divide: 7000
+# Minimum amount of generations back in time, where the migration divide should be estimated
+min_generations_migration_divide: 100
+# interval between estimations (step size)
+generations_interval: 100
+# VCF file (combined for all pops)
+vcf_file: /faststorage/project/EcoGenetics/people/jilong/jb_2dsfs/data/EntNic.vcf
+
+# list of populations to exclude from analysis (whole names as strings)
+pops_exclude_list:
+  - 
+
+
+## Under development
+  # make 2d sfs, potentially based on Jilongs gwf workflow
+  # I wrote it as a gwf workflow in /home/jilong/EcoGenetics/people/jilong/jb_2dsfs/scripts/workflow.py
+    #Here is a step-by-step process
+    # 1: copy the whole folder /home/jilong/EcoGenetics/people/jilong/jb_2dsfs
+    # 2: change the root_path setting in workflow.py , which should be YOUR_PATH/jb_2dsfs
+    # 3: cd YOUR_PATH/jb_2dsfs/scripts 
+    # 4: gwf config set backend slurm (only for the first time usage of gwf in this folder)
+    # 5: gwf run , if this workflow runs for the first time, this will only submit the data_prepare job
+    # 6: gwf run , run this workflow again after data preparation, 2dsfs will be done for each pair.
+    
+  # It's not fully automated yet in some sense because I induce a "data_prepare" step which generates a tab split txt file containing all the contrasting pairs first for the input vcf. Then you can run all pairs automatically.Basically, the script needs to be run twice. (edited) 
+  # All the results for the 2dsfs are in the folder /home/jilong/EcoGenetics/people/jilong/jb_2dsfs/steps/2dsfs/{pair_id}
+  # I am not sure if you want the student to run the script as a practice for oneself or just use the results.
+  # The script assumes a single vcf input containing multiple populations, which can easily take any other vcf file, generate the list of pairs (first time running) and run 2dsfs for each pair (second time running). (edited) 
+
+
+
+# data are within this project folder:
+# /faststorage/project/EcoGenetics/people/Jesper_Bechsgaard/jb_2dsfs/
+
+
+
+
+
+
+
+
+
+
+# Path to reference genome file in FASTA format
+reference_genome_path: /home/anneaa/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/gene_flow_disruption/EG_EntNic_19022024_genomic.fna
+
+
+# collection sites and gps locations
+collection_sites_file: /home/anneaa/EcoGenetics/general_workflows/population_genetics/fst/coordinates.tsv
+### OBS
+
+# Make neutral VCF settings: (intergenic and rm repetitive)
+annotation_gtf: /home/anneaa/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/gene_flow_disruption/annotation/EG_EntNic_19022024_genomic.gtf
+# Bed file path
+bed_files_path: /home/anneaa/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/gene_flow_disruption/annotation
+# VCF folders
+vcf_base_folder: /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf
+# vcf tip folders
+vcf_base_folder: /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland
+# VCF filter settings? (threshold depth per pop or across pops, or across 70% of pops?)
+# count of positions for calculating pi (only variants are called, thus we need a count of all sites, to calculate pi)
+count_of_positions_file: /home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/pi/collembola/Entomobrya_nicoleti/test.txt
+

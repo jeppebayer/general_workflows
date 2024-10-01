@@ -1,6 +1,7 @@
 #!/bin/env python3
 from gwf import AnonymousTarget
 import os, glob
+import subprocess as sp
 
 
 ########################## Functions ##########################
@@ -15,8 +16,16 @@ def species_abbreviation(species_name: str) -> str:
 	species = species[0].upper() + species[1:3]
 	return genus + species
 
+def awk_parse_pops_from_vcf(inputfile, outputfile):
+    cmd = """awk '/^#CHROM/ {for(i=10; i<=NF; i++) print $i, "\t", i-9; exit}' """ + inputfile + " > " + outputfile
+    os.system(cmd)
 
-def make_genome_fai(ref_genome_file: str, fasta_fai_output: str):
+def awk_create_pairs(inputfile, outputfile):
+    cmd = """awk -v OFS='\t' 'NR==FNR {id[NR] = $1; counter[NR] = $2; next} {for (i=1; i<FNR; i++) if (counter[i] <= $2) print id[i], $1, counter[i], $2}' """ + inputfile + " " + inputfile +" > " + outputfile	 	
+    os.system(cmd)
+
+
+def prepare_data(vcf_file: str, output_prefix: str, working_dir: str):
 	"""
 	Template: Create fai indexed genome file for bedtools.
 	
@@ -27,8 +36,10 @@ def make_genome_fai(ref_genome_file: str, fasta_fai_output: str):
 	
 	:param
 	"""
-	inputs = {'reference_genome_file': ref_genome_file}
-	outputs = {'genome_fai': fasta_fai_output}
+	inputs = {'vcf_file': vcf_file}
+	outputs = {'parsed_pops_file': f'{working_dir}/adata_prep/{output_prefix}_parsed_pops.tsv',
+			'pop_pairs_file': f'{working_dir}/adata_prep/{output_prefix}_pop_pairs.tsv',
+			'outfile_dat': f'{working_dir}/adata_prep/{output_prefix}_out2.tsv'}
 	options = {
 		'cores': 1,
 		'memory': '5g',
@@ -37,24 +48,95 @@ def make_genome_fai(ref_genome_file: str, fasta_fai_output: str):
 	spec = f"""
 	# Sources environment 										OBS EDIT:
 	source /home/"$USER"/.bashrc
-	conda activate ecogen_neutral_diversity_wf
-	if [ "$USER" == "jepe" ]; then
-		source /home/"$USER"/.bashrc
-		source activate popgen ########### OBS make dedicated env
-	fi
-
+	conda activate migration_fsc
+	
 	echo "START: $(date)"
 	echo "JobID: $SLURM_JOBID"
-
-	samtools faidx {inputs['reference_genome_file']} -o {outputs['genome_fai']}
 	
-	echo "END: $(date)"
-	echo "$(jobinfo "$SLURM_JOBID")"
+	# make wd
+	echo Making wd in {working_dir}/adata_prep/
+	mkdir -p {working_dir}
+	mkdir -p {working_dir}/adata_prep/
+
+	# Parse individual IDs and their counters
+	awk '/^#CHROM/ {{for(i=10; i<=NF; i++) print $i, "\t", i-9; exit}}' {inputs['vcf_file']} > {outputs['parsed_pops_file']}
+
+	# Generate all possible pairs where counter2 >= counter1
+	awk -v OFS='\t' 'NR==FNR {{id[NR] = $1; counter[NR] = $2; next}}
+	 	 {{for (i=1; i<FNR; i++) if (counter[i] <= $2) print id[i], $1, counter[i], $2}}' {outputs['parsed_pops_file']} {outputs['parsed_pops_file']} > {outputs['pop_pairs_file']}
+		 # $ids_output_file $ids_output_file > $pairs_output_file
+
+	echo Individual IDs and counters saved to {outputs['parsed_pops_file']}
+	echo Individual pairs saved to {outputs['pop_pairs_file']}
+	echo Prepping additional data for 2dSFS
+
+	awk 'BEGIN{{ OFS="\t" }}
+	{{if ($0 ~ /^#/)
+			{{next}}
+	else
+			{{for(i=10;i<=NF;i++)
+					if (substr($i,length($i)-2,3)=="0.0") {{sub($i, "0", $i)}} else {{sub($i,substr($i,length($i)-3,4), $i)}}
+			}}; print
+	}}' {inputs['vcf_file']} > {outputs['outfile_dat'].replace("out2", "out")}
+	#out
+	
+	sed -i 's/://g' {outputs['outfile_dat'].replace("out2", "out")}
+
+	awk 'BEGIN{{ OFS="\t" }}
+			{{ for(i=10;i<=NF;i++)
+					sub($i, $i*100, $i)
+			; print $0 }}
+	' {outputs['outfile_dat'].replace("out2", "out")} > {outputs['outfile_dat'].replace("out2", "out1")}
+	# out1
+
+	sed -i '/^#/d' {outputs['outfile_dat'].replace("out2", "out1")}
+	#out1
+
+	awk 'BEGIN {{ FS="\t"; OFS="\t" }} {{$1=$2=$3=$4=$5=$6=$7=$8=$9="";gsub(",+",",",$0)}}1' {outputs['outfile_dat'].replace("out2", "out1")} > {outputs['outfile_dat']} 
+	sed -i 's/\t\+/\t/g;s/^\t//' {outputs['outfile_dat']} 
+	sed -i '1d' {outputs['outfile_dat']} 
+	echo "Data prep finished"
+
+
+	echo "Setting up folder systems"
+
+	cat {outputs['pop_pairs_file']} | while read line 
+	do
+		echo $line   # do something with $line here
+		pop1=`awk '{{print $1}}'`
+        pop2=`awk '{{print $2}}'`
+        c1=`awk '{{print $3}}'`
+        c2=`awk '{{print $4}}'`
+		name=2dSFS_$pop1"_vs_"$pop2"_"$c1"_vs_"$c2
+		# make directories
+		mkdir -p {working_dir}/$name
+	done
+
 	"""
 	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
-def make_various_intergene_beds(intergenes_bed_file: str, repeats_bed_file: str, working_directory: str, genome_path: str):
+
+def create_input_dict_2dSFS_target(pair_file: str) -> list:
+	"""Function: Creates input dictionary for running a map function of 2dSFS for each pop pair
+	"""
+	dict_list = []
+	for line in open(pair_file):
+		print(line)
+		infos = line.strip("\n").split("\t")
+		print(infos)
+		pop1 = infos[0]
+		pop2 = infos[1]
+		c1 = infos[2]
+		c2 = infos[3]
+		name = f'2dSFS_{pop1}_vs_{pop2}'
+		new_dict = {"pop1": pop1, "pop2": pop2, "c1": c1, "c2": c2, "name": name}
+		dict_list.append(new_dict)
+
+	return dict_list
+
+
+def pair_2DSFS_map_target(pop1: str, pop2: str, c1: int, c2: int, name: str, out2_file: str, working_directory: str):
 	"""
 	Template: Create netural bed file from genes and repeats bed for species.
 	
@@ -65,10 +147,8 @@ def make_various_intergene_beds(intergenes_bed_file: str, repeats_bed_file: str,
 	
 	:param
 	"""
-	inputs = {'intergenes_bed': intergenes_bed_file, 
-		   'bed_stype_genome':genome_path,
-		   'repeats_bed': repeats_bed_file}
-	outputs = {'percent_graph': f'{working_directory}/snps_neutral_region_percentage_rem.pdf',
+	inputs = {'sfs_data': out2_file}
+	outputs = {'percent_graph': f'{working_directory}/{name}/{name}.obs',
 			'nbases_graph': f'{working_directory}/snps_neutral_region_Nbases_rem.pdf'}
 	options = {
 		'cores': 1,
@@ -78,75 +158,44 @@ def make_various_intergene_beds(intergenes_bed_file: str, repeats_bed_file: str,
 	spec = f"""
 	# Sources environment 										OBS EDIT:
 	source /home/"$USER"/.bashrc
-	conda activate ecogen_neutral_diversity_wf
-	if [ "$USER" == "jepe" ]; then
-		source /home/"$USER"/.bashrc
-		source activate popgen ########### OBS make dedicated env
-	fi
+	conda activate migration_fsc
 
 	echo "START: $(date)"
 	echo "JobID: $SLURM_JOBID"
 
-	# for each interval: 
-	# 	make new intergene bed: 
-	# 	make new neutral bed : 
-	# 	intersect with variants called - for each pop?
-	# 	count lines
 
-	mkdir -p {working_directory}
-	echo Starting R script
-	../../../scripts/intergenic_length_investigations.r {inputs['intergenes_bed']} {working_directory}
-	echo Finihsed R script
-
-	#rename '.temp' '' {working_directory}/intergenic_*_percent_rem.bed.temp 	
-	#rename '.temp' '' {working_directory}/intergenic_*_bases_rem.bed.temp 
-
-	echo Making new neutral bed file and counting population variants
-	# 	take the complement of repeats
-	bedtools complement -i {repeats_bed_file} -g {genome_path} > {working_directory}/repeat_complement_temp.bed
-
-	for pop_filt_vcf in ...
-	do
-		pop_vcf_base=`basename $pop_filt_vcf`
-		echo -n {working_directory}/${{pop_vcf_base/.vcf/.varcount}}
-		for percent_file in {working_directory}/intergenic_*_percent_rem.bed.temp
-		do
-			#	Overlaps between percentage intergene file and repeat complement
-			percent_file_name=`basename $percent_file`
-			bedtools intersect -a $percent_file -b {working_directory}/repeat_complement_temp.bed > {working_directory}/${{percent_file_name/.bed.temp/_neutral.bed}}
-				# this is new neutral file
-		
-			# get overlap with population filtered VCF file, and count lines (only output lines where vcf overlaps)
-			count=`bedtools intersect -a $pop_filt_vcf -b {working_directory}/${{percent_file_name/.bed.temp/_neutral.bed}} |wc -l | awk '{{print $1}}'`
-			echo -e $percent_file_name'\t'$count >> {working_directory}/${{pop_vcf_base/.vcf/.varcount}}
-		done
-
-		for bases_file in {working_directory}/intergenic_*_bases_rem.bed.temp
-		do
-			#	Overlaps between percentage intergene file and repeat complement
-			bases_file_name=`basename $bases_file`
-			bedtools intersect -a $bases_file -b {working_directory}/repeat_complement_temp.bed > {working_directory}/${{bases_file_name/.bed.temp/_neutral.bed}}
-				# this is new neutral file
-		
-			# get overlap with population filtered VCF file, and count lines (only output lines where vcf overlaps)
-			count=`bedtools intersect -a $pop_filt_vcf -b {working_directory}/${{bases_file_name/.bed.temp/_neutral.bed}} |wc -l| awk '{{print $1}}'`
-			echo -e $bases_file_name'\t'$count >> {working_directory}/${{pop_vcf_base/.vcf/.varcount}}
-		done
-	done
-
-	# maybe the output should be a graph? with all pops on same graph, using alpha coloring. lines combining y values. plot(type = 'l')
-	# two graphs, one with percentage, one with n bases
-
-	../../../scripts/plot_neutral_regions_saturation.r varcount {working_directory}
-		# makes the output files in temp version
 	
-	mv {working_directory}/snps_neutral_region_percentage_rem.pdf {outputs['percent_graph']}
-	mv {working_directory}/snps_neutral_region_Nbases_rem.pdf {outputs['nbases_graph']}
 
+
+	
 	echo "END: $(date)"
 	echo "$(jobinfo "$SLURM_JOBID")"
 	"""
 	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def make_neutral_bed_inters(intergenes_bed_file: str, repeats_bed_file: str, neutral_bed_out: str, genome_bedstyle: str):
@@ -571,7 +620,7 @@ def modify_pi_file_template(sorted_pi_file: str, working_directory: str):
 	options = {
 		'cores': 1,
 		'memory': '120g',
-		'walltime': '20:00:00'
+		'walltime': '48:00:00'
 	}
 	spec = f"""
 	# Sources environment 										OBS EDIT:
