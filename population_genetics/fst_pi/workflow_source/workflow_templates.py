@@ -118,7 +118,7 @@ def make_various_intergene_beds(intergenes_bed_file: str, repeats_bed_file: str,
 		
 			# get overlap with population filtered VCF file, and count lines (only output lines where vcf overlaps)
 			count=`bedtools intersect -a $pop_filt_vcf -b {working_directory}/${{percent_file_name/.bed.temp/_neutral.bed}} |wc -l | awk '{{print $1}}'`
-			echo -e $percent_file_name'\t'$count >> {working_directory}/${{pop_vcf_base/.vcf/.varcount}}
+			echo -e $percent_file_name'\\t'$count >> {working_directory}/${{pop_vcf_base/.vcf/.varcount}}
 		done
 
 		for bases_file in {working_directory}/intergenic_*_bases_rem.bed.temp
@@ -130,7 +130,7 @@ def make_various_intergene_beds(intergenes_bed_file: str, repeats_bed_file: str,
 		
 			# get overlap with population filtered VCF file, and count lines (only output lines where vcf overlaps)
 			count=`bedtools intersect -a $pop_filt_vcf -b {working_directory}/${{bases_file_name/.bed.temp/_neutral.bed}} |wc -l| awk '{{print $1}}'`
-			echo -e $bases_file_name'\t'$count >> {working_directory}/${{pop_vcf_base/.vcf/.varcount}}
+			echo -e $bases_file_name'\\t'$count >> {working_directory}/${{pop_vcf_base/.vcf/.varcount}}
 		done
 	done
 
@@ -378,7 +378,7 @@ def extract_allele_frq(vcf_file: str, working_directory: str):
 	##INFO=<ID=AF,Number=A,Type=Float,Description="Estimated allele frequency in the range (0,1]">
 	##INFO=<ID=TYPE,Number=A,Type=String,Description="The type of allele, either snp, mnp, ins, del, or complex.">
 
-	bcftools query -f '%CHROM\t%POS0\t%POS\t%TYPE\t%AF\n' {inputs['neutral_vcf_file']} > {outputs['allele_frq_file']}
+	bcftools query -f '%CHROM\\t%POS0\\t%POS\\t%TYPE\\t%AF\\n' {inputs['neutral_vcf_file']} > {outputs['allele_frq_file']}
 
 	echo "END: $(date)"
 	echo "$(jobinfo "$SLURM_JOBID")"
@@ -537,7 +537,7 @@ def calculate_pi_template(allele_freq_files: list, working_directory: str):
 	rm {working_directory}/tmp/pi.calc.tmp
 
 	# add header
-	sed -i '1i chrom\tchromStart\tchromEnd\tpop_name\tpi' {working_directory}/tmp/pi.calc.sort.tmp 
+	sed -i '1i chrom\\tchromStart\\tchromEnd\\tpop_name\\tpi' {working_directory}/tmp/pi.calc.sort.tmp 
 	mv {working_directory}/tmp/pi.calc.sort.tmp {outputs['sorted_pi_file']}
 
 	
@@ -570,8 +570,8 @@ def modify_pi_file_template(sorted_pi_file: str, working_directory: str):
 			'pi_all_pops_bed': f'{working_directory}/pi/pi_allPops_variant_positions.bed'}
 	options = {
 		'cores': 1,
-		'memory': '60g',
-		'walltime': '24:00:00'
+		'memory': '80g',
+		'walltime': '11:59:00'
 	}
 	spec = f"""
 	# Sources environment 										OBS EDIT:
@@ -602,7 +602,7 @@ def modify_pi_file_template(sorted_pi_file: str, working_directory: str):
 	do
 		echo $file
 		awk 'BEGIN {{
-				OFS="\t";
+				OFS="\\t";
 				IGNORECASE = 1;  # Make comparisons case-insensitive for sorting
 			}}
 			# For each line of input, store values
@@ -624,7 +624,7 @@ def modify_pi_file_template(sorted_pi_file: str, working_directory: str):
 				# Sort rows based on the keys (which are based on chrom, chromStart, chromEnd)
 			asort(keys);
 				# Print the header
-			header = "chrom\tchromStart\tchromEnd";
+			header = "chrom\\tchromStart\\tchromEnd";
 			for (i = 1; i <= count; i++) {{
 				header = header OFS pop_names[i];
 			}}
@@ -649,11 +649,11 @@ def modify_pi_file_template(sorted_pi_file: str, working_directory: str):
 
 	
 	# make bed_file
-	awk '{{OFS=FS="\t"; 
-	   	{{printf "%s\t%d\t%d\tpi\t", $1, $2, $3}}; 
+	awk '{{OFS=FS="\\t"; 
+	   	{{printf "%s\\t%d\\t%d\\tpi\\t", $1, $2, $3}}; 
 		for (i = 4; i <= NF; i++){{ if(i==NF)
 			{{printf "%s", $i}} else{{printf "%s,", $i}}}}; 
-		printf "\n"}}' $output_wide_pi > $output_bed_pi
+		printf "\\n"}}' $output_wide_pi > $output_bed_pi
 	
 	
 	mv $output_wide_pi {outputs['pi_all_pops_pi']}
@@ -712,16 +712,16 @@ def add_context_info_pi(pi_bedfile: str, working_directory: str, output_director
 	# first make various bed-files, if they do not already exist.
 	mkdir -p {working_directory}/annotate_pi
 
-	awk 'OFS="\t" {{if ($3 == "CDS") {{print $1, $4-1, $5, $3}}}}' {inputs['gtf_species']} > {working_directory}/annotate_pi/genomic_CDS.bed
-	awk 'OFS="\t" {{if ($3 == "intron") {{print $1, $4-1, $5, $3}}}}' {inputs['gtf_species']} > {working_directory}/annotate_pi/genomic_intron.bed
-	awk 'OFS="\t" {{if ($3 == "exon") {{print $1, $4-1, $5, $3}}}}' {inputs['gtf_species']} > {working_directory}/annotate_pi/genomic_exon.bed
+	awk 'OFS="\\t" {{if ($3 == "CDS") {{print $1, $4-1, $5, $3}}}}' {inputs['gtf_species']} > {working_directory}/annotate_pi/genomic_CDS.bed
+	awk 'OFS="\\t" {{if ($3 == "intron") {{print $1, $4-1, $5, $3}}}}' {inputs['gtf_species']} > {working_directory}/annotate_pi/genomic_intron.bed
+	awk 'OFS="\\t" {{if ($3 == "exon") {{print $1, $4-1, $5, $3}}}}' {inputs['gtf_species']} > {working_directory}/annotate_pi/genomic_exon.bed
 
 
 	# First bed combination should be adding all covered sites
 		# sites covered sufficiently in all pops (testfile): /home/anneaa/EcoGenetics/people/Jeppe_Bayer/population_genetics/test_data/depthdist/multibam.test.merge.bed
 		# Now expand to have a file with per site info
 		
-	awk '{{ scaf = $1; start = $2; end = $3; OFS=FS="\t"; 
+	awk '{{ scaf = $1; start = $2; end = $3; OFS=FS="\\t"; 
 			for (i = start; i < end; i++)
 			{{print scaf, i, i+1 }}}}' {inputs['covered_sites']} \
 				> {working_directory}/annotate_pi/expand_covered_sites.bed.temp
@@ -754,15 +754,15 @@ def add_context_info_pi(pi_bedfile: str, working_directory: str, output_director
 	# modify intersect file to become  bedfile again.
 		# do this while adding 0 pi values to all positions that were within coverage thresholds - ( only variants have pi estimates here )
 
-	pops=`awk 'BEGIN {{ FS = "\t" }}; NF == 8 && $8 != "." {{print $7; exit}}' {working_directory}/annotate_pi/pi_allPops_all_positions.bed.temp`
-	zeros=`awk 'BEGIN {{ FS = "\t" }}; NF == 8 && $8 != "." {{print $8; exit}}' {working_directory}/annotate_pi/pi_allPops_all_positions.bed.temp| awk '{{print NF}}'`
+	pops=`awk 'BEGIN {{ FS = "\\t" }}; NF == 8 && $8 != "." {{print $7; exit}}' {working_directory}/annotate_pi/pi_allPops_all_positions.bed.temp`
+	zeros=`awk 'BEGIN {{ FS = "\\t" }}; NF == 8 && $8 != "." {{print $8; exit}}' {working_directory}/annotate_pi/pi_allPops_all_positions.bed.temp| awk '{{print NF}}'`
 	echo Number of populations: $zeros
 		# counts the number of populations
 	zeros=`awk -v number=$zeros 'BEGIN{{ for(c=1; c<=number ;c++) printf "0%s", (c < number ? ", " : ""); printf "\\n"}}'`
 		# make the zero-string for the new bed file
 	
 	
-	awk -v pops="$pops" -v zeros="$zeros" 'BEGIN {{OFS = FS = "\t" }};
+	awk -v pops="$pops" -v zeros="$zeros" 'BEGIN {{OFS = FS = "\\t" }};
 		NF == 8 && $8 != "."  {{print $4, $5, $6, $7, $8 }};
 		NF == 8 && $8 == "." {{print $1, $2, $3, pops, zeros}}' \
 		{working_directory}/annotate_pi/pi_allPops_all_positions.bed.temp \
@@ -793,7 +793,7 @@ def add_context_info_pi(pi_bedfile: str, working_directory: str, output_director
 	#		potentially just store one file where the order of populations are clear. (export one field of one line)		
 	#	Add column 6:11 to name column, as tab separated, adding names for annotation: gene, rep, cds, int, ex, neu
 	
-	awk 'BEGIN {{FS="\t"; OFS="\t"}} {{
+	awk 'BEGIN {{FS="\\t"; OFS="\\t"}} {{
 		string = "";    # Initialize the string variable
 
 		# Check if field 6 > 0 and add "gene"
@@ -831,7 +831,7 @@ def add_context_info_pi(pi_bedfile: str, working_directory: str, output_director
 	
 	# calculates average pi:
 
-	awk -v pops=$pops 'BEGIN {{FS = OFS = "\t"}} 
+	awk -v pops=$pops 'BEGIN {{FS = OFS = "\\t"}} 
 		{{	split($5, values, ", ");	# Split field 5 (comma-separated values) into an array
 			if (NR == 1) {{				# Initialize the sum array on the first run
 				for (i = 1; i <= length(values); i++) {{
@@ -857,7 +857,7 @@ def add_context_info_pi(pi_bedfile: str, working_directory: str, output_director
 			}}
 			
 			# Output the last line's fields $1, $2, $3, the calculated averages for field 5, $6 and the rest of the fields
-			print pops \n avg_values;
+			print pops \\n avg_values;
 		}}' {working_directory}/annotate_pi/pi_allPops_all_positions_addPiZeroPos_annot_condenced.bed.temp > {outputs['pi_mean_extended_bed']}
 
 
@@ -936,7 +936,7 @@ def calculate_mean_pi_template(pi_perpos_file: list, working_directory: str, out
 	done
 	
 	# add site estimates to one file with all pops
-	paste -d'\t' {working_directory}/tmp/pi.*.tmp > {outputs['pi_all_pops']}
+	paste -d'\\t' {working_directory}/tmp/pi.*.tmp > {outputs['pi_all_pops']}
 
 	rm {working_directory}/tmp/pi.*.tmp
 	
@@ -960,7 +960,7 @@ def calculate_mean_pi_template(pi_perpos_file: list, working_directory: str, out
 
 	rm {working_directory}/tmp/pi_mean.*.tmp
 	# add mean estimates to one file with all pops
-	paste -d'\t' {working_directory}/tmp/pi_mean.*.tmp > {outputs['mean_pi_all_pops']}
+	paste -d'\\t' {working_directory}/tmp/pi_mean.*.tmp > {outputs['mean_pi_all_pops']}
 
 
 """
@@ -1018,7 +1018,7 @@ def paste_allele_freq(allele_freq_files: list, working_directory: str, positions
 	done
 
 	# add site allele frequencies to one file with all pops
-	paste -d'\t' {working_directory}/tmp/allele_freq.*.tmp > {outputs['AF_all_pops']}
+	paste -d'\\t' {working_directory}/tmp/allele_freq.*.tmp > {outputs['AF_all_pops']}
 
 	rm {working_directory}/tmp/allele_freq.*.tmp
 	
@@ -1146,10 +1146,10 @@ def paste_fst_calc_mean(fst_files: list, output_directory: str, species_short: s
 	mkdir -p {output_directory}
 	
 	# add fst estimantes to one file with all pops
-	paste -d'\t' {concatenate_list_elements(inputs['fst_files'])} > {outputs['fst_allPos']}
+	paste -d'\\t' {concatenate_list_elements(inputs['fst_files'])} > {outputs['fst_allPos']}
 
 	# calculate mean:
-	awk 'BEGIN{{ FS = OFS = "\t"}};
+	awk 'BEGIN{{ FS = OFS = "\\t"}};
 		NR == 1 || NR==2 {{print $0}}
 		NR > 2 {{ 
 			for (i=1; i<=NF; i++) {{
@@ -1163,7 +1163,7 @@ def paste_fst_calc_mean(fst_files: list, output_directory: str, species_short: s
 				if (i == NF) {{
 					printf "%f", sum[i] / count[i]  # No tab for the last column
             	}} else {{
-                	printf "%f\t", sum[i] / count[i]  # Tab between columns
+                	printf "%f\\t", sum[i] / count[i]  # Tab between columns
             	}}
 			}}
 	}}' {outputs['fst_allPos']} > {outputs['fst_mean']}

@@ -25,7 +25,7 @@ def awk_create_pairs(inputfile, outputfile):
     os.system(cmd)
 
 
-def prepare_data(vcf_file: str, output_prefix: str, working_dir: str):
+def prepare_data(vcf_file: str, output_prefix: str, working_dir: str, pop_pairs_file: str):
 	"""
 	Template: Create fai indexed genome file for bedtools.
 	
@@ -37,9 +37,7 @@ def prepare_data(vcf_file: str, output_prefix: str, working_dir: str):
 	:param
 	"""
 	inputs = {'vcf_file': vcf_file}
-	outputs = {'parsed_pops_file': f'{working_dir}/adata_prep/{output_prefix}_parsed_pops.tsv',
-			'pop_pairs_file': f'{working_dir}/adata_prep/{output_prefix}_pop_pairs.tsv',
-			'outfile_dat': f'{working_dir}/adata_prep/{output_prefix}_out2.tsv'}
+	outputs = {'outfile_dat': f'{working_dir}/adata_prep/{output_prefix}_out2.tsv'}
 	options = {
 		'cores': 1,
 		'memory': '5g',
@@ -58,16 +56,7 @@ def prepare_data(vcf_file: str, output_prefix: str, working_dir: str):
 	mkdir -p {working_dir}
 	mkdir -p {working_dir}/adata_prep/
 
-	# Parse individual IDs and their counters
-	awk '/^#CHROM/ {{for(i=10; i<=NF; i++) print $i, "\t", i-9; exit}}' {inputs['vcf_file']} > {outputs['parsed_pops_file']}
-
-	# Generate all possible pairs where counter2 >= counter1
-	awk -v OFS='\t' 'NR==FNR {{id[NR] = $1; counter[NR] = $2; next}}
-	 	 {{for (i=1; i<FNR; i++) if (counter[i] <= $2) print id[i], $1, counter[i], $2}}' {outputs['parsed_pops_file']} {outputs['parsed_pops_file']} > {outputs['pop_pairs_file']}
-		 # $ids_output_file $ids_output_file > $pairs_output_file
-
-	echo Individual IDs and counters saved to {outputs['parsed_pops_file']}
-	echo Individual pairs saved to {outputs['pop_pairs_file']}
+	
 	echo Prepping additional data for 2dSFS
 
 	awk 'BEGIN{{ OFS="\t" }}
@@ -93,50 +82,38 @@ def prepare_data(vcf_file: str, output_prefix: str, working_dir: str):
 	#out1
 
 	awk 'BEGIN {{ FS="\t"; OFS="\t" }} {{$1=$2=$3=$4=$5=$6=$7=$8=$9="";gsub(",+",",",$0)}}1' {outputs['outfile_dat'].replace("out2", "out1")} > {outputs['outfile_dat']} 
-	sed -i 's/\t\+/\t/g;s/^\t//' {outputs['outfile_dat']} 
+	sed -i 's/\t\\+/\t/g;s/^\t//' {outputs['outfile_dat']}
 	sed -i '1d' {outputs['outfile_dat']} 
 	echo "Data prep finished"
-
-
-	echo "Setting up folder systems"
-
-	cat {outputs['pop_pairs_file']} | while read line 
-	do
-		echo $line   # do something with $line here
-		pop1=`awk '{{print $1}}'`
-        pop2=`awk '{{print $2}}'`
-        c1=`awk '{{print $3}}'`
-        c2=`awk '{{print $4}}'`
-		name=2dSFS_$pop1"_vs_"$pop2"_"$c1"_vs_"$c2
-		# make directories
-		mkdir -p {working_dir}/$name
-	done
 
 	"""
 	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
 
-def create_input_dict_2dSFS_target(pair_file: str) -> list:
+def create_input_dict_2dSFS(pair_file: str) -> list:
 	"""Function: Creates input dictionary for running a map function of 2dSFS for each pop pair
 	"""
 	dict_list = []
-	for line in open(pair_file):
-		print(line)
+	file = open(pair_file)
+	for line in file:
+		#print(line)
 		infos = line.strip("\n").split("\t")
-		print(infos)
+		#print(infos)
 		pop1 = infos[0]
 		pop2 = infos[1]
 		c1 = infos[2]
 		c2 = infos[3]
-		name = f'2dSFS_{pop1}_vs_{pop2}'
-		new_dict = {"pop1": pop1, "pop2": pop2, "c1": c1, "c2": c2, "name": name}
+		name = f'2dSFS_{pop1}_vs_{pop2}_{c1}_vs_{c2}'
+		output_name = f'{name}/{name}_sfs2d_jointDAFpop1_0.obs'
+		new_dict = {"pop1": pop1, "pop2": pop2, "c1": c1, "c2": c2, "name": name, "outname": output_name}
+		#print(new_dict)
 		dict_list.append(new_dict)
-
+	
 	return dict_list
 
 
-def pair_2DSFS_map_target(pop1: str, pop2: str, c1: int, c2: int, name: str, out2_file: str, working_directory: str):
+def pair_2DSFS_map_target(pop1: str, pop2: str, c1: int, c2: int, name: str, out2_file: str, working_directory: str, outname: str):
 	"""
 	Template: Create netural bed file from genes and repeats bed for species.
 	
@@ -148,8 +125,7 @@ def pair_2DSFS_map_target(pop1: str, pop2: str, c1: int, c2: int, name: str, out
 	:param
 	"""
 	inputs = {'sfs_data': out2_file}
-	outputs = {'percent_graph': f'{working_directory}/{name}/{name}.obs',
-			'nbases_graph': f'{working_directory}/snps_neutral_region_Nbases_rem.pdf'}
+	outputs = {'outfile_path': f'{working_directory}/{outname}'} # OBS define outout
 	options = {
 		'cores': 1,
 		'memory': '5g',
@@ -163,10 +139,12 @@ def pair_2DSFS_map_target(pop1: str, pop2: str, c1: int, c2: int, name: str, out
 	echo "START: $(date)"
 	echo "JobID: $SLURM_JOBID"
 
+	mkdir -p {working_directory}/{name}
+	cp {inputs['sfs_data']} /scratch/$SLURM_JOBID/out2
 
+	../../../workflow_source/scripts/2dsfs.sh /scratch/$SLURM_JOBID/out2 {pop1} {pop2} {c1} {c2} {name} {working_directory} {outputs['outfile_path']}
 	
-
-
+	mv {outputs['outfile_path'].replace(".obs", ".obs.tmp")} {outputs['outfile_path']}
 	
 	echo "END: $(date)"
 	echo "$(jobinfo "$SLURM_JOBID")"
@@ -174,6 +152,46 @@ def pair_2DSFS_map_target(pop1: str, pop2: str, c1: int, c2: int, name: str, out
 	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
+
+
+def setup_run_FSC_map_target(pop1: str, pop2: str, c1: int, c2: int, name: str, out2_file: str, working_directory: str, outname: str):
+	"""
+	Template: Setup folders and files for running FSC and start the run.
+	
+	Template I/O::
+	
+		inputs = {}
+		outputs = {}
+	
+	:param
+	"""
+	inputs = {'sfs_data': out2_file}
+	outputs = {'outfile_path': f'{working_directory}/{outname}'} # OBS define outout
+	options = {
+		'cores': 1,
+		'memory': '5g',
+		'walltime': '11:00:00'
+	}
+	spec = f"""
+	# Sources environment 										OBS EDIT:
+	source /home/"$USER"/.bashrc
+	conda activate migration_fsc
+
+	echo "START: $(date)"
+	echo "JobID: $SLURM_JOBID"
+
+	
+	mkdir -p {working_directory}/{name}
+	cp {inputs['sfs_data']} /scratch/$SLURM_JOBID/out2
+
+	../../../workflow_source/scripts/2dsfs.sh /scratch/$SLURM_JOBID/out2 {pop1} {pop2} {c1} {c2} {name} {working_directory} {outputs['outfile_path']}
+	
+	mv {outputs['outfile_path'].replace(".obs", ".obs.tmp")} {outputs['outfile_path']}
+	
+	echo "END: $(date)"
+	echo "$(jobinfo "$SLURM_JOBID")"
+	"""
+	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
 

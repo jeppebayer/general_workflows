@@ -29,7 +29,7 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
     #ANNOTATION_GTF: str = CONFIG['annotation_gtf']
     #VCF_FILES: list = CONFIG['vcf_lists']
     #COLLECTION_SITES_FILE: str = CONFIG['collection_sites_file']
-    #neutral_position_count_file: str = CONFIG['count_of_positions_file']
+    MIGRATION_DIVIDE_INTERVAL: str = CONFIG['generations_interval']
     MAX_MIG_DIVIDE: int = CONFIG['max_generations_migration_divide']
     MIN_MIG_DIVIDE: int = CONFIG['min_generations_migration_divide']
     VCF_FILE: str = CONFIG['vcf_file']
@@ -52,6 +52,8 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
     new_out_mig=f'{OUTPUT_DIR}/migration_sim/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/'
     if not os.path.isdir(new_wd):
         os.makedirs(new_wd)
+    if not os.path.isdir(f'{new_wd}/2dSFS/adata_prep'):
+        os.makedirs(f'{new_wd}/2dSFS/adata_prep')
     if not os.path.isdir(new_out_mig):
         os.makedirs(new_out_mig)
 
@@ -69,24 +71,11 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
 
     
 	# Parse individual IDs and their counters
-	
-    #awk '/^#CHROM/ {{for(i=10; i<=NF; i++) print $i, "\t", i-9; exit}}' {inputs['vcf_file']} > {outputs['parsed_pops_file']}
-    #args = ["awk", r'/^#CHROM/ {for(i=10; i<=NF; i++) print $i, "\t", i-9; exit}', VCF_FILE]
-    #cmd = """awk '/^#CHROM/ {for(i=10; i<=NF; i++) print $i, "\t", i-9; exit}' VCF_FILE"""
-    #parsed_pops = sp.Popen(args, stdin = sp.PIPE, stdout = sp.PIPE, stderr = sp.PIPE, shell = True)
-    #parsed_pops.wait()
-    awk_parse_pops_from_vcf(VCF_FILE, f'{new_wd}/2dSFS/{species_abbreviation(SPECIES_NAME)}_parsed_pops.tsv')
-    
-    #args = ["awk", r'{OFS="\t"; print $2,$4,$5,$6}', "B3LYPD.txt"]
-    #p = sp.Popen(args, stdin = sp.PIPE, stdout = sp.PIPE, stderr = sp.PIPE )
-    #print(p.stdout.readline()) # will give you the first line of the awk output
-
-
-
-	# Generate all possible pairs where counter2 >= counter1
-	#awk -v OFS='\t' 'NR==FNR {{id[NR] = $1; counter[NR] = $2; next}}
-	 #	 {{for (i=1; i<FNR; i++) if (counter[i] <= $2) print id[i], $1, counter[i], $2}}' {outputs['parsed_pops_file']} {outputs['parsed_pops_file']} > {outputs['pop_pairs_file']}
-		 # $ids_output_file $ids_output_file > $pairs_output_file
+    awk_parse_pops_from_vcf(VCF_FILE, f'{new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_parsed_pops.tsv')
+    print(f'Individual IDs and counters saved to {new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_parsed_pops.tsv')
+    # Generate all possible pairs where counter2 >= counter1
+    awk_create_pairs(f'{new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_parsed_pops.tsv', f'{new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_pop_pairs.tsv')
+    print(f'Individual pairs saved to {new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_pop_pairs.tsv')
 
 
     # Define target making genome.fna.fai
@@ -94,6 +83,7 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
             name='prepare_data_sfs',
             template=prepare_data(
                 vcf_file=VCF_FILE,
+                pop_pairs_file=f'{new_wd}/2dSFS/{species_abbreviation(SPECIES_NAME)}_pop_pairs.tsv',
                 output_prefix=species_abbreviation(SPECIES_NAME),
                 working_dir=f'{new_wd}/2dSFS/')
         )
@@ -101,22 +91,58 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
     #################
     ### RUN 2dSFS ###
     #################
-    # create input dict based on output from above
-    # make function that returns dicst of pop pairs
-    # read pop{outputs['pop_pairs_file']}
-# neq idea:# make
-    # make dictionary directly from parsing the names of directories that will be made in previous template
-
-#    input_dict_list = create_input_dict_2dSFS(pair_file = make_ready_for_2dSFS_pairs.outputs['pop_pairs_file'])
-    #names = [d for d in input_dict_list['name']]
+        # funtion used to create dictionaries, based on files created in this source flow.
+    input_dict_list = create_input_dict_2dSFS(pair_file = f'{new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_pop_pairs.tsv')
     #print(input_dict_list)
     
-    #neutral_vcf_files_runtemplate_map = gwf.map(
-     #   #name=create_input_dict_2dSFS_target(pair_file = make_ready_for_2dSFS_pairs.outputs['pop_pairs_file']),
-      #  template_func = pair_2DSFS_map_target,
-       # inputs = create_input_dict_2dSFS_target(pair_file = make_ready_for_2dSFS_pairs.outputs['pop_pairs_file']),
-        #extra = {'out2_file': make_ready_for_2dSFS_pairs.outputs['outfile_dat'], 
-         #        'working_directory': f'{new_wd}/2dSFS/'})
+    neutral_vcf_files_runtemplate_map = gwf.map(
+        #name=[d['name'] for d in input_dict_list],
+        template_func = pair_2DSFS_map_target,
+        inputs = input_dict_list,
+        extra = {'out2_file': make_ready_for_2dSFS_pairs.outputs['outfile_dat'], 
+                 'working_directory': f'{new_wd}/2dSFS/'})
     
+
+    #############################################################
+    ### implement a FSC run with e.g. 100 as migration divide ###
+    #############################################################
+        # then afterwards I can consider whether one script should run all pop comparisons for one migration divide (as loop)? or
+            # if I should loop around migrations divides for each comparison?
+            # or each pair-migration divide in each run - probably easiest?
+
+    #print([{'outfile_path': d['outfile_path']} for d in neutral_vcf_files_runtemplate_map.outputs])
+    #SFS_paths=[{'outfile_path': d['outfile_path']} for d in neutral_vcf_files_runtemplate_map.outputs] # as list of dics to input in map.
+        #Change key
+    #for k in SFS_paths:
+     #   k['SFS_file'] = k.pop('outfile_path')
+    
+    SFS_paths = [d['outfile_path'] for d in neutral_vcf_files_runtemplate_map.outputs] # as list of paths to combine with another list? into dicts
+    names_list = [d['name'] for d in input_dict_list] # as list of paths to combine with another list? into dicts
+    input_dict_list_FSC = [{'SFS_file': f, 'name_pops': n} for f, n in zip(SFS_paths, names_list)]
+
+    print(input_dict_list_FSC)
+    
+
+
+    # set up folder structure, copy .obs into it and change name
+    #for migration_divide in range(MIN_MIG_DIVIDE, MAX_MIG_DIVIDE, MIGRATION_DIVIDE_INTERVAL):
+    for migration_divide in 600:
+        #print(migration_divide)
+        
+        setup_run_FastSimCoal = gwf.map(
+            #name=[d['name'] for d in input_dict_list],
+            template_func = setup_run_FSC_map_target,
+            inputs = SFS_paths,
+            extra = {'out2_file': make_ready_for_2dSFS_pairs.outputs['outfile_dat'], 
+                    'working_directory': f'{new_wd}/2dSFS/'})
+    
+
+
+
+
+
+
+
+
 
     return gwf

@@ -24,7 +24,14 @@ generations_interval: 100
 vcf_file: /faststorage/project/EcoGenetics/people/jilong/jb_2dsfs/data/EntNic.vcf
 
 # list of populations to exclude from analysis (whole names as strings)
+  # OBS; not implemented yet
 pops_exclude_list:
+  - 
+
+# list of population COMPARISONS to exclude from analysis (whole names divided by ., e.g. EntNic_aaRJ_C225.EntNic_aaRJ_C225)
+  # e.g. due to too short split time?
+  # OBS; not implemented yet
+pop_pairs_exclude_list:
   - 
 
 
