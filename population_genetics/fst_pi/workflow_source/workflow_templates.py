@@ -570,7 +570,7 @@ def modify_pi_file_template(sorted_pi_file: str, working_directory: str):
 			'pi_all_pops_bed': f'{working_directory}/pi/pi_allPops_variant_positions.bed'}
 	options = {
 		'cores': 1,
-		'memory': '80g',
+		'memory': '120g',
 		'walltime': '11:59:00'
 	}
 	spec = f"""

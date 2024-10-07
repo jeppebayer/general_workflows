@@ -105,12 +105,13 @@ def create_input_dict_2dSFS(pair_file: str) -> list:
 		c1 = infos[2]
 		c2 = infos[3]
 		name = f'2dSFS_{pop1}_vs_{pop2}_{c1}_vs_{c2}'
-		output_name = f'{name}/{name}_sfs2d_jointDAFpop1_0.obs'
+		output_name = f'{name}/{name}_sfs2d_jointMAFpop1_0.obs'
 		new_dict = {"pop1": pop1, "pop2": pop2, "c1": c1, "c2": c2, "name": name, "outname": output_name}
 		#print(new_dict)
 		dict_list.append(new_dict)
 	
 	return dict_list
+
 
 
 def pair_2DSFS_map_target(pop1: str, pop2: str, c1: int, c2: int, name: str, out2_file: str, working_directory: str, outname: str):
@@ -152,9 +153,12 @@ def pair_2DSFS_map_target(pop1: str, pop2: str, c1: int, c2: int, name: str, out
 	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
+def create_run_name_fsc(idx: str, target: AnonymousTarget) -> str:
+	#pair_name=target.inputs['name_pops']
+	return f'run_fsc_migr_{os.path.basename(target.outputs["parameter_file"]).replace("-","_")}'
 
 
-def setup_run_FSC_map_target(pop1: str, pop2: str, c1: int, c2: int, name: str, out2_file: str, working_directory: str, outname: str):
+def setup_run_FSC_map_target(SFS_file: str, migration_divide: int, name_pops: str):
 	"""
 	Template: Setup folders and files for running FSC and start the run.
 	
@@ -165,12 +169,12 @@ def setup_run_FSC_map_target(pop1: str, pop2: str, c1: int, c2: int, name: str, 
 	
 	:param
 	"""
-	inputs = {'sfs_data': out2_file}
-	outputs = {'outfile_path': f'{working_directory}/{outname}'} # OBS define outout
+	inputs = {'SFS_file': SFS_file}
+	outputs = {'parameter_file': f'{os.path.dirname(inputs['SFS_file'])}/{migration_divide}/{os.path.basename(inputs['SFS_file']).replace("_sfs2d_","_" + str(migration_divide) + "migDiv_sfs2d_").replace(".obs",".param").replace("_jointMAFpop1_0", "")}'} 
 	options = {
 		'cores': 1,
-		'memory': '5g',
-		'walltime': '11:00:00'
+		'memory': '1g',
+		'walltime': '01:00:00'
 	}
 	spec = f"""
 	# Sources environment 										OBS EDIT:
@@ -180,14 +184,56 @@ def setup_run_FSC_map_target(pop1: str, pop2: str, c1: int, c2: int, name: str, 
 	echo "START: $(date)"
 	echo "JobID: $SLURM_JOBID"
 
+	# Make files and folders ready:
 	
-	mkdir -p {working_directory}/{name}
-	cp {inputs['sfs_data']} /scratch/$SLURM_JOBID/out2
+	# get folder name
+	diris={os.path.dirname(inputs['SFS_file'])}
+	echo $diris
+	
+	# make subfolder for specific migration divide
+	mkdir -p $diris/{migration_divide}
+	mig_div_var={migration_divide}
 
-	../../../workflow_source/scripts/2dsfs.sh /scratch/$SLURM_JOBID/out2 {pop1} {pop2} {c1} {c2} {name} {working_directory} {outputs['outfile_path']}
+	# Copy obs sfs and modify name to include migration divide
+	obs_file=`ls $diris/*sfs2d_jointMAFpop1_0.obs`
+	obs_file_base=`basename $obs_file`
+	echo $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}}
+
+	if [ ! -f $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}} ]
+	then
+		echo enter copy
+		cp $obs_file $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}}
+	fi
+	ls $diris/{migration_divide}/
+	#cp $diris/*sfs2d_jointMAFpop1_0.obs $diris/{migration_divide}/
 	
-	mv {outputs['outfile_path'].replace(".obs", ".obs.tmp")} {outputs['outfile_path']}
 	
+	# Copy est and tpl files
+	est_file=../../../workflow_source/scripts/pop1_pop2_sfs2d.est
+	tpl_file=../../../workflow_source/scripts/pop1_pop2_sfs2d.tpl
+	est_base=`basename $est_file`
+	tpl_base=`basename $tpl_file`
+	
+	# modify them and change names
+	if [ ! -f $diris/{migration_divide}/${{est_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}} ]
+	then
+		cp $est_file $diris/{migration_divide}/${{est_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}}
+	fi
+	if [ ! -f $diris/{migration_divide}/${{tpl_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}} ]
+	then
+		cp $tpl_file $diris/{migration_divide}/${{tpl_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}}
+	fi
+
+	# now fix pop names:
+	rename "pop1_pop2" {name_pops} $diris/{migration_divide}/pop1_pop2*
+
+
+	# run FastSimCoal
+	cd $diris/{migration_divide}
+	/faststorage/project/EcoGenetics/people/anneaa/programs/fastsimcoal/fsc28_linux64/fsc28 -t *.tpl -e *.est -n 100000 -m -M -L 40
+	
+	mv {outputs['parameter_file'].replace(".param", ".par")} {outputs['parameter_file']}
+
 	echo "END: $(date)"
 	echo "$(jobinfo "$SLURM_JOBID")"
 	"""
@@ -196,6 +242,11 @@ def setup_run_FSC_map_target(pop1: str, pop2: str, c1: int, c2: int, name: str, 
 
 
 
+
+# Observed data file ("../2dSFS_EntNic_aaRJ_C225_vs_EntNic_BIJ-C30_1_vs_3_3000migDiv_sfs2d_jointMAFpop1_0.obs") does not seem to be present
+# Unable to compute the likelihood 
+# TSimSettings::performBrenMinimization: Unable to read observed SFS and to estimate parameters ...
+# mv: cannot stat '/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline//migration_sim/Collembola/Entomobrya_nicoleti/fsc//2dSFS//2dSFS_EntNic_aaRJ_C225_vs_EntNic_BIJ-C30_1_vs_3/3000/2dSFS_EntNic_aaRJ_C225_vs_EntNic_BIJ-C30_1_vs_3_3000migDiv_sfs2d.paramam': No such file or directory
 
 
 

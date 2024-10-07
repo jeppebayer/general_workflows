@@ -120,22 +120,21 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
     names_list = [d['name'] for d in input_dict_list] # as list of paths to combine with another list? into dicts
     input_dict_list_FSC = [{'SFS_file': f, 'name_pops': n} for f, n in zip(SFS_paths, names_list)]
 
-    print(input_dict_list_FSC)
+    print(input_dict_list_FSC[0])
+    print(input_dict_list_FSC[0]['name_pops'])
     
-
 
     # set up folder structure, copy .obs into it and change name
-    #for migration_divide in range(MIN_MIG_DIVIDE, MAX_MIG_DIVIDE, MIGRATION_DIVIDE_INTERVAL):
-    for migration_divide in 600:
+    for migration_divide in range(MIN_MIG_DIVIDE, MAX_MIG_DIVIDE, MIGRATION_DIVIDE_INTERVAL):
         #print(migration_divide)
-        
+        #migration_divide=600
+        #input_dict_list_FSC = [{'SFS_file': f, 'name_pops': n} for f, n in zip(SFS_paths, names_list)]
         setup_run_FastSimCoal = gwf.map(
-            #name=[d['name'] for d in input_dict_list],
-            template_func = setup_run_FSC_map_target,
-            inputs = SFS_paths,
-            extra = {'out2_file': make_ready_for_2dSFS_pairs.outputs['outfile_dat'], 
-                    'working_directory': f'{new_wd}/2dSFS/'})
-    
+            name = create_run_name_fsc,
+            template_func = setup_run_FSC_map_target ,
+            inputs = input_dict_list_FSC[0:2],
+            extra = {'migration_divide': migration_divide})
+
 
 
 
