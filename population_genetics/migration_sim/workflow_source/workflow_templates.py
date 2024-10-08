@@ -155,7 +155,7 @@ def pair_2DSFS_map_target(pop1: str, pop2: str, c1: int, c2: int, name: str, out
 
 def create_run_name_fsc(idx: str, target: AnonymousTarget) -> str:
 	#pair_name=target.inputs['name_pops']
-	return f'run_fsc_migr_{os.path.basename(target.outputs["parameter_file"]).replace("-","_")}'
+	return f'run_fsc_migr_{os.path.basename(target.outputs["parameter_value_likelihood_file"]).replace("-","_")}'
 
 
 def setup_run_FSC_map_target(SFS_file: str, migration_divide: int, name_pops: str):
@@ -170,16 +170,20 @@ def setup_run_FSC_map_target(SFS_file: str, migration_divide: int, name_pops: st
 	:param
 	"""
 	inputs = {'SFS_file': SFS_file}
-	outputs = {'parameter_file': f'{os.path.dirname(inputs['SFS_file'])}/{migration_divide}/{os.path.basename(inputs['SFS_file']).replace("_sfs2d_","_" + str(migration_divide) + "migDiv_sfs2d_").replace(".obs",".param").replace("_jointMAFpop1_0", "")}'} 
+	outputs = {'parameter_value_likelihood_file': f'{os.path.dirname(inputs['SFS_file'])}/{migration_divide}/{os.path.basename(inputs['SFS_file']).replace("_sfs2d_","_" + str(migration_divide) + "migDiv_sfs2d_").replace("_jointMAFpop1_0.obs", "")}/{os.path.basename(inputs['SFS_file']).replace("_sfs2d_","_" + str(migration_divide) + "migDiv_sfs2d_").replace(".obs",".bestlikelyhoods").replace("_jointMAFpop1_0", "")}'} 
 	options = {
 		'cores': 1,
 		'memory': '1g',
-		'walltime': '01:00:00'
+		'walltime': '11:59:00'
 	}
 	spec = f"""
 	# Sources environment 										OBS EDIT:
 	source /home/"$USER"/.bashrc
 	conda activate migration_fsc
+
+	
+	2dSFS_EntNic_aaRJ_C225_vs_EntNic_aeRoe-C36_1_vs_2_900migDiv_sfs2d.bestlhoods
+
 
 	echo "START: $(date)"
 	echo "JobID: $SLURM_JOBID"
@@ -188,7 +192,7 @@ def setup_run_FSC_map_target(SFS_file: str, migration_divide: int, name_pops: st
 	
 	# get folder name
 	diris={os.path.dirname(inputs['SFS_file'])}
-	echo $diris
+	echo Input directory of SFS is: $diris
 	
 	# make subfolder for specific migration divide
 	mkdir -p $diris/{migration_divide}
@@ -197,11 +201,11 @@ def setup_run_FSC_map_target(SFS_file: str, migration_divide: int, name_pops: st
 	# Copy obs sfs and modify name to include migration divide
 	obs_file=`ls $diris/*sfs2d_jointMAFpop1_0.obs`
 	obs_file_base=`basename $obs_file`
-	echo $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}}
+	echo SFS is moved and renamed for new run like this: $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}}
 
 	if [ ! -f $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}} ]
 	then
-		echo enter copy
+		echo .obs file did not exist in correct folder, copying and renaming.
 		cp $obs_file $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}}
 	fi
 	ls $diris/{migration_divide}/
@@ -224,15 +228,21 @@ def setup_run_FSC_map_target(SFS_file: str, migration_divide: int, name_pops: st
 		cp $tpl_file $diris/{migration_divide}/${{tpl_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}}
 	fi
 
+	
+	# change migration tpl
+	sed -i -e 's/600/{migration_divide}/g' $diris/{migration_divide}/${{tpl_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}}
+
 	# now fix pop names:
 	rename "pop1_pop2" {name_pops} $diris/{migration_divide}/pop1_pop2*
 
 
 	# run FastSimCoal
 	cd $diris/{migration_divide}
-	/faststorage/project/EcoGenetics/people/anneaa/programs/fastsimcoal/fsc28_linux64/fsc28 -t *.tpl -e *.est -n 100000 -m -M -L 40
-	
-	mv {outputs['parameter_file'].replace(".param", ".par")} {outputs['parameter_file']}
+	#/faststorage/project/EcoGenetics/people/anneaa/programs/fastsimcoal/fsc28_linux64/fsc28 -t *.tpl -e *.est -n 100000 -m -M -L 40 -c 2
+	/faststorage/project/EcoGenetics/people/anneaa/programs/fastsimcoal/fsc28_linux64/fsc28 -t *.tpl -e *.est -n 100000 -m -M -L 40 -y 3
+
+	echo FastSimCoal run has finished
+	mv {outputs['parameter_value_likelihood_file'].replace(".bestlikelyhoods", ".bestlhoods")} {outputs['parameter_value_likelihood_file']}
 
 	echo "END: $(date)"
 	echo "$(jobinfo "$SLURM_JOBID")"

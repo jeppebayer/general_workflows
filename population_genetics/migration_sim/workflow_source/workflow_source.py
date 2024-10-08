@@ -120,8 +120,7 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
     names_list = [d['name'] for d in input_dict_list] # as list of paths to combine with another list? into dicts
     input_dict_list_FSC = [{'SFS_file': f, 'name_pops': n} for f, n in zip(SFS_paths, names_list)]
 
-    print(input_dict_list_FSC[0])
-    print(input_dict_list_FSC[0]['name_pops'])
+    #print(input_dict_list_FSC[0])
     
 
     # set up folder structure, copy .obs into it and change name
@@ -132,7 +131,8 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
         setup_run_FastSimCoal = gwf.map(
             name = create_run_name_fsc,
             template_func = setup_run_FSC_map_target ,
-            inputs = input_dict_list_FSC[0:2],
+            inputs = input_dict_list_FSC[0:200],
+            #inputs = input_dict_list_FSC,
             extra = {'migration_divide': migration_divide})
 
 
