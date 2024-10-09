@@ -1,7 +1,7 @@
 # Tag identifying file association.
 TAG: jeppebayer:EcoGenetics,museomics,vcf:workflowconfiguration
 # The name of the relevant project account.
-account: spider2
+account: EcoGenetics
 # Taxonomic group.
 taxonomic_group: 
 # Name of species being analyzed.

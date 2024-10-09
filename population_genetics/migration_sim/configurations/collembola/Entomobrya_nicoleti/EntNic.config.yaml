@@ -21,12 +21,21 @@ min_generations_migration_divide: 100
 # interval between estimations (step size)
 generations_interval: 100
 # VCF file (combined for all pops)
-vcf_file: /faststorage/project/EcoGenetics/people/jilong/jb_2dsfs/data/EntNic.vcf
+vcf_file: /home/anneaa/EcoGenetics/people/Jesper_Bechsgaard/jb_2dsfs/data/EntNic.vcf
+# /faststorage/project/EcoGenetics/people/jilong/jb_2dsfs/data/EntNic.vcf
+# /home/anneaa/EcoGenetics/people/Jesper_Bechsgaard/jb_2dsfs/data/EntNic.vcf
 
-# list of populations to exclude from analysis (whole names as strings)
+# list of populations to exclude from analysis (whole names as strings, iuncluding species abbreviation)
   # OBS; not implemented yet
 pops_exclude_list:
-  - 
+  - EntNic_JEJ-C119
+  - EntNic_KoeJ-C212
+  - EntNic_VAJ-C24
+  - EntNic_HHJ-C162
+  - EntNic_SBJ-C52
+  - EntNic_LVJ-C76
+  - EntNic_ULJ-C122
+  - EntNic_SKJ-C16
 
 # list of population COMPARISONS to exclude from analysis (whole names divided by ., e.g. EntNic_aaRJ_C225.EntNic_aaRJ_C225)
   # e.g. due to too short split time?

@@ -28,6 +28,7 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
     #GENOME_PATH: str = CONFIG['reference_genome_path']
     #ANNOTATION_GTF: str = CONFIG['annotation_gtf']
     #VCF_FILES: list = CONFIG['vcf_lists']
+    EXCLUDE_POPS: list = CONFIG['pops_exclude_list']
     #COLLECTION_SITES_FILE: str = CONFIG['collection_sites_file']
     MIGRATION_DIVIDE_INTERVAL: str = CONFIG['generations_interval']
     MAX_MIG_DIVIDE: int = CONFIG['max_generations_migration_divide']
@@ -92,7 +93,8 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
     ### RUN 2dSFS ###
     #################
         # funtion used to create dictionaries, based on files created in this source flow.
-    input_dict_list = create_input_dict_2dSFS(pair_file = f'{new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_pop_pairs.tsv')
+    input_dict_list = create_input_dict_2dSFS(pair_file = f'{new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_pop_pairs.tsv', exclude_list = EXCLUDE_POPS)
+    #print(EXCLUDE_POPS)
     #print(input_dict_list)
     
     neutral_vcf_files_runtemplate_map = gwf.map(
@@ -131,13 +133,15 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
         setup_run_FastSimCoal = gwf.map(
             name = create_run_name_fsc,
             template_func = setup_run_FSC_map_target ,
-            inputs = input_dict_list_FSC[0:200],
+            inputs = input_dict_list_FSC[0:150],
             #inputs = input_dict_list_FSC,
             extra = {'migration_divide': migration_divide})
 
 
+# collect outputs
 
-
+    plotting_files = collect(setup_run_FastSimCoal.outputs, ['parameter_value_likelihood_file'])
+    #print(plotting_files)
 
 
 

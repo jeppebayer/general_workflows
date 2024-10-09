@@ -91,7 +91,7 @@ def prepare_data(vcf_file: str, output_prefix: str, working_dir: str, pop_pairs_
 
 
 
-def create_input_dict_2dSFS(pair_file: str) -> list:
+def create_input_dict_2dSFS(pair_file: str, exclude_list: list) -> list:
 	"""Function: Creates input dictionary for running a map function of 2dSFS for each pop pair
 	"""
 	dict_list = []
@@ -102,6 +102,12 @@ def create_input_dict_2dSFS(pair_file: str) -> list:
 		#print(infos)
 		pop1 = infos[0]
 		pop2 = infos[1]
+		if any(pop1 in s for s in exclude_list):
+			#print(pop1 + " in exclude_list")
+			continue
+		if any(pop2 in s for s in exclude_list):
+			#print(pop2 + " in exclude_list")
+			continue
 		c1 = infos[2]
 		c2 = infos[3]
 		name = f'2dSFS_{pop1}_vs_{pop2}_{c1}_vs_{c2}'
@@ -129,7 +135,7 @@ def pair_2DSFS_map_target(pop1: str, pop2: str, c1: int, c2: int, name: str, out
 	outputs = {'outfile_path': f'{working_directory}/{outname}'} # OBS define outout
 	options = {
 		'cores': 1,
-		'memory': '5g',
+		'memory': '1g',
 		'walltime': '11:00:00'
 	}
 	spec = f"""
@@ -180,10 +186,6 @@ def setup_run_FSC_map_target(SFS_file: str, migration_divide: int, name_pops: st
 	# Sources environment 										OBS EDIT:
 	source /home/"$USER"/.bashrc
 	conda activate migration_fsc
-
-	
-	2dSFS_EntNic_aaRJ_C225_vs_EntNic_aeRoe-C36_1_vs_2_900migDiv_sfs2d.bestlhoods
-
 
 	echo "START: $(date)"
 	echo "JobID: $SLURM_JOBID"

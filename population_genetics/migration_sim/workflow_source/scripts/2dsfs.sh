@@ -17,7 +17,7 @@ wd=$wd/$name/
 echo modified working directory is: $wd
 output_filepath=$8; echo output filepath is: $output_filepath
 
-
+mkdir -p $wd
 ##deterines which populations to use
 awk -v col1="$column1" -v col2="$column2" '{print $col1"t"$col2}' $out2 > $wd/$name.out4
 
@@ -127,16 +127,17 @@ cat $wd/$name.line1 $wd/$name.line2 $wd/$name.line3 $wd/$name.line4 $wd/$name.li
 awk 'BEGIN { FS = OFS = "\t" } { for(i=1; i<=NF; i++) if($i ~ /^ *$/) $i = 0 }; 1' $wd/$name.lines > $wd/$name.lines_empty
 
     # make first header
-echo "1 observations" > $wd/header.txt
+#echo "1 observations" > $wd/header.txt
     # make the second header
-second_header=`awk 'BEGIN {ORS = "\t"}; {print $1}' $wd/$name.lines| sed 's:d1_:d0_:g'`
-echo "$second_header" >> $wd/header.txt
+#second_header=`awk 'BEGIN {ORS = "\t"}; {print ORS, $1}' $wd/$name.lines| sed 's:d1_:d0_:g'`
+#echo "$second_header" >> $wd/header.txt
 
-cat $wd/header.txt $wd/$name.lines_empty > ${output_filepath/.obs/.obs.tmp}
+#cat $wd/header.txt $wd/$name.lines_empty > ${output_filepath/.obs/.obs.tmp}
+cat /faststorage/project/EcoGenetics/general_workflows/population_genetics/migration_sim/workflow_source/scripts/header $wd/$name.lines_empty > ${output_filepath/.obs/.obs.tmp}
 #cat 2dSFS_header $wd/$name.lines_empty > $output_file
 
 #sed -i 's/.5//g' 2d_SFS/pop1_2_sfs2d_jointDAFpop1_0.obs
 
 rm $wd/$name.line*
 rm $wd/$name.out*
-rm $wd/header.txt
+#rm $wd/header.txt
