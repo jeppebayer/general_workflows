@@ -93,6 +93,7 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
     ### RUN 2dSFS ###
     #################
         # funtion used to create dictionaries, based on files created in this source flow.
+    #input_dict_list = create_input_dict_2dSFS(pair_file = f'{new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_pop_pairs.tsv', exclude_list = [])
     input_dict_list = create_input_dict_2dSFS(pair_file = f'{new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_pop_pairs.tsv', exclude_list = EXCLUDE_POPS)
     #print(EXCLUDE_POPS)
     #print(input_dict_list)
@@ -140,7 +141,7 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
 
 # collect outputs
 
-    plotting_files = collect(setup_run_FastSimCoal.outputs, ['parameter_value_likelihood_file'])
+    ##plotting_files = collect(setup_run_FastSimCoal.outputs, ['parameter_value_likelihood_file'])
     #print(plotting_files)
 
 

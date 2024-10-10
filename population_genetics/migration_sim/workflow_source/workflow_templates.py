@@ -41,7 +41,7 @@ def prepare_data(vcf_file: str, output_prefix: str, working_dir: str, pop_pairs_
 	options = {
 		'cores': 1,
 		'memory': '5g',
-		'walltime': '11:00:00'
+		'walltime': '24:00:00'
 	}
 	spec = f"""
 	# Sources environment 										OBS EDIT:
@@ -131,7 +131,8 @@ def pair_2DSFS_map_target(pop1: str, pop2: str, c1: int, c2: int, name: str, out
 	
 	:param
 	"""
-	inputs = {'sfs_data': out2_file}
+	inputs = {}
+	##inputs = {'sfs_data': out2_file}
 	outputs = {'outfile_path': f'{working_directory}/{outname}'} # OBS define outout
 	options = {
 		'cores': 1,
@@ -147,9 +148,9 @@ def pair_2DSFS_map_target(pop1: str, pop2: str, c1: int, c2: int, name: str, out
 	echo "JobID: $SLURM_JOBID"
 
 	mkdir -p {working_directory}/{name}
-	cp {inputs['sfs_data']} /scratch/$SLURM_JOBID/out2
-
-	../../../workflow_source/scripts/2dsfs.sh /scratch/$SLURM_JOBID/out2 {pop1} {pop2} {c1} {c2} {name} {working_directory} {outputs['outfile_path']}
+	##cp inputs['sfs_data'] /scratch/$SLURM_JOBID/out2
+	## echo {out2_file}
+	##../../../workflow_source/scripts/2dsfs.sh /scratch/$SLURM_JOBID/out2 {pop1} {pop2} {c1} {c2} {name} {working_directory} {outputs['outfile_path']}
 	
 	mv {outputs['outfile_path'].replace(".obs", ".obs.tmp")} {outputs['outfile_path']}
 	
@@ -252,6 +253,93 @@ def setup_run_FSC_map_target(SFS_file: str, migration_divide: int, name_pops: st
 	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
+
+def setup_run_FSC_map_target_nosingletons(SFS_file: str, migration_divide: int, name_pops: str):
+	"""
+	Template: Setup folders and files for running FSC and start the run.
+	
+	Template I/O::
+	
+		inputs = {}
+		outputs = {}
+	
+	:param
+	"""
+	inputs = {'SFS_file': SFS_file}
+	outputs = {'parameter_value_likelihood_file': f'{os.path.dirname(inputs['SFS_file'])}/{migration_divide}/{os.path.basename(inputs['SFS_file']).replace("_sfs2d_","_NoSingl_" + str(migration_divide) + "migDiv_sfs2d_").replace("_jointMAFpop1_0.obs", "")}/{os.path.basename(inputs['SFS_file']).replace("_sfs2d_","_" + str(migration_divide) + "migDiv_sfs2d_").replace(".obs",".bestlikelyhoods").replace("_jointMAFpop1_0", "")}'} 
+	options = {
+		'cores': 1,
+		'memory': '1g',
+		'walltime': '11:59:00'
+	}
+	spec = f"""
+	# Sources environment 										OBS EDIT:
+	source /home/"$USER"/.bashrc
+	conda activate migration_fsc
+
+	echo "START: $(date)"
+	echo "JobID: $SLURM_JOBID"
+
+	# Make files and folders ready:
+	
+	# get folder name
+	diris={os.path.dirname(inputs['SFS_file'])}
+	echo Input directory of SFS is: $diris
+	
+	# make subfolder for specific migration divide
+	mkdir -p $diris/{migration_divide}
+	mig_div_var={migration_divide}
+
+	# Copy obs sfs and modify name to include migration divide
+	obs_file=`ls $diris/*sfs2d_jointMAFpop1_0.obs`
+	obs_file_base=`basename $obs_file`
+	echo SFS is moved and renamed for new run like this: $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_NoSingl_"$mig_div_var"migDiv_sfs2d_"}}
+
+	if [ ! -f $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_NoSingl_"$mig_div_var"migDiv_sfs2d_"}} ]
+	then
+		echo .obs file did not exist in correct folder, copying and renaming.
+		cp $obs_file $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_NoSingl_"$mig_div_var"migDiv_sfs2d_"}}
+	fi
+	ls $diris/{migration_divide}/
+	#cp $diris/*sfs2d_jointMAFpop1_0.obs $diris/{migration_divide}/
+	
+	
+	# Copy est and tpl files
+	est_file=../../../workflow_source/scripts/pop1_pop2_sfs2d.est
+	tpl_file=../../../workflow_source/scripts/pop1_pop2_sfs2d.tpl
+	est_base=`basename $est_file`
+	tpl_base=`basename $tpl_file`
+	
+	# modify them and change names
+	if [ ! -f $diris/{migration_divide}/${{est_base/"_sfs2d"/"_NoSingl_"$mig_div_var"migDiv_sfs2d"}} ]
+	then
+		cp $est_file $diris/{migration_divide}/${{est_base/"_sfs2d"/"_NoSingl_"$mig_div_var"migDiv_sfs2d"}}
+	fi
+	if [ ! -f $diris/{migration_divide}/${{tpl_base/"_sfs2d"/"_NoSingl_"$mig_div_var"migDiv_sfs2d"}} ]
+	then
+		cp $tpl_file $diris/{migration_divide}/${{tpl_base/"_sfs2d"/"_NoSingl_"$mig_div_var"migDiv_sfs2d"}}
+	fi
+
+	
+	# change migration tpl
+	sed -i -e 's/600/{migration_divide}/g' $diris/{migration_divide}/${{tpl_base/"_sfs2d"/"_NoSingl_"$mig_div_var"migDiv_sfs2d"}}
+
+	# now fix pop names:
+	rename "pop1_pop2" {name_pops} $diris/{migration_divide}/pop1_pop2*
+
+
+	# run FastSimCoal
+	cd $diris/{migration_divide}
+	#/faststorage/project/EcoGenetics/people/anneaa/programs/fastsimcoal/fsc28_linux64/fsc28 -t *.tpl -e *.est -n 100000 -m -M -L 40 -c 2
+	/faststorage/project/EcoGenetics/people/anneaa/programs/fastsimcoal/fsc28_linux64/fsc28 -t *.tpl -e *.est -n 100000 -m -M -L 40 -y 3 --nosingleton
+
+	echo FastSimCoal run has finished
+	mv {outputs['parameter_value_likelihood_file'].replace(".bestlikelyhoods", ".bestlhoods")} {outputs['parameter_value_likelihood_file']}
+
+	echo "END: $(date)"
+	echo "$(jobinfo "$SLURM_JOBID")"
+	"""
+	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
 
