@@ -29,6 +29,7 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
     #ANNOTATION_GTF: str = CONFIG['annotation_gtf']
     #VCF_FILES: list = CONFIG['vcf_lists']
     EXCLUDE_POPS: list = CONFIG['pops_exclude_list']
+    INCLUDE_POPS: list = CONFIG['pops_INCLUDE_list']
     #COLLECTION_SITES_FILE: str = CONFIG['collection_sites_file']
     MIGRATION_DIVIDE_INTERVAL: str = CONFIG['generations_interval']
     MAX_MIG_DIVIDE: int = CONFIG['max_generations_migration_divide']
@@ -79,7 +80,7 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
     print(f'Individual pairs saved to {new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_pop_pairs.tsv')
 
 
-    # Define target making genome.fna.fai
+    # Prepare data for making SFS (slow)
     make_ready_for_2dSFS_pairs = gwf.target_from_template(
             name='prepare_data_sfs',
             template=prepare_data(
@@ -94,7 +95,7 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
     #################
         # funtion used to create dictionaries, based on files created in this source flow.
     #input_dict_list = create_input_dict_2dSFS(pair_file = f'{new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_pop_pairs.tsv', exclude_list = [])
-    input_dict_list = create_input_dict_2dSFS(pair_file = f'{new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_pop_pairs.tsv', exclude_list = EXCLUDE_POPS)
+    input_dict_list = create_input_dict_2dSFS(pair_file = f'{new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_pop_pairs.tsv', include_list = INCLUDE_POPS, exclude_list = EXCLUDE_POPS)
     #print(EXCLUDE_POPS)
     #print(input_dict_list)
     

@@ -91,7 +91,7 @@ def prepare_data(vcf_file: str, output_prefix: str, working_dir: str, pop_pairs_
 
 
 
-def create_input_dict_2dSFS(pair_file: str, exclude_list: list) -> list:
+def create_input_dict_2dSFS(pair_file: str, exclude_list: list, include_list: list) -> list:
 	"""Function: Creates input dictionary for running a map function of 2dSFS for each pop pair
 	"""
 	dict_list = []
@@ -101,20 +101,27 @@ def create_input_dict_2dSFS(pair_file: str, exclude_list: list) -> list:
 		infos = line.strip("\n").split("\t")
 		#print(infos)
 		pop1 = infos[0]
+		#print(pop1)
 		pop2 = infos[1]
+		#print(pop2)
 		if any(pop1 in s for s in exclude_list):
 			#print(pop1 + " in exclude_list")
 			continue
 		if any(pop2 in s for s in exclude_list):
 			#print(pop2 + " in exclude_list")
 			continue
-		c1 = infos[2]
-		c2 = infos[3]
-		name = f'2dSFS_{pop1}_vs_{pop2}_{c1}_vs_{c2}'
-		output_name = f'{name}/{name}_sfs2d_jointMAFpop1_0.obs'
-		new_dict = {"pop1": pop1, "pop2": pop2, "c1": c1, "c2": c2, "name": name, "outname": output_name}
-		#print(new_dict)
-		dict_list.append(new_dict)
+		conditions = [any(pop1 in s for s in include_list), any(pop2 in s for s in include_list)]
+		if all(conditions):
+			#print("yes")
+			c1 = infos[2]
+			c2 = infos[3]
+			name = f'2dSFS_{pop1}_vs_{pop2}_{c1}_vs_{c2}'
+			output_name = f'{name}/{name}_sfs2d_jointMAFpop1_0.obs'
+			new_dict = {"pop1": pop1, "pop2": pop2, "c1": c1, "c2": c2, "name": name, "outname": output_name}
+					#print(new_dict)
+			dict_list.append(new_dict)
+		#else:
+		#	print("no")
 	
 	return dict_list
 
