@@ -134,8 +134,8 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
         setup_run_FastSimCoal = gwf.map(
             name = create_run_name_fsc,
             template_func = setup_run_FSC_map_target ,
-            inputs = input_dict_list_FSC[0:150],
-            #inputs = input_dict_list_FSC,
+            #inputs = input_dict_list_FSC[0:150],
+            inputs = input_dict_list_FSC,
             extra = {'migration_divide': migration_divide})
 
 
