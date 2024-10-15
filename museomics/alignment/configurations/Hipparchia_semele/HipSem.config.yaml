@@ -1,0 +1,120 @@
+# Tag identifying file association.
+TAG: jeppebayer:EcoGenetics,museomics,mapping:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Name of species being analyzed
+species_name: Hipparchia semele
+# Path to reference genome file in FASTA format
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Hipparchia_semele/GCA_933228805.2_ilHipSeme1.2_genomic.fna
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/museomics/steps
+# # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics
+# AdapterRemoval settings.
+adapterremoval_settings:
+  min_quality: 25
+  min_length: 20
+  adaptersequence1: AAGTCGGAGGCCAAGCGGTCTTAGGAAGACAA
+  adaptersequence2: AAGTCGGATCGTAGCCATGTCGTTCTGTGAGCCAAGGAGTTG
+# Samtools filter settings.
+filter_settings:
+  flags_excluded: 3844
+  flags_required: 
+  min_mq: 20
+# List of path to sample folders containing resequencing data.
+# Data type: contemporary | historic | paired-end | single-end ...
+sample_lists:
+  -
+    time_period: 2022
+    data_type: contemporary, paired-end
+    populations:
+      -
+        population_name: Finland
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/HS23_1
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/HS23_2
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/HS23_3
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/HS23_4
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/HS23_5
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/HS23_13
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/HS23_14
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/HS23_15
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/HS23_16
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/HS23_17
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/HS23_19
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/HS23_20
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/HS23_21
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/HS23_22
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/HS23_23
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/HS23_25
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/HS23_26
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/HS23_27
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/HS23_E1
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/HS23_E5
+  -
+    time_period: 1985
+    data_type: historic, single-end
+    populations:
+      -
+        population_name: Finland
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M121
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M122
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M123
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M124
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M125
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M126
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M127
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M128
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M129
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M130
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M131
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M132
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M133
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M134
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M135
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M136
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M137
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M138
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M139
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M140
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M141
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M142
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M143
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M144
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M145
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M146
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M147
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M148
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M149
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M150
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M217
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M218
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M219
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M220
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M221
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M222
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M223
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M224
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M225
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M226
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M227
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M228
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M229
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M230
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M231
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M232
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M233
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M234
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M235
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M236
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M237
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M238
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M239
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M240
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M241
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M242
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M243
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M244
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M245
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Hipparchia_semele/Hse_M246

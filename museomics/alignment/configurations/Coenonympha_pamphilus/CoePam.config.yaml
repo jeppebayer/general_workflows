@@ -1,0 +1,118 @@
+# Tag identifying file association.
+TAG: jeppebayer:EcoGenetics,museomics,mapping:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Name of species being analyzed
+species_name: Coenonympha pamphilus
+# Path to reference genome file in FASTA format
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Coenonympha_pamphilus/EG_CoePam_XXXXXXX_genomic.fna
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/museomics/steps
+# # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics
+# AdapterRemoval settings.
+adapterremoval_settings:
+  min_quality: 25
+  min_length: 20
+  adaptersequence1: AAGTCGGAGGCCAAGCGGTCTTAGGAAGACAA
+  adaptersequence2: AAGTCGGATCGTAGCCATGTCGTTCTGTGAGCCAAGGAGTTG
+# Samtools filter settings.
+filter_settings:
+  flags_excluded: 3844
+  flags_required: 
+  min_mq: 20
+# List of path to sample folders containing resequencing data.
+# Data type: contemporary | historic | paired-end | single-end ...
+sample_lists:
+  -
+    time_period: 2022
+    data_type: contemporary, paired-end
+    populations:
+      -
+        population_name: Finland
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/CP23_1
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/CP23_2
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/CP23_3
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/CP23_5
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/CP23_6
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/CP23_7
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/CP23_11
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/CP23_12
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/CP23_13
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/CP23_15
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/CP23_16
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/CP23_17
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/CP23_18
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/CP23_19
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/CP23_20
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/CP23_21
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/CP23_22
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/CP23_23
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/CP23_29
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/CP23_30
+  -
+    time_period: 1985
+    data_type: historic, single-end
+    populations:
+      -
+        population_name: Finland
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M31
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M32
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M33
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M34
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M35
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M36
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M37
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M38
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M39
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M40
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M41
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M42
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M43
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M44
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M45
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M46
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M47
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M48
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M49
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M50
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M51
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M52
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M53
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M54
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M55
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M56
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M57
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M58
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M59
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M60
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M296
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M297
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M298
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M299
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M300
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M301
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M302
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M303
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M304
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M305
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M306
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M307
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M308
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M309
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M310
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M311
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M312
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M313
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M315
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M316
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M317
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M318
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M319
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M320
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M321
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M322
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M323
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Coenonympha_pamphilus/Cpa_M355

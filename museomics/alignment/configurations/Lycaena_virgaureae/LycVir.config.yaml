@@ -152,4 +152,87 @@ sample_lists:
         population_name: Pooled_extraction
         sample_folder_list:
           - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Lycaena_virgaureae/LyVi_poolseq_2022
-  
+  -
+    time_period: 2023
+    data_type: contemporary, paired-end
+    populations:
+      -
+        population_name: Finland
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/LV23_1
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/LV23_2
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/LV23_3
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/LV23_4
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/LV23_5
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/LV23_11
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/LV23_12
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/LV23_13
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/LV23_14
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/LV23_15
+  -
+    time_period: 1986
+    data_type: historic, single-end
+    populations:
+      -
+        population_name: Finland
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M91
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M92
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M93
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M94
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M95
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M96
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M97
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M98
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M99
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M100
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M101
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M102
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M103
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M104
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M105
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M106
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M107
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M108
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M109
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M110
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M111
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M112
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M113
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M114
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M115
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M116
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M117
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M118
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M119
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M120
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M324
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M325
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M326
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M327
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M328
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M329
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M330
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M331
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M332
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M333
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M334
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M335
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M336
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M337
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M338
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M339
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M340
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M341
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M342
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M343
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M344
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M345
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M346
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M347
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M348
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M349
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M350
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M351
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M352
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_virgaureae/Lvg_M353

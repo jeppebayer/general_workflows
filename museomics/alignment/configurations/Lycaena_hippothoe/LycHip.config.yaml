@@ -5,7 +5,7 @@ account: EcoGenetics
 # Name of species being analyzed
 species_name: Lycaena hippothoe
 # Path to reference genome file in FASTA format
-reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Lycaena_virgaureae/EG_LycVir_01052024_genomic_haplotype1.fna
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Lycaena_hippothoe/GCA_964264095.1.fasta
 # Directory for intermediary files.
 working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/museomics/steps
 # # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
@@ -26,9 +26,72 @@ filter_settings:
 sample_lists:
   -
     time_period: 2022
-    data_type: contemporary , paired-end
+    data_type: contemporary, paired-end
     populations:
       -
-        population_name: Jutland
+        population_name: Finland
         sample_folder_list:
           - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/LH23_1
+  -
+    time_period: 1985
+    data_type: historic, single-end
+    populations:
+      -
+        population_name: Finland
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M161
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M162
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M163
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M164
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M165
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M166
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M167
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M168
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M169
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M170
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M171
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M172
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M173
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M174
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M175
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M176
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M177
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M178
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M179
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M180
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M181
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M182
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M183
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M184
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M185
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M186
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M187
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M188
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M189
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M190
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M191
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M192
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M193
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M194
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M195
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M196
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M197
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M198
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M199
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M200
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M201
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M202
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M203
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M204
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M205
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M206
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M207
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M208
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M209
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M210
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M211
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M212
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M213
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M214
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M215
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/Lhi_M216

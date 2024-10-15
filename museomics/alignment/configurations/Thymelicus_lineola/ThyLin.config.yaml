@@ -152,4 +152,97 @@ sample_lists:
         population_name: Pooled_extraction
         sample_folder_list:
           - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/denmark/Thymelicus_lineola/ThLi_poolseq_2022
-  
+  -
+    time_period: 2023
+    data_type: contemporary, paired-end
+    populations:
+      -
+        population_name: Finland
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TL23_1
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TL23_3
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TL23_6
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TL23_7
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TL23_8
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TL23_9
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TL23_10
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TL23_11
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TL23_13
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TL23_14
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TL23_16
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TL23_17
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TL23_18
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TL23_19
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TL23_20
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TL23_21
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TL23_22
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TL23_23
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TL23_24
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TL23_25
+  -
+    time_period: 1986
+    data_type: historic, single-end
+    populations:
+      -
+        population_name: Finland
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M61
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M62
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M63
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M64
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M65
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M66
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M67
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M68
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M69
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M70
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M71
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M72
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M73
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M74
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M75
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M76
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M77
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M78
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M79
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M80
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M81
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M82
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M83
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M84
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M85
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M86
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M87
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M88
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M89
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/Tli_M90
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M267
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M268
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M269
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M270
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M271
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M272
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M273
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M274
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M275
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M276
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M277
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M278
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M279
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M280
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M281
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M282
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M283
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M284
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M285
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M286
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M287
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M288
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M289
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M290
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M291
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M292
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M293
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M294
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Thymelicus_lineola/TLi_M295
+
