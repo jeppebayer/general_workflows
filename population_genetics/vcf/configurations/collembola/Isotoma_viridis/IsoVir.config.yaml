@@ -31,7 +31,7 @@ freebayes_settings:
   # (int). Amount of memory, in GB, to reserve per VCF partition. If left empty defaults to '80'.
   memory: 35
   # (str). Amount of time to reserve per VCF partition in format: 'tt:mm:ss'. If left empty defaults to '48:00:00'.
-  time: '18:00:00'
+  time: '11:00:00'
 # Filtering settings.
 filtering:
   # (int). Minimum required depth, inclusive.
@@ -45,7 +45,7 @@ batch_settings:
   # (int). The number of batches to create. 0 = don't batch jobs. If left empty defaults to '0'
   number_of_batches: 4
   # (int). Which of the created batches to run. Must be >=1 AND <=number_of_batches. Can be left empty if number_of_batches is '0'.
-  current_batch_number: 2
+  current_batch_number: 3
 # (list). Sample setup. List of dictionaries listing the configuration for each sample.
 sample_list:
   - 
