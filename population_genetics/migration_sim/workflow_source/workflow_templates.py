@@ -125,6 +125,44 @@ def create_input_dict_2dSFS(pair_file: str, exclude_list: list, include_list: li
 	
 	return dict_list
 
+def create_input_dict_2dSFS_noSingl(pair_file: str, exclude_list: list, include_list: list) -> list:
+	"""Function: Creates input dictionary for running a map function of 2dSFS for each pop pair
+	"""
+	dict_list = []
+	file = open(pair_file)
+	for line in file:
+		#print(line)
+		infos = line.strip("\n").split("\t")
+		#print(infos)
+		pop1 = infos[0]
+		#print(pop1)
+		pop2 = infos[1]
+		#print(pop2)
+		if any(pop1 in s for s in exclude_list):
+			#print(pop1 + " in exclude_list")
+			continue
+		if any(pop2 in s for s in exclude_list):
+			#print(pop2 + " in exclude_list")
+			continue
+		conditions = [any(pop1 in s for s in include_list), any(pop2 in s for s in include_list)]
+		if all(conditions):
+			#print("yes")
+			c1 = infos[2]
+			c2 = infos[3]
+			name = f'2dSFS_{pop1}_vs_{pop2}_{c1}_vs_{c2}'
+			#name_singl = f'2dSFS_{pop1}_vs_{pop2}_{c1}_vs_{c2}_NoSingl'
+			output_name = f'{name}/{name}_sfs2d_jointMAFpop1_0.obs'
+			new_dict = {"pop1": pop1, "pop2": pop2, "c1": c1, "c2": c2, "name": name, "outname": output_name}
+					#print(new_dict)
+			dict_list.append(new_dict)
+		#else:
+		#	print("no")
+	
+	return dict_list
+
+def create_run_name_fsc_pair(idx: str, target: AnonymousTarget) -> str:
+	#pair_name=target.inputs['name_pops']
+	return f'pair_2DSFS_map_target_{os.path.basename(target.outputs["outfile_path"]).replace("-","_")}'
 
 
 def pair_2DSFS_map_target(pop1: str, pop2: str, c1: int, c2: int, name: str, out2_file: str, working_directory: str, outname: str):
@@ -159,12 +197,70 @@ def pair_2DSFS_map_target(pop1: str, pop2: str, c1: int, c2: int, name: str, out
 	## echo {out2_file}
 	##../../../workflow_source/scripts/2dsfs.sh /scratch/$SLURM_JOBID/out2 {pop1} {pop2} {c1} {c2} {name} {working_directory} {outputs['outfile_path']}
 	
-	mv {outputs['outfile_path'].replace(".obs", ".obs.tmp")} {outputs['outfile_path']}
+	#mv {outputs['outfile_path'].replace(".obs", ".obs.tmp")} {outputs['outfile_path']}
+	
+	if [ -f {outputs['outfile_path']}]
+	then
+		echo Checked if outfile exist, and it does. File: {outputs['outfile_path']}
+	else
+		echo Outout file does not exist
+	fi
+
+
+	echo "END: $(date)"
+	echo "$(jobinfo "$SLURM_JOBID")"
+	"""
+	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
+
+
+def pair_2DSFS_map_target_noSingletons(pop1: str, pop2: str, c1: int, c2: int, name: str, out2_file: str, working_directory: str, outname: str, working_directory_alldat: str):
+	"""
+	Template: Create netural bed file from genes and repeats bed for species.
+	
+	Template I/O::
+	
+		inputs = {}
+		outputs = {}
+	
+	:param
+	"""
+	inputs = {'sfs_to_copy': f'{working_directory_alldat}/{outname}'}
+	##inputs = {'sfs_data': out2_file}
+	outputs = {'sfs_newrun_outfile_path': f'{working_directory}/{outname.replace("_sfs2d_jointMA", "_NoSingl_sfs2d_jointMA")}'} # OBS define outout
+	options = {
+		'cores': 1,
+		'memory': '1g',
+		'walltime': '11:00:00'
+	}
+	spec = f"""
+	# Sources environment 										OBS EDIT:
+	source /home/"$USER"/.bashrc
+	conda activate migration_fsc
+
+	echo "START: $(date)"
+	echo "JobID: $SLURM_JOBID"
+
+	mkdir -p {working_directory}/{name}
+	##cp inputs['sfs_data'] /scratch/$SLURM_JOBID/out2
+	## echo {out2_file}
+	##../../../workflow_source/scripts/2dsfs.sh /scratch/$SLURM_JOBID/out2 {pop1} {pop2} {c1} {c2} {name} {working_directory} {outputs['sfs_newrun_outfile_path']}
+	
+	#mv {outputs['sfs_newrun_outfile_path'].replace(".obs", ".obs.tmp")} {outputs['sfs_newrun_outfile_path']}
+	cp {inputs['sfs_to_copy']} {outputs['sfs_newrun_outfile_path']}
+	
+	if [ -f {outputs['sfs_newrun_outfile_path']}]
+	then
+		echo Checked if outfile exist, and it does. File: {outputs['sfs_newrun_outfile_path']}
+	else
+		echo Outout file does not exist
+	fi
+
 	
 	echo "END: $(date)"
 	echo "$(jobinfo "$SLURM_JOBID")"
 	"""
 	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
+
 
 
 def create_run_name_fsc(idx: str, target: AnonymousTarget) -> str:
@@ -188,7 +284,8 @@ def setup_run_FSC_map_target(SFS_file: str, migration_divide: int, name_pops: st
 	options = {
 		'cores': 1,
 		'memory': '1g',
-		'walltime': '11:59:00'
+		#'walltime': '11:00:00'
+		'walltime': '1-12:00:00'
 	}
 	spec = f"""
 	# Sources environment 										OBS EDIT:
@@ -260,6 +357,10 @@ def setup_run_FSC_map_target(SFS_file: str, migration_divide: int, name_pops: st
 	return AnonymousTarget(inputs=inputs, outputs=outputs, options=options, spec=spec)
 
 
+def create_run_name_fsc_noSingl(idx: str, target: AnonymousTarget) -> str:
+	#pair_name=target.inputs['name_pops']
+	return f'run_fsc_migr_NoSingl_{os.path.basename(target.outputs["parameter_value_likelihood_file"]).replace("-","_")}'
+
 
 def setup_run_FSC_map_target_nosingletons(SFS_file: str, migration_divide: int, name_pops: str):
 	"""
@@ -273,11 +374,12 @@ def setup_run_FSC_map_target_nosingletons(SFS_file: str, migration_divide: int, 
 	:param
 	"""
 	inputs = {'SFS_file': SFS_file}
-	outputs = {'parameter_value_likelihood_file': f'{os.path.dirname(inputs['SFS_file'])}/{migration_divide}/{os.path.basename(inputs['SFS_file']).replace("_sfs2d_","_NoSingl_" + str(migration_divide) + "migDiv_sfs2d_").replace("_jointMAFpop1_0.obs", "")}/{os.path.basename(inputs['SFS_file']).replace("_sfs2d_","_" + str(migration_divide) + "migDiv_sfs2d_").replace(".obs",".bestlikelyhoods").replace("_jointMAFpop1_0", "")}'} 
+	outputs = {'parameter_value_likelihood_file': f'{os.path.dirname(inputs['SFS_file'])}/{migration_divide}/{os.path.basename(inputs['SFS_file']).replace("_sfs2d_","_" + str(migration_divide) + "migDiv_sfs2d_").replace("_jointMAFpop1_0.obs", "")}/{os.path.basename(inputs['SFS_file']).replace("_sfs2d_","_" + str(migration_divide) + "migDiv_sfs2d_").replace(".obs",".bestlikelyhoods").replace("_jointMAFpop1_0", "")}'} 
 	options = {
 		'cores': 1,
 		'memory': '1g',
-		'walltime': '11:59:00'
+		'walltime': '11:00:00'
+		#'walltime': '1-12:00:00'
 	}
 	spec = f"""
 	# Sources environment 										OBS EDIT:
@@ -300,12 +402,12 @@ def setup_run_FSC_map_target_nosingletons(SFS_file: str, migration_divide: int, 
 	# Copy obs sfs and modify name to include migration divide
 	obs_file=`ls $diris/*sfs2d_jointMAFpop1_0.obs`
 	obs_file_base=`basename $obs_file`
-	echo SFS is moved and renamed for new run like this: $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_NoSingl_"$mig_div_var"migDiv_sfs2d_"}}
+	echo SFS is moved and renamed for new run like this: $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}}
 
-	if [ ! -f $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_NoSingl_"$mig_div_var"migDiv_sfs2d_"}} ]
+	if [ ! -f $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}} ]
 	then
 		echo .obs file did not exist in correct folder, copying and renaming.
-		cp $obs_file $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_NoSingl_"$mig_div_var"migDiv_sfs2d_"}}
+		cp $obs_file $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}}
 	fi
 	ls $diris/{migration_divide}/
 	#cp $diris/*sfs2d_jointMAFpop1_0.obs $diris/{migration_divide}/
@@ -354,6 +456,16 @@ def setup_run_FSC_map_target_nosingletons(SFS_file: str, migration_divide: int, 
 # Unable to compute the likelihood 
 # TSimSettings::performBrenMinimization: Unable to read observed SFS and to estimate parameters ...
 # mv: cannot stat '/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline//migration_sim/Collembola/Entomobrya_nicoleti/fsc//2dSFS//2dSFS_EntNic_aaRJ_C225_vs_EntNic_BIJ-C30_1_vs_3/3000/2dSFS_EntNic_aaRJ_C225_vs_EntNic_BIJ-C30_1_vs_3_3000migDiv_sfs2d.paramam': No such file or directory
+
+
+
+
+
+
+
+
+
+
 
 
 
