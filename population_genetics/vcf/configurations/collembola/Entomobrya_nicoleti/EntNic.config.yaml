@@ -31,7 +31,7 @@ freebayes_settings:
   # (int). Amount of memory, in GB, to reserve per VCF partition. If left empty defaults to '80'.
   memory: 35
   # (str). Amount of time to reserve per VCF partition in format: 'tt:mm:ss'. If left empty defaults to '48:00:00'.
-  time: 24:00:00
+  time: '11:00:00'
 # Filtering settings.
 filtering:
   # (int). Minimum required depth, inclusive.
@@ -84,7 +84,6 @@ sample_list:
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Entomobrya_nicoleti/grassland/EntNic_SKJ-C216/EntNic_SKJ-C216.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Entomobrya_nicoleti/grassland/EntNic_SKS-C55/EntNic_SKS-C55.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Entomobrya_nicoleti/grassland/EntNic_SSJ-C259/EntNic_SSJ-C259.filtered.bam
-      - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Entomobrya_nicoleti/grassland/EntNic_STF-C266/EntNic_STF-C266.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Entomobrya_nicoleti/grassland/EntNic_STF-C266/EntNic_STF-C266.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Entomobrya_nicoleti/grassland/EntNic_SUJ-C130/EntNic_SUJ-C130.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Entomobrya_nicoleti/grassland/EntNic_ULJ-C60/EntNic_ULJ-C60.filtered.bam
