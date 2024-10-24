@@ -3,56 +3,60 @@ TAG: jeppebayer:EcoGenetics,population_genetics,vcf:workflowconfiguration
 # (str). The name of the relevant project account.
 account: EcoGenetics
 # (str). Taxonomic group. Can be left empty.
-taxonomic_group: Collembola
+taxonomicGroup: Collembola
 # (str). Name of species being analyzed.
-species_name: Isotoma viridis
+speciesName: Isotoma viridis
 # (str). Path to reference genome.
-reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Isotoma_viridis/EG_IsoVir_23082024_genomic.fna
+referenceGenomePath: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Isotoma_viridis/EG_IsoVir_23082024_genomic.fna
 # (str). BED file indicating intergenic regions of the reference genome.
-intergenic_bed_file: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Isotoma_viridis/annotation/EG_IsoVir_23082024_genomic.intergenic.bed
+intergenicBedFile: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Isotoma_viridis/annotation/EG_IsoVir_23082024_genomic.intergenic.bed
 # (str). BED file indicating repetitive regions of the reference genome. If left empty workflow will try to extract repetitive regions from reference genome.
-repeats_bed_file: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Isotoma_viridis/annotation/EG_IsoVir_23082024_genomic.repeats.bed
+repeatsBedFile: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Isotoma_viridis/annotation/EG_IsoVir_23082024_genomic.repeats.bed
 # (str). Directory for intermediary files.
-working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps
+workingDirectoryPath: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps
 # (str). Directory for final output files. (If left empty, output file will be placed within 'working_directory_path').
-output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics
+outputDirectoryPath: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics
 # (int). Partition size of genome in base pairs. If left empty defaults to '500000'.
-partition_size: 100000
+partitionSize: 100000
 # Variant caller, Freebayes settings.
-freebayes_settings:
+freebayesSettings:
+  # (0 | 1 | 2). Mode for creating VCF file.
+  # 1 = Separate VCF files for each sample/BAM file. 2 = One VCF containing data for all samples/BAM files. 0 = Both.
+  mode: 1
   # (int). sample_ploidy = ploidy * n_individials. If left empty defaults to '100'.
-  sample_ploidy: 100
+  samplePloidy: 100
   # (int). Number of variants to consider and report when multiple are available. If left empty defaults to '3'
-  best_n_alleles: 3
+  bestNAlleles: 3
   # (0 | float). Lower threshold fraction for variant to be considered. If left empty defaults to '0'.
-  min_alternate_fraction: 0
+  minAlternateFraction: 0
   # (int). Lower threshold count for variant to be considered. If left empty defaults to '2'.
-  min_alternate_count: 2
+  minAlternateCount: 2
   # (int). Amount of memory, in GB, to reserve per VCF partition. If left empty defaults to '80'.
   memory: 35
   # (str). Amount of time to reserve per VCF partition in format: 'tt:mm:ss'. If left empty defaults to '48:00:00'.
   time: '12:00:00'
 # Filtering settings.
 filtering:
-  # (int). Minimum required depth, inclusive.
-  minimum_depth: 200
-# (int). Mode for creating VCF file (1 | 2 | 3 | 4).
-# 1 = Separate VCF files for each sample/BAM file. 2 = One VCF file per sample group. 3 = One VCF containing data for all samples/BAM files. 4 = All.
-mode: 1
+  # (int). Minimum required depth for ingroups, inclusive. If left empty deafults to '200'.
+  ingroupMinimumDepth: 200
+  # (int). Absolute minimum required depth for outgroups, inclusive. If left empty defaults to '5'.
+  outgroupMinimumDepth: 
 # Batch settings. Can be used to reduced the number of jobs sent to the queue at one time.
 # Only partial VCF files will be created when batching. To complete the full workflow one must do a no-batch run.
-batch_settings:
+batchSettings:
   # (int). The number of batches to create. 0 = don't batch jobs. If left empty defaults to '0'
-  number_of_batches: 4
+  numberOfBatches: 4
   # (int). Which of the created batches to run. Must be >=1 AND <=number_of_batches. Can be left empty if number_of_batches is '0'.
-  current_batch_number: 2
+  currentBatchNumber: 2
 # (list). Sample setup. List of dictionaries listing the configuration for each sample.
-sample_list:
+sampleList:
   - 
+    # ('i' | 'o'). Whether the sample group is to be considered ingroup (i) or outgroup (o).
+    groupStatus: i
     # (str). Name of sample group.
-    group_name: Grassland
+    groupName: Grassland
     # (list). List of paths to BAM files.
-    bam_file_list:
+    bamFileList:
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Isotoma_viridis/grassland/IsoVir_aeRoe-C310/IsoVir_aeRoe-C310.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Isotoma_viridis/grassland/IsoVir_BJJ-C98/IsoVir_BJJ-C98.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Isotoma_viridis/grassland/IsoVir_DSJ-C236/IsoVir_DSJ-C236.filtered.bam
@@ -80,10 +84,12 @@ sample_list:
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Isotoma_viridis/grassland/IsoVir_SKS-C56/IsoVir_SKS-C56.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Isotoma_viridis/grassland/IsoVir_TOJ-C72/IsoVir_TOJ-C72.filtered.bam
   - 
+    # ('i' | 'o'). Whether the sample group is to be considered ingroup (i) or outgroup (o).
+    groupStatus: i
     # (str). Name of sample group.
-    group_name: Conventional_agriculture
+    groupName: Conventional_agriculture
     # (list). List of paths to BAM files.
-    bam_file_list:
+    bamFileList:
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Isotoma_viridis/conventional_agriculture/IsoVir_K-DAS-C330/IsoVir_K-DAS-C330.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Isotoma_viridis/conventional_agriculture/IsoVir_K-FLJ-C332/IsoVir_K-FLJ-C332.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Isotoma_viridis/conventional_agriculture/IsoVir_K-FSJ-C210/IsoVir_K-FSJ-C210.filtered.bam
@@ -95,10 +101,12 @@ sample_list:
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Isotoma_viridis/conventional_agriculture/IsoVir_K-MoeJ-C365/IsoVir_K-MoeJ-C365.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Isotoma_viridis/conventional_agriculture/IsoVir_K-ToeJ-C301/IsoVir_K-ToeJ-C301.filtered.bam
   - 
+    # ('i' | 'o'). Whether the sample group is to be considered ingroup (i) or outgroup (o).
+    groupStatus: i
     # (str). Name of sample group.
-    group_name: Conservation_agriculture
+    groupName: Conservation_agriculture
     # (list). List of paths to BAM files.
-    bam_file_list:
+    bamFileList:
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Isotoma_viridis/conservation_agriculture/IsoVir_CA-BMJ-C121/IsoVir_CA-BMJ-C121.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Isotoma_viridis/conservation_agriculture/IsoVir_CA-FSJ-C221/IsoVir_CA-FSJ-C221.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Isotoma_viridis/conservation_agriculture/IsoVir_CA-FSJ-C91/IsoVir_CA-FSJ-C91.filtered.bam
@@ -110,10 +118,12 @@ sample_list:
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Isotoma_viridis/conservation_agriculture/IsoVir_CA-MoeJ-C354/IsoVir_CA-MoeJ-C354.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Isotoma_viridis/conservation_agriculture/IsoVir_CA-YDJ-C120/IsoVir_CA-YDJ-C120.filtered.bam
   - 
+    # ('i' | 'o'). Whether the sample group is to be considered ingroup (i) or outgroup (o).
+    groupStatus: o
     # (str). Name of sample group.
-    group_name: Outgroup_Isotomurus_maculatus
+    groupName: Outgroup_Isotomurus_maculatus
     # (list). List of paths to BAM files.
-    bam_file_list:
+    bamFileList:
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Isotoma_viridis/outgroup_isotomurus_maculatus/IsoMac_CA-BMJ-C403/IsoMac_CA-BMJ-C403.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Isotoma_viridis/outgroup_isotomurus_maculatus/IsoMac_CA-LES-C387/IsoMac_CA-LES-C387.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Isotoma_viridis/outgroup_isotomurus_maculatus/IsoMac_K-FLJ-C370/IsoMac_K-FLJ-C370.filtered.bam

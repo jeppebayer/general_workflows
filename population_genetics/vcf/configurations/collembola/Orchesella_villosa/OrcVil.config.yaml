@@ -1,51 +1,62 @@
 # Tag identifying file association.
 TAG: jeppebayer:EcoGenetics,population_genetics,vcf:workflowconfiguration
-# The name of the relevant project account.
+# (str). The name of the relevant project account.
 account: spider2
-# Taxonomic group.
-taxonomic_group: Collembola
-# Name of species being analyzed.
-species_name: Orchesella villosa
-# Path to reference genome.
-reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Orchesella_villosa/EG_OrcVil_23072024_genomic.fna
-# BED file indicating intergenic regions of reference genome.
-intergenic_bed_file: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Orchesella_villosa/annotation/EG_OrcVil_23072024_genomic.intergenic.bed
-# (str). BED file indicating repetitive regions of the reference genome.
-repeats_bed_file: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Orchesella_villosa/annotation/EG_OrcVil_23072024_genomic.repeats.bed
-# Directory for intermediary files.
-working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps/
-# Directory for final output files. (If left empty, output file will be placed within 'working_directory_path').
-output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/
-# Partition size of genome in base pairs.
-partition_size: 100000
-# Freebayes settings.
-freebayes_settings:
-  sample_ploidy: 100
-  best_n_alleles: 3
-  min_alternate_fraction: 0
-  min_alternate_count: 2
+# (str). Taxonomic group. Can be left empty.
+taxonomicGroup:  Collembola
+# (str). Name of species being analyzed.
+speciesName: Orchesella villosa
+# (str). Path to reference genome.
+referenceGenomePath: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Orchesella_villosa/EG_OrcVil_23072024_genomic.fna
+# (str). BED file indicating intergenic regions of the reference genome.
+intergenicBedFile: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Orchesella_villosa/annotation/EG_OrcVil_23072024_genomic.intergenic.bed
+# (str). BED file indicating repetitive regions of the reference genome. If left empty workflow will try to extract repetitive regions from reference genome.
+repeatsBedFile: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Orchesella_villosa/annotation/EG_OrcVil_23072024_genomic.repeats.bed
+# (str). Directory for intermediary files.
+workingDirectoryPath: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps/
+# (str). Directory for final output files. (If left empty, output file will be placed within 'working_directory_path').
+outputDirectoryPath: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/
+# (int). Partition size of genome in base pairs. If left empty defaults to '500000'.
+partitionSize: 100000
+# Variant caller, Freebayes settings.
+freebayesSettings:
+  # (0 | 1 | 2). Mode for creating VCF file.
+  # 1 = Separate VCF files for each sample/BAM file. 2 = One VCF containing data for all samples/BAM files. 0 = Both.
+  mode: 1
+  # (int). sample_ploidy = ploidy * n_individials. If left empty defaults to '100'.
+  samplePloidy: 100
+  # (int). Number of variants to consider and report when multiple are available. If left empty defaults to '3'
+  bestNAlleles: 3
+  # (0 | float). Lower threshold fraction for variant to be considered. If left empty defaults to '0'.
+  minAlternateFraction:  0
+  # (int). Lower threshold count for variant to be considered. If left empty defaults to '2'.
+  minAlternateCount: 2
+  # (int). Amount of memory, in GB, to reserve per VCF partition. If left empty defaults to '80'.
   memory: 45
+  # (str). Amount of time to reserve per VCF partition in format: 'tt:mm:ss'. If left empty defaults to '48:00:00'.
   time: '2-24:00:00'
 # Filtering depths, limits included.
 filtering:
-  minimum_depth: 200
-# Mode for creating VCF file (1 | 2 | 3 | 4).
-# 1 = Separate VCF files for each sample/BAM file. 2 = One VCF file per sample group. 3 = One VCF containing data for all samples/BAM files. 4 = All.
-mode: 1
+  # (int). Minimum required depth for ingroups, inclusive. If left empty deafults to '200'.
+  ingroupMinimumDepth: 200
+  # (int). Absolute minimum required depth for outgroups, inclusive. If left empty defaults to '5'.
+  outgroupMinimumDepth: 
 # Batch settings. Can be used to reduced the number of jobs sent to the queue at one time.
 # Only partial VCF files will be created when batching. To complete the full workflow one must do a no-batch run.
-batch_settings:
+batchSettings:
   # (int). The number of batches to create. 0 = don't batch jobs. If left empty defaults to '0'
-  number_of_batches: 
+  numberOfBatches: 
   # (int). Which of the created batches to run. Must be >=1 AND <=number_of_batches. Can be left empty if number_of_batches is '0'.
-  current_batch_number: 
-# Sample setup. List of dictionaries listing the configuration for each sample.
-sample_list:
+  currentBatchNumber: 
+# (list). Sample setup. List of dictionaries listing the configuration for each sample.
+sampleList:
   - 
-    # Name of sample group.
-    group_name: Grassland
-    # List of paths to BAM files.
-    bam_file_list:
+    # ('i' | 'o'). Whether the sample group is to be considered ingroup (i) or outgroup (o).
+    groupStatus: i
+    # (str). Name of sample group.
+    groupName: Grassland
+    # (list). List of paths to BAM files.
+    bamFileList:
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Orchesella_villosa/grassland/OrcVil_BRS-C95/OrcVil_BRS-C95.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Orchesella_villosa/grassland/OrcVil_DSJ-C235/OrcVil_DSJ-C235.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Orchesella_villosa/grassland/OrcVil_FaaJ-C5/OrcVil_FaaJ-C5.filtered.bam
@@ -60,24 +71,30 @@ sample_list:
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Orchesella_villosa/grassland/OrcVil_ULJ-C123/OrcVil_ULJ-C123.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Orchesella_villosa/grassland/OrcVil_VIS-C359/OrcVil_VIS-C359.filtered.bam
   - 
-    # Name of sample group.
-    group_name: Conservation_agriculture
-    # List of paths to BAM files.
-    bam_file_list:
+    # ('i' | 'o'). Whether the sample group is to be considered ingroup (i) or outgroup (o).
+    groupStatus: i
+    # (str). Name of sample group.
+    groupName: Conservation_agriculture
+    # (list). List of paths to BAM files.
+    bamFileList:
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Orchesella_villosa/conservation_agriculture/OrcVil_CA-KNJ-C208/OrcVil_CA-KNJ-C208.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Orchesella_villosa/conservation_agriculture/OrcVil_CA-MoeJ-C353/OrcVil_CA-MoeJ-C353.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Orchesella_villosa/conservation_agriculture/OrcVil_CA-LES-C386/OrcVil_CA-LES-C386.filtered.bam
   - 
-    # Name of sample group.
-    group_name: Conventional_agriculture
-    # List of paths to BAM files.
-    bam_file_list:
+    # ('i' | 'o'). Whether the sample group is to be considered ingroup (i) or outgroup (o).
+    groupStatus: i
+    # (str). Name of sample group.
+    groupName: Conventional_agriculture
+    # (list). List of paths to BAM files.
+    bamFileList:
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Orchesella_villosa/conventional_agriculture/OrcVil_K-KNJ-C219/OrcVil_K-KNJ-C219.filtered.bam
   - 
-    # Name of sample group.
-    group_name: Outgroup_Orchesella_cincta
-    # List of paths to BAM files.
-    bam_file_list:
+    # ('i' | 'o'). Whether the sample group is to be considered ingroup (i) or outgroup (o).
+    groupStatus: o
+    # (str). Name of sample group.
+    groupName: Outgroup_Orchesella_cincta
+    # (list). List of paths to BAM files.
+    bamFileList:
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Orchesella_villosa/outgroup_orchesella_cincta/OrcCin_aeRoe-C182/OrcCin_aeRoe-C182.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Orchesella_villosa/outgroup_orchesella_cincta/OrcCin_DSJ-C233/OrcCin_DSJ-C233.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Orchesella_villosa/outgroup_orchesella_cincta/OrcCin_FaaJ-C6/OrcCin_FaaJ-C6.filtered.bam
