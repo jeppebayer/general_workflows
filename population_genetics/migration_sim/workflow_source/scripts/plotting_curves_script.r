@@ -168,56 +168,124 @@ legend("topright", legend = col_dat[,1], col = col_dat[,2], lty = 1, bty = "n")
 dev.off()
 
 
-# plot gns fra stairway likewise
-# kun plot cropland
-# plot genen flow
 
-# try to combine in one graph?
-# setup runs to 14000
+# Plot three graphs together
+    # Agri, stairway (Ne), migration
 
+col_pan <- rev(plasma(5))
 png(file = "/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/migration_sim/Collembola/Entomobrya_nicoleti/fsc/median_migration_Ne_agri.png", res = 800, units = "in", height = 7, width = 7)
-par(mfrow = c(3,1), mar = c(1,5,0,0), oma = c(10, 0, 1, 1))
+par(mfrow = c(3,1), mar = c(1.5,5,0,0), oma = c(4, 0, 1, 1))
 xlimis = c(0,4000)
 xpd_is = FALSE
-mgp_is = c(3.5,1,0) # margin line for ax title, labels and line (3,1,0)
+mgp_is = c(3,1,0) # margin line for ax title, labels and line (3,1,0)
 # agriculture
 par(lwd = 2)
-
-plot(data[which(data$Landuse == col_dat[1,1]),"Year"], data[which(data$Landuse == col_dat[1,1]),"Km2"], type = "l", 
-    col = col_dat[1,2], xlab = NA, ylab = NA, xlim = xlimis, xpd = xpd_is, xaxt = 'n', yaxt = 'n')
+#range(pretty(c(0, test$y))) 
+plot(data[which(data$Landuse == "cropland"),"Year"], data[which(data$Landuse == "cropland"),"Km2"], type = "l", 
+    col = col_pan[1], xlab = NA, ylab = NA, xlim = xlimis, xpd = xpd_is, xaxt = 'n', yaxt = 'n', frame.plot = F, ylim = range(pretty(c(0, data[which(data$Landuse == "cropland"),"Km2"]))))
 axis(2, las = 2)
-lines(data[which(data$Landuse == col_dat[4,1]),"Year"], data[which(data$Landuse == col_dat[4,1]),"Km2"], col = col_dat[4,2], xlim = xlimis, xpd = xpd_is)
-title(ylab = "Percentage of Landcover across Denmark", xlab = "Years bp", xpd = xpd_is)
-legend("topright", legend = col_dat[c(1,4),1], col = col_dat[c(1,4),2], lty = 1, bty = "n", xpd = xpd_is)
+#axis(1, labels = F, col = "grey")
+lines(data[which(data$Landuse == "urban_area"),"Year"], data[which(data$Landuse == "urban_area"),"Km2"], col = col_pan[2], xlim = xlimis, xpd = xpd_is)
+title(ylab = "Percentage Landcover", xpd = xpd_is, mgp = mgp_is)
+legend("right", legend = c("cropland", "urban_area"), col = col_pan[1:2], lty = 1, bty = "n", xpd = xpd_is)
 
 # migration
-mean_frame <- aggregate(df_sort, list(df_sort$migration_divide), FUN = mean, rm.na = T)
 median_frame <- aggregate(df_sort, list(df_sort$migration_divide), FUN = median, rm.na = T)
-plot(median_frame$Group.1/3, median_frame$mig_anc, ylim = c(min(c(mean_frame$mig_rec, mean_frame$mig_anc)), .00002), 
-    col = "red", ylab = NA, xlab = NA,
-    xlim = xlimis, xpd = xpd_is, type = "l", xaxt = 'n', yaxt = 'n')
-title(ylab = "Migration rate", xpd = xpd_is)
+median_frame$mig_anc <- median_frame$mig_anc*100000
+median_frame$mig_rec <- median_frame$mig_rec*100000
+#migmax <- 
+migmax <- max(c(median_frame$mig_rec, median_frame$mig_anc))
+plot(median_frame$Group.1/3, median_frame$mig_anc, #ylim = c(min(c(median_frame$mig_rec, median_frame$mig_anc)), migmax), 
+#plot(median_frame$Group.1/3, median_frame$mig_anc, ylim = c(min(c(median_frame$mig_rec, median_frame$mig_anc)), .00002), 
+    col = col_pan[3], ylab = NA, xlab = NA, frame.plot = F, 
+    xlim = xlimis, xpd = xpd_is, type = "l", xaxt = 'n', yaxt = 'n', ylim = range(pretty(c(0, migmax))) )
+title(ylab = expression("Migration rate" ~ (10^-5)), xpd = xpd_is, mgp = mgp_is)
 axis(2, las = 2)
-lines(median_frame$Group.1/3, median_frame$mig_rec, ylim = c(min(c(mean_frame$mig_rec, mean_frame$mig_anc)), .00002), 
-    col = "black", xlim = xlimis, xpd = xpd_is)
-legend("topright", legend=c("Ancestral migration", "Recent migration"), col = c("red", "black"), lty = 1, bty = "n", xpd = xpd_is)
-#legend("topright", legend=c("Ancestral migration", "Recent migration"), col = c("red", "black"), pch = 1, bty = "n", xpd = xpd_is)
-#plot(mean_frame$Group.1, mean_frame$mig_rec, type = "p", ylim = c(min(c(mean_frame$mig_rec, mean_frame$mig_anc)), max(c(mean_frame$mig_rec, mean_frame$mig_anc))))
-#points(mean_frame$Group.1, mean_frame$mig_anc, col = "red", ylim = c(min(c(mean_frame$mig_rec, mean_frame$mig_anc)), max(c(mean_frame$mig_rec, mean_frame$mig_anc))))
+#axis(1, labels = F, col = "grey")
+lines(median_frame$Group.1/3, median_frame$mig_rec, ylim = c(min(c(median_frame$mig_rec, median_frame$mig_anc)), migmax), 
+#lines(median_frame$Group.1/3, median_frame$mig_rec, ylim = c(min(c(median_frame$mig_rec, median_frame$mig_anc)), .00002), 
+    col = col_pan[4], xlim = xlimis, xpd = xpd_is)
+legend("right", legend=c("Ancestral ", "Recent "), col = col_pan[3:4], lty = 1, bty = "n", xpd = xpd_is)
 
 # Ne trajectories (mean of medians)
-ylims = c(min(z_trans_dat), max(z_trans_dat))
 year_vec <- ne_dat[,1]*1000
-#plot(year_vec,z_trans_dat[,1], type = 'l', col = alpha("orange", .3), ylim = ylims, ylab = "z-transformed Ne", xlab = "Thousand years bp", xlim = xlimis, xpd = xpd_is)
-#for(colu in seq(2,ncol(z_trans_dat))){
-#    lines(year_vec, z_trans_dat[,colu], col = alpha("orange", .3), ylim = ylims, xlim = xlimis, xpd = xpd_is)
-#}
-plot(year_vec, rowMeans(z_trans_dat), col = "darkorange", xpd = xpd_is, xlim = xlimis, type = 'l', yaxt = 'n',
-    xlab = NA, ylab = NA)
+year_vec <- year_vec[which(year_vec < 4500)]
+ylims = range(pretty(c(min(rowMeans(z_trans_dat[1:NROW(year_vec),])), max(rowMeans(z_trans_dat[1:NROW(year_vec),])))))
+#ylims = range(pretty(c(min(rowMeans(z_trans_dat))), max(rowMeans(z_trans_dat))))
+
+
+plot(year_vec, rowMeans(z_trans_dat[1:NROW(year_vec),]), col = col_pan[5], xpd = xpd_is, xlim = xlimis, type = 'l', yaxt = 'n',
+    xlab = NA, ylab = NA, frame.plot = F, ylim = ylims)
 axis(2, las = 2)
-title(ylab = "Ne (z-transformed)", xlab = "Years bp", xpd = NA)
-#lines(year_vec, rowMeans(z_trans_dat), ylim = ylims, lwd = 5, col = "darkorange", xpd = xpd_is, xlim = xlimis)
+#axis(2, las = 2, at = c(-.5, 0, 0.5, 1), xpd = NA)
+title(ylab = "Ne (z-transformed)", xpd = NA, mgp = mgp_is)
+title(xlab = "Years bp", xpd = NA, mgp = c(3,1,0))
 
+segments( 8000/3, -.8, 8000/3, 4.1, lty = 2, col = "grey", xpd = NA, lwd = 1)
+segments( 600/3, -.8, 600/3, 4.1, lty = 2, col = "grey", xpd = NA, lwd = 1)
+segments( 100/3, -.8, 100/3, 4.1, lty = 2, col = "grey", xpd = NA, lwd = 1)
+dev.off()
+
+
+
+
+
+
+
+
+# try to combine in one graph?
+    # Agri, stairway (Ne), migration
+col_pan <- rev(inferno(3, begin = .2, end = .8))
+png(file = "/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/migration_sim/Collembola/Entomobrya_nicoleti/fsc/median_migration_Ne_agri_ONE.png", res = 800, units = "in", height = 6, width = 10)
+par(mfrow = c(1,1), mar = c(1.5,5,0,0), oma = c(6, 4, 1, 1))
+xlimis = c(0,4000);     xpd_is = FALSE;     mgp_is = c(3,1,0) # margin line for ax title, labels and line (3,1,0)
+cex_adj = .9
+# agriculture
+par(lwd = 2)
+plot(data[which(data$Landuse == "cropland"),"Year"], data[which(data$Landuse == "cropland"),"Km2"], type = "l", 
+    col = "white", xlab = NA, ylab = NA, xlim = xlimis, xpd = xpd_is, xaxt = 'n', yaxt = 'n', frame.plot = F, 
+    ylim = range(pretty(c(0, data[which(data$Landuse == "cropland"),"Km2"]))))
+axis(2, las = 2, line = 0, col = col_pan[1], cex.axis = cex_adj)
+rect( 7000/3, -10, 9000/3, 80, col = "grey90", border = NULL, lwd = 0, xpd = F)
+rect( 100, -10, 600, 80, col = "grey90", border = NULL, lwd = 0, xpd = F)
+lines(data[which(data$Landuse == "cropland"),"Year"], data[which(data$Landuse == "cropland"),"Km2"], col = col_pan[1], xlim = xlimis, xpd = xpd_is)
+
+# migration
+median_frame <- aggregate(df_sort, list(df_sort$migration_divide), FUN = median, rm.na = T)
+median_frame$mig_anc <- median_frame$mig_anc*100000
+median_frame$mig_rec <- median_frame$mig_rec*100000
+migmax <- max(c(median_frame$mig_rec, median_frame$mig_anc))
+par( new = T)
+plot(median_frame$Group.1/3, median_frame$mig_anc, #ylim = c(min(c(median_frame$mig_rec, median_frame$mig_anc)), migmax), 
+    col = col_pan[2], ylab = NA, xlab = NA, frame.plot = F, 
+    xlim = xlimis, xpd = xpd_is, type = "l", xaxt = 'n', yaxt = 'n', ylim = range(pretty(c(0, migmax))) )
+axis(2, las = 2, line = 3, col = col_pan[2], cex.axis = cex_adj)
+#mtext(expression("Gene flow" ~ (10^-5)), side = 2, adj = -.7, padj = -3.5, xpd = NA)    #title(ylab = expression("Migration rate" ~ (10^-5)), xpd = NA, mgp = mgp_is, line = 6.5)
+
+
+lines(median_frame$Group.1/3, median_frame$mig_rec, ylim = c(min(c(median_frame$mig_rec, median_frame$mig_anc)), migmax), 
+    col = col_pan[2], xlim = xlimis, xpd = xpd_is)
+points(median_frame$Group.1/3, median_frame$mig_rec, ylim = c(min(c(median_frame$mig_rec, median_frame$mig_anc)), migmax), 
+    col = col_pan[2], xlim = xlimis, xpd = xpd_is, cex = .4, pch = 19)
+
+# Ne trajectories (mean of medians)
+year_vec <- ne_dat[,1]*1000
+year_vec <- year_vec[which(year_vec < 4500)]
+ylims = range(pretty(c(min(rowMeans(z_trans_dat[1:NROW(year_vec),])), max(rowMeans(z_trans_dat[1:NROW(year_vec),])))))
+
+par( new = T)
+plot(year_vec, rowMeans(z_trans_dat[1:NROW(year_vec),]), col = col_pan[3], xpd = xpd_is, xlim = xlimis, type = 'l', yaxt = 'n',
+    xlab = NA, ylab = NA, frame.plot = F, ylim = ylims)
+axis(2, las = 2, line = 6, col = col_pan[3], cex.axis = cex_adj)
+title(xlab = "Years bp", xpd = NA, mgp = c(2.5,1,0))
+#mtext("        Ne\n(z-transformed)", side = 2, adj = -.65, padj = -4, xpd = NA)    #title(ylab = "Ne (z-transformed)", xpd = NA, mgp = mgp_is, line = 9.5)
+
+text(-330, -.78, labels=c("Percentage\n Landcover"), col = col_pan[1], xpd = NA, srt = 90, adj = 0)
+text(-600, -.78, labels=c(expression("Gene flow" ~ (10^-5))), col = col_pan[2], xpd = NA, srt = 90, adj = 0)
+text(-900, -.78, labels=c("Ne\n(z-transformed)"), col = col_pan[3], xpd = NA, srt = 90, adj = 0)
+
+legend("bottom", legend=c( "Ancestral gene flow", "Recent gene flow", "Cropland cover", "Ne trajectory"),
+    col = col_pan[c(2,2,1,3)], lty = 1, pch = c(NA, 19, NA, NA), bty = "n", xpd = NA, inset = -.33, ncol = 2)
 dev.off()
 
 
@@ -228,49 +296,67 @@ dev.off()
 
 
 
+# trying to dissolve flat migration line
+
+png(file = "/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/migration_sim/Collembola/Entomobrya_nicoleti/fsc/median_migration_Ne_recent_zoom.png", res = 800, units = "in", height = 7, width = 7)
+par(mfrow = c(4,1), mar = c(1,5,0,0), oma = c(4, 0, 1, 1))
+xlimis = c(0,4000)
+xpd_is = FALSE
+mgp_is = c(4,1,0) # margin line for ax title, labels and line (3,1,0)
+# agriculture
+par(lwd = 2)
+# migration log
+median_frame <- aggregate(df_sort, list(df_sort$migration_divide), FUN = median, rm.na = T)
+median_frame$mig_anc <- log(median_frame$mig_anc)
+median_frame$mig_rec <- log(median_frame$mig_rec)
+migmax <- max(c(median_frame$mig_rec, median_frame$mig_anc))
+plot(median_frame$Group.1/3, median_frame$mig_anc, ylim = c(min(c(median_frame$mig_rec, median_frame$mig_anc)), migmax), 
+    col = "red", ylab = NA, xlab = NA,
+    xlim = xlimis, xpd = xpd_is, type = "l", xaxt = 'n', yaxt = 'n')
+title(ylab = "log Migration rate", xpd = xpd_is, mgp = mgp_is)
+axis(2, las = 2)
+lines(median_frame$Group.1/3, median_frame$mig_rec, ylim = c(min(c(median_frame$mig_rec, median_frame$mig_anc)), migmax), 
+    col = "black", xlim = xlimis, xpd = xpd_is)
+legend("topright", legend=c("Ancestral migration", "Recent migration"), col = c("red", "black"), lty = 1, bty = "n", xpd = xpd_is)
+
+# migration norm
+median_frame <- aggregate(df_sort, list(df_sort$migration_divide), FUN = median, rm.na = T)
+median_frame$mig_anc <- median_frame$mig_anc*100000
+median_frame$mig_rec <- median_frame$mig_rec*100000
+migmax <- max(c(median_frame$mig_rec, median_frame$mig_anc))
+plot(median_frame$Group.1/3, median_frame$mig_anc, ylim = c(min(c(median_frame$mig_rec, median_frame$mig_anc)), migmax), 
+    col = "red", ylab = NA, xlab = NA,
+    xlim = xlimis, xpd = xpd_is, type = "l", xaxt = 'n', yaxt = 'n')
+title(ylab = expression("Migration rate" ~ (10^-5)), xpd = xpd_is, mgp = mgp_is)
+axis(2, las = 2)
+lines(median_frame$Group.1/3, median_frame$mig_rec, ylim = c(min(c(median_frame$mig_rec, median_frame$mig_anc)), migmax), 
+    col = "black", xlim = xlimis, xpd = xpd_is)
+legend("topright", legend=c("Ancestral migration", "Recent migration"), col = c("red", "black"), lty = 1, bty = "n", xpd = xpd_is)
 
 
+# Migration recent
+median_frame <- aggregate(df_sort, list(df_sort$migration_divide), FUN = median, rm.na = T)
+median_frame$mig_anc <- median_frame$mig_anc*100000
+median_frame$mig_rec <- median_frame$mig_rec*100000
+migmax <- .001
+migmin <- .00005
+plot(median_frame$Group.1/3, median_frame$mig_rec, ylim = c(migmin, migmax), 
+    col = "grey", ylab = NA, xlab = NA,
+    xlim = xlimis, xpd = xpd_is, type = "l", xaxt = 'n', yaxt = 'n')
+title(ylab = expression("Migration rate" ~ (10^-5)), xpd = xpd_is, mgp = mgp_is)
+axis(2, las = 2)
+legend("topright", legend=c( "Recent migration"), col = c("grey"), lty = 1, bty = "n", xpd = xpd_is)
 
+# Migration recent
+median_frame <- aggregate(df_sort, list(df_sort$migration_divide), FUN = median, rm.na = T)
+median_frame$mig_anc <- median_frame$mig_anc*100000
+median_frame$mig_rec <- median_frame$mig_rec*100000
+migmax <- .00001
+plot(median_frame$Group.1/3, median_frame$mig_rec, ylim = c(min(median_frame$mig_rec), migmax), 
+    col = "grey", ylab = NA, xlab = NA,
+    xlim = xlimis, xpd = xpd_is, type = "l", xaxt = 'n', yaxt = 'n')
+title(ylab = expression("Migration rate" ~ (10^-5)), xpd = xpd_is, mgp = mgp_is)
+axis(2, las = 2)
+legend("topright", legend=c( "Recent migration"), col = c("grey"), lty = 1, bty = "n", xpd = xpd_is)
 
-
-for( pop_pair in unique(df_sort$pop_pair)){
-    # pop_pair <- "EntNic_aaRJ_C225_vs_EntNic_aeRoe-C36"
-    # pop_pair <- "EntNic_aaRJ_C225_vs_EntNic_BJJ-C34"
-    # pop_pair <- "EntNic_BIJ-C30_vs_EntNic_BJJ-C34"
-    # pop_pair <- "EntNic_BIJ-C30_vs_EntNic_FHJ_C38"
-    if( pop_pair == unique(df_sort$pop_pair)[1] ){
-        df_sub <- df_sort[which(df_sort$pop_pair == pop_pair),]
-
-        #plot(df_sub$migration_divide, df_sub$mig_rec, ylim = c(min(c(df_sub$mig_rec, df_sub$mig_anc)), .0002))
-        ##plot(df_sub$migration_divide, df_sub$mig_rec, ylim = c(min(c(df_sub$mig_rec, df_sub$mig_anc)), max(c(df_sub$mig_rec, df_sub$mig_anc))))
-        ##points(df_sub$migration_divide, df_sub$mig_anc, col="red", ylim = c(min(c(df_sub$mig_rec, df_sub$mig_anc)), max(c(df_sub$mig_rec, df_sub$mig_anc))))
-        #points(df_sub$migration_divide, df_sub$mig_anc, col="red", ylim = c(min(c(df_sub$mig_rec, df_sub$mig_anc)), .0002))
-        #dev.off()
-
-        #plot(df_sub$migration_divide, df_sub$mig_rec, type = "l", ylim = c(min(c(df_sort$mig_rec, df_sort$mig_anc)), max(c(df_sort$mig_rec, df_sort$mig_anc))))
-        #lines(df_sub$migration_divide, df_sub$mig_anc, type = "l", col="red", ylim = c(min(c(df_sort$mig_rec, df_sort$mig_anc)), max(c(df_sort$mig_rec, df_sort$mig_anc))))
-        
-        plot(df_sub$migration_divide, df_sub$mig_rec, type = "l", ylim = c(min(c(df_sort$mig_rec, df_sort$mig_anc)), .0001))
-        lines(df_sub$migration_divide, df_sub$mig_anc, type = "l", col="red", ylim = c(min(c(df_sort$mig_rec, df_sort$mig_anc)), .01))
-
-        #plot(df_sub$migration_divide, df_sub$mig_anc, type = "l", ylim = c(min(c(df_sort$mig_rec, df_sort$mig_anc)), .0001))
-        #lines(df_sub$migration_divide, df_sub$mig_anc, type = "l", col="red", ylim = c(min(c(df_sort$mig_rec, df_sort$mig_anc)), .01))
-    }else{
-        df_sub <- df_sort[which(df_sort$pop_pair == pop_pair),]
-        #plot(df_sub$migration_divide, df_sub$mig_rec, type = "l", ylim = c(min(df_sort$mig_rec), max(df_sort$mig_rec)))
-        #lines(df_sub$migration_divide, df_sub$mig_rec, type = "l", col="black", ylim = c(min(df_sort$mig_rec), max(df_sort$mig_rec)))
-
-        #lines(df_sub$migration_divide, df_sub$mig_rec, type = "l", col="black", ylim = c(min(c(df_sort$mig_rec, df_sort$mig_anc)), max(c(df_sort$mig_rec, df_sort$mig_anc))))
-        #lines(df_sub$migration_divide, df_sub$mig_anc, type = "l", col="red", ylim = c(min(c(df_sort$mig_rec, df_sort$mig_anc)), max(c(df_sort$mig_rec, df_sort$mig_anc))))
-        
-        lines(df_sub$migration_divide, df_sub$mig_rec, type = "l", col="black", ylim = c(min(c(df_sort$mig_rec, df_sort$mig_anc)), .0001))
-        lines(df_sub$migration_divide, df_sub$mig_anc, type = "l", col="red", ylim = c(min(c(df_sort$mig_rec, df_sort$mig_anc)), .0001))
-        
-        #lines(df_sub$migration_divide, df_sub$mig_anc, type = "l", col="red", ylim = c(min(c(df_sort$mig_rec, df_sort$mig_anc)), .0001))
-    }
-    #dev.off()
-}
 dev.off()
-
-
-

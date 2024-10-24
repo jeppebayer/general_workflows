@@ -160,8 +160,8 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
         setup_run_FastSimCoal = gwf.map(
             name = create_run_name_fsc_noSingl,
             template_func = setup_run_FSC_map_target_nosingletons ,
-            inputs = input_dict_list_FSC_noSingletons[0:25],
-            #inputs = input_dict_list_FSC_noSingletons,
+            #inputs = input_dict_list_FSC_noSingletons[0:150],
+            inputs = input_dict_list_FSC_noSingletons,
             extra = {'migration_divide': migration_divide})
     
     
