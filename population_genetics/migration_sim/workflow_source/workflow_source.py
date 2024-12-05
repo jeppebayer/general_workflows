@@ -164,15 +164,6 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
             inputs = input_dict_list_FSC_noSingletons,
             extra = {'migration_divide': migration_divide})
     
-    
-# collect outputs
-
-    ##plotting_files = collect(setup_run_FastSimCoal.outputs, ['parameter_value_likelihood_file'])
-    #print(plotting_files)
-
-
-
-
 
 
     return gwf

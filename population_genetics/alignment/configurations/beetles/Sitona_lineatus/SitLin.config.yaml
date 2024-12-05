@@ -1,0 +1,60 @@
+# Tag identifying file association.
+TAG: jeppebayer:EcoGenetics,population_genetics,mapping:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Taxonomic group
+taxonomic_group: beetles
+# Name of species being analyzed
+species_name: Sitona lineatus
+# Path to reference genome file in FASTA format
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/beetles/Sitona_lineatus/GCA_964263205.1.fasta
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps
+# # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/
+# AdapterRemoval settings.
+adapterremoval_settings:
+  min_quality: 25
+  min_length: 20
+  adaptersequence1: AAGTCGGAGGCCAAGCGGTCTTAGGAAGACAA
+  adaptersequence2: AAGTCGGATCGTAGCCATGTCGTTCTGTGAGCCAAGGAGTTG
+# Samtools filter settings.
+filter_settings:
+  flags_excluded: 3844
+  flags_required: 
+  min_mq: 20
+# List of path to sample folders containing resequencing data.
+sample_lists:
+  -
+    group_name: Grassland
+    sample_folder_list:
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_BRS
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_DoeJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_DSJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_FHJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_FUR
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_HAS
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_HES
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_JoeJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_JYS
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_KOS
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_KRS
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_ORoe
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_RES
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_SBJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_SUJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_ULJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_UTJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_VAJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_aaRJ
+  -
+    group_name: Conservation_agriculture
+    sample_folder_list:
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_CA-HVJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_CA-MoeJ
+  -
+    group_name: Conventional_agriculture
+    sample_folder_list:
+  -
+    group_name: Outgroup_
+    sample_folder_list:

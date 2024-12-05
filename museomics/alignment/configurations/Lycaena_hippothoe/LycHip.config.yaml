@@ -32,6 +32,25 @@ sample_lists:
         population_name: Finland
         sample_folder_list:
           - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/LH23_1
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/LH24_1
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/LH24_2
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/LH24_3
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/LH24_4
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/LH24_5
+#          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/LH24_7
+#          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/LH24_9
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/LH24_10
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/LH24_11
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/LH24_12
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/LH24_13
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/LH24_14
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/LH24_15
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/LH24_16
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/LH24_17
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/LH24_18
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/LH24_19
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/LH24_20
+          - /faststorage/project/EcoGenetics/BACKUP/museomics/fastq/finland/Lycaena_hippothoe/LH24_21
   -
     time_period: 1985
     data_type: historic, single-end

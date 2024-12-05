@@ -45,9 +45,9 @@ filtering:
 # Only partial VCF files will be created when batching. To complete the full workflow one must do a no-batch run.
 batchSettings:
   # (int). The number of batches to create. 0 = don't batch jobs. If left empty defaults to '0'
-  numberOfBatches: 4
+  numberOfBatches: 
   # (int). Which of the created batches to run. Must be >=1 AND <=number_of_batches. Can be left empty if number_of_batches is '0'.
-  currentBatchNumber: 4
+  currentBatchNumber: 
 # Sample setup. List of dictionaries listing the configuration for each sample.
 sampleList:
   - 

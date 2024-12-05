@@ -1,0 +1,60 @@
+# Tag identifying file association.
+TAG: jeppebayer:EcoGenetics,population_genetics,mapping:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Taxonomic group
+taxonomic_group: beetles
+# Name of species being analyzed
+species_name: Apion fulvipes
+# Path to reference genome file in FASTA format
+reference_genome_path: 
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps
+# # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/
+# AdapterRemoval settings.
+adapterremoval_settings:
+  min_quality: 25
+  min_length: 20
+  adaptersequence1: AAGTCGGAGGCCAAGCGGTCTTAGGAAGACAA
+  adaptersequence2: AAGTCGGATCGTAGCCATGTCGTTCTGTGAGCCAAGGAGTTG
+# Samtools filter settings.
+filter_settings:
+  flags_excluded: 3844
+  flags_required: 
+  min_mq: 20
+# List of path to sample folders containing resequencing data.
+sample_lists:
+  -
+    group_name: Grassland
+    sample_folder_list:
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_aeRoe
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_DoeJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_FHJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_FUR
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_HaeJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_HAS
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_JYS
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_K-LES
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_KLJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_KRS
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_MoeJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_MSS
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_NYS
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_RDJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_SBJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_SKS
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_SUJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_TRJ
+  -
+    group_name: Conservation_agriculture
+    sample_folder_list:
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_CA-HVJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_CA-KoeJ
+  -
+    group_name: Conventional_agriculture
+    sample_folder_list:
+      - 
+  -
+    group_name: 
+    sample_folder_list:

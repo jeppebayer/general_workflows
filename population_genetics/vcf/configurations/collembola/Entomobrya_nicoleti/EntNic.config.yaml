@@ -32,9 +32,9 @@ freebayesSettings:
   # (int). Lower threshold count for variant to be considered. If left empty defaults to '2'.
   minAlternateCount: 2
   # (int). Amount of memory, in GB, to reserve per VCF partition. If left empty defaults to '80'.
-  memory: 35
+  memory: 70
   # (str). Amount of time to reserve per VCF partition in format: 'tt:mm:ss'. If left empty defaults to '48:00:00'.
-  time: '11:00:00'
+  time: '72:00:00'
 # Filtering settings.
 filtering:
   # (int). Minimum required depth for ingroups, inclusive. If left empty deafults to '200'.
@@ -45,9 +45,9 @@ filtering:
 # Only partial VCF files will be created when batching. To complete the full workflow one must do a no-batch run.
 batchSettings:
   # (int). The number of batches to create. 0 = don't batch jobs. If left empty defaults to '0'
-  numberOfBatches: 8
+  numberOfBatches: 
   # (int). Which of the created batches to run. Must be >=1 AND <=number_of_batches. Can be left empty if number_of_batches is '0'.
-  currentBatchNumber: 1
+  currentBatchNumber: 
 # (list). Sample setup. List of dictionaries listing the configuration for each sample.
 sampleList:
   - 
@@ -119,7 +119,7 @@ sampleList:
     groupName: Outgroup_Entomobrya_nivalis
     # (list). List of paths to BAM files.
     bamFileList:
-      - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Entomobrya_nicoleti/outgroup_entomobrya_nivalis/EntNiv_MSJ-C93/EntNiv_MSJ-C93.filtered.bam
+      - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Entomobrya_nicoleti/outgroup_entomobrya_nivalis/EntNiv_MSJ-C93/EntNiv_MSJ-C93.filtered.bam 
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Entomobrya_nicoleti/outgroup_entomobrya_nivalis/EntNiv_RYJ-ENNI/EntNiv_RYJ-ENNI.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Entomobrya_nicoleti/outgroup_entomobrya_nivalis/EntNiv_SBJ-C104/EntNiv_SBJ-C104.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Entomobrya_nicoleti/outgroup_entomobrya_nivalis/EntNiv_ULJ-C124/EntNiv_ULJ-C124.filtered.bam
