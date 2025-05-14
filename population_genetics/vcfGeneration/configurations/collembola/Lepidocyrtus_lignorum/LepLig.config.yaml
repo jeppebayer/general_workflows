@@ -1,0 +1,104 @@
+# Tag identifying file association.
+TAG: jeppebayer:EcoGenetics,population_genetics,vcf:workflowconfiguration
+# (str). The name of the relevant project account.
+account: EcoGenetics
+# (str). Taxonomic group. Can be left empty.
+taxonomicGroup: Collembola
+# (str). Name of species being analyzed.
+speciesName: Lepidocyrtus lignorum
+# (str). Path to reference genome.
+referenceGenomePath: 
+# (str). BED file indicating intergenic regions of the reference genome. If left empty all site counts will be disabled.
+intergenicBedFile: 
+# (str). BED file indicating repetitive regions of the reference genome. If left empty workflow will try to extract repetitive regions from reference genome.
+repeatsBedFile: 
+# (str). Directory for intermediary files.
+workingDirectoryPath: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps
+# (str). Directory for final output files. (If left empty, output file will be placed within 'workingDirectoryPath').
+outputDirectoryPath: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/
+# (int). Partition size of genome in base pairs. If left empty defaults to '500000'.
+partitionSize: 100000
+# Variant caller, Freebayes settings.
+freebayesSettings:
+  # (int). samplePloidy = ploidy * n_individials. If left empty defaults to '100'.
+  samplePloidy: 100
+  # (int). Number of variants to consider and report when multiple are available. If left empty defaults to '3'
+  bestNAlleles: 3
+  # (0 | float). Lower threshold fraction for variant to be considered. If left empty defaults to '0'.
+  minAlternateFraction: 0
+  # (int). Lower threshold count for variant to be considered. If left empty defaults to '2'.
+  minAlternateCount: 2
+  # (int). Amount of memory, in GB, to reserve per VCF partition. If left empty defaults to '80'.
+  memory: 
+  # (str). Amount of time to reserve per VCF partition in format: 'tt:mm:ss'. If left empty defaults to '48:00:00'.
+  time: 
+# Batch settings. Can be used to reduced the number of jobs sent to the queue at one time.
+# Only partial VCF files will be created when batching. To complete the full workflow one must do a no-batch run.
+batchSettings:
+  # (int). The number of batches to create. 0 = don't batch jobs. If left empty defaults to '0'
+  numberOfBatches: 
+  # (int). Which of the created batches to run. Must be >=1 AND <=numberOfBatches. Can be left empty if numberOfBatches is '0'.
+  currentBatchNumber: 
+# (list). Sample setup. List of dictionaries listing the configuration for each sample.
+sampleList:
+  - 
+    # ('i' | 'o'). Whether the sample group is to be considered ingroup (i) or outgroup (o).
+    groupStatus: i
+    # (str). Name of sample group.
+    groupName: Grassland
+    # (int). Minimum depth for samples in group. Used for depth distributions and site counts.
+    groupMinDP: 200
+    # Lists of paths to BAM files. BAM files can be separated in two 'qualities'. If both are used; depth distribution, site counts and vcf will be
+    # created for the 'high quality' samples and for for all samples combined.
+    # (list). List of paths to 'high quality' BAM file.
+    highQualityBamFileList:
+      - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Lepidocyrtus_lignorum/grassland/LepLig_HHJ-C215/LepLig_HHJ-C215.filtered.bam
+      - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Lepidocyrtus_lignorum/grassland/LepLig_LVJ-C78/LepLig_LVJ-C78.filtered.bam
+    # (list). List of paths to 'low quality' BAM file.
+    lowQualityBamFileList:
+      # - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Lepidocyrtus_lignorum/grassland/LepLig_aaRJ-C207/LepLig_aaRJ-C207.filtered.bam
+      # - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Lepidocyrtus_lignorum/grassland/LepLig_BRS-C269/LepLig_BRS-C269.filtered.bam
+      - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Lepidocyrtus_lignorum/grassland/LepLig_FaaJ-C8/LepLig_FaaJ-C8.filtered.bam
+      - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Lepidocyrtus_lignorum/grassland/LepLig_FHJ-C92/LepLig_FHJ-C92.filtered.bam
+      - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Lepidocyrtus_lignorum/grassland/LepLig_FUR-C231/LepLig_FUR-C231.filtered.bam
+      - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Lepidocyrtus_lignorum/grassland/LepLig_GoeJ-C242/LepLig_GoeJ-C242.filtered.bam
+      - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Lepidocyrtus_lignorum/grassland/LepLig_GSJ-C273/LepLig_GSJ-C273.filtered.bam
+      # - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Lepidocyrtus_lignorum/grassland/LepLig_JEJ-C18/LepLig_JEJ-C18.filtered.bam
+      # - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Lepidocyrtus_lignorum/grassland/LepLig_KOS-C181/LepLig_KOS-C181.filtered.bam
+      # - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Lepidocyrtus_lignorum/grassland/LepLig_LEJ-C243/LepLig_LEJ-C243.filtered.bam
+      # - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Lepidocyrtus_lignorum/grassland/LepLig_MYS-C39/LepLig_MYS-C39.filtered.bam
+      # - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Lepidocyrtus_lignorum/grassland/LepLig_RES-C286/LepLig_RES-C286.filtered.bam
+      - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Lepidocyrtus_lignorum/grassland/LepLig_SHJ-C9/LepLig_SHJ-C9.filtered.bam
+      # - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Lepidocyrtus_lignorum/grassland/LepLig_SKS-C106/LepLig_SKS-C106.filtered.bam
+      # - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Lepidocyrtus_lignorum/grassland/LepLig_SSJ-C258/LepLig_SSJ-C258.filtered.bam
+      # - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Lepidocyrtus_lignorum/grassland/LepLig_VAJ-C10/LepLig_VAJ-C10.filtered.bam
+  - 
+    # ('i' | 'o'). Whether the sample group is to be considered ingroup (i) or outgroup (o).
+    groupStatus: i
+    # (str). Name of sample group.
+    groupName: Conventional agriculture
+    # (int). Minimum depth for samples in group. Used for depth distributions and site counts.
+    groupMinDP: 200
+    # Lists of paths to BAM files. BAM files can be separated in two 'qualities'. If both are used; depth distribution, site counts and vcf will be
+    # created for the 'high quality' samples and for for all samples combined.
+    # (list). List of paths to 'high quality' BAM file.
+    highQualityBamFileList:
+      - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Lepidocyrtus_lignorum/conventional_agriculture/LepLig_K-JES-C324/LepLig_K-JES-C324.filtered.bam
+    # (list). List of paths to 'low quality' BAM file.
+    lowQualityBamFileList:
+      - 
+  - 
+    # ('i' | 'o'). Whether the sample group is to be considered ingroup (i) or outgroup (o).
+    groupStatus: i
+    # (str). Name of sample group.
+    groupName: Conservation agriculture
+    # (int). Minimum depth for samples in group. Used for depth distributions and site counts.
+    groupMinDP: 200
+    # Lists of paths to BAM files. BAM files can be separated in two 'qualities'. If both are used; depth distribution, site counts and vcf will be
+    # created for the 'high quality' samples and for for all samples combined.
+    # (list). List of paths to 'high quality' BAM file.
+    highQualityBamFileList:
+      - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Lepidocyrtus_lignorum/conservation_agriculture/LepLig_CA-FS6J-C90/LepLig_CA-FS6J-C90.filtered.bam
+    # (list). List of paths to 'low quality' BAM file.
+    lowQualityBamFileList:
+      - 

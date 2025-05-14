@@ -1,0 +1,39 @@
+# Tag identifying file association.
+TAG: jilong:EcoGenetics,site_frequency_spectrum_single_population:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Name of species being analyzed
+species_name: Aglais urticae
+# ID of species for short
+species_id : AglUrt
+# Name of the task as a unique id:
+task_id: split_ann_vcf
+# Species genome annotation file, gff:
+annotation_gff: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Aglais_urticae/annotation/GCA_905147175.2_ilAglUrti1.2_genomic.gff
+  #species gene bed file
+gene_bed: /faststorage/project/EcoGenetics/people/jilong/sfs/data/AglUrt/AglUrt_gene.bed
+  #species intergenic bed file
+intergenic_bed: /faststorage/project/EcoGenetics/people/jilong/sfs/data/AglUrt/AglUrt_intergenic.bed
+  # Species genome fasta:
+genome_fasta: /faststorage/project/EcoGenetics/people/jilong/sfs/data/AglUrt/GCA_905147175.2_ilAglUrti1.2_genomic.fa
+# Population to retrive:
+population: AgUr_poolseq_2022
+# snpEff annotated vcf file:
+ann_vcf: /faststorage/project/EcoGenetics/people/jilong/sfs/data/AglUrt/AgUr_poolseq_2022_ann.vcf
+# raw vcf file, freebayes called:
+raw_vcf: /faststorage/project/EcoGenetics/people/jilong/sfs/data/AglUrt/AglUrt_raw.vcf.gz
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/sfs/single_pop_sfs/AglUrt
+#Directory for final output files
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/sfs/single_pop_sfs/AglUrt
+# Directory for log files
+log_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/sfs/single_pop_sfs/AglUrt/logs
+# Directory for helping functions and scripts
+help_scripts_path: /faststorage/project/EcoGenetics/general_workflows/population_genetics/sfs/workflow_sources
+# Directory for input data files
+data_directory_path: /faststorage/project/EcoGenetics/people/jilong/sfs/data/AglUrt
+# BAM alignment file of the populaiton
+population_bam_alignment: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics/alignments/Aglais_urticae/Pooled/pooled_extraction/AgUr_poolseq_2022/AgUr_poolseq_2022.filtered.bam
+# Depth summary of the freebayes called variants for the population
+population_varaint_depth_summary: /faststorage/project/EcoGenetics/people/jilong/sfs/data/AglUrt/AglUrt.depth.tsv
+  

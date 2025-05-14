@@ -1,0 +1,55 @@
+# The name of the relevant project account.
+account: EcoGenetics
+# Name of species being analyzed
+speciesName: Sitona lineatus
+# (str). Taxonomic group. Can be left empty.
+taxonomicGroup: Beetles
+# Directory for intermediary files.
+workingDirectoryPath: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps
+# Directory for final output files.
+outputDirectoryPath: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics
+# (str).
+referenceGenome: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/beetles/Sitona_lineatus/GCA_964263205.1.fasta
+# (str).
+gtfAnnotation:
+# (dict).
+outgroupSettings:
+  # (str).
+  vcfFile:
+  # (int).
+  minimumCoverage: 
+# (list).
+vcfGroupList:
+  -
+    # (str).
+    groupName: Grassland
+    # (str). 
+    vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/beetles/Sitona_lineatus/grassland/SitLin.grassland.ingroup.allQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.norm.merged.vcf.gz
+    # (int). 
+    minimumCoverage: 100
+    # (int).
+    maximumCoverage: 266
+    # (str).
+    withinThresholdBedFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/beetles/Sitona_lineatus/depth/SitLin.grassland.ingroup.allQuality.depththreshold.bed
+  -
+    # (str).
+    groupName: Grassland
+    # (str). 
+    vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/beetles/Sitona_lineatus/grassland/SitLin.grassland.ingroup.highQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.norm.merged.vcf.gz
+    # (int). 
+    minimumCoverage: 100
+    # (int).
+    maximumCoverage: 272
+    # (str).
+    withinThresholdBedFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/beetles/Sitona_lineatus/depth/SitLin.grassland.ingroup.highQuality.depththreshold.bed
+  -
+    # (str).
+    groupName: Conservation agriculture
+    # (str). 
+    vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/beetles/Sitona_lineatus/conservation_agriculture/SitLin.conservation_agriculture.ingroup.allQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.norm.merged.vcf.gz
+    # (int). 
+    minimumCoverage: 100
+    # (int).
+    maximumCoverage: 316
+    # (str).
+    withinThresholdBedFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/beetles/Sitona_lineatus/depth/SitLin.conservation_agriculture.ingroup.allQuality.depththreshold.bed

@@ -1,0 +1,83 @@
+# Tag identifying file association.
+TAG: jeppebayer:EcoGenetics,museomics,mapping:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Name of species being analyzed
+species_name: Lycaena virgaureae Lola
+# Path to reference genome file in FASTA format
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Lycaena_virgaureae/EG_LycVir_01052024_genomic_haplotype1.fna
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/museomics/steps
+# # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics
+# AdapterRemoval settings.
+adapterremoval_settings:
+  min_quality: 25
+  min_length: 20
+  adaptersequence1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCA
+  adaptersequence2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
+# Samtools filter settings.
+filter_settings:
+  flags_excluded: 3844
+  flags_required: 
+  min_mq: 20
+# List of path to sample folders containing resequencing data.
+# Data type: contemporary | historic | paired-end | single-end ...
+sample_lists:
+  -
+    time_period: 2024
+    data_type: contemporary, paired-end
+    populations:
+      -
+        population_name: Finland_Lola
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-1I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-1I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-1I-N6_OBSNewname_LVIR-5I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-1I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-2I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-2I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-2I-N6_OBSNewname_LVIR-6I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-2I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-3I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-3I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-3I-N6_OBSNewname_LVIR-8I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-3I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-4I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-4I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-4I-N6_OBSNewname_LVIR-7I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-4I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-5I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-5I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-5I-N6_OBSNewname_LVIR-9I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-5I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-6I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-6I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-6I-N6_OBSNewname_LVIR-10I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-6I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-7I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-7I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-7I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-8I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-8I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-8I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-9I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-9I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-9I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-10I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-10I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-10I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-11I-S9
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-15I-S9
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-16I-S9
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-17I-S9
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-26I-S9
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-27I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-27I-S9
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-28I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-28I-S9
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-29I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-30I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-32I-S9
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-33I-S9
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Lycaena_virgaureae/LVIR-36I-S9

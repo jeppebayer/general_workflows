@@ -1,0 +1,63 @@
+# Tag identifying file association.
+TAG: jeppebayer:EcoGenetics,museomics,mapping:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Name of species being analyzed
+species_name: Fabriciana adippe Lola
+# Path to reference genome file in FASTA format
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Fabriciana_adippe/GCA_905404265.1_ilFabAdip1.1_genomic.fna
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/museomics/steps
+# # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics
+# AdapterRemoval settings.
+adapterremoval_settings:
+  min_quality: 25
+  min_length: 20
+  adaptersequence1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCA
+  adaptersequence2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
+# Samtools filter settings.
+filter_settings:
+  flags_excluded: 3844
+  flags_required: 
+  min_mq: 20
+# List of path to sample folders containing resequencing data.
+# Data type: contemporary | historic | paired-end | single-end ...
+sample_lists:
+  -
+    time_period: 2024
+    data_type: contemporary, paired-end
+    populations:
+      -
+        population_name: Finland_Lola
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-1I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-1I-S6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-2I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-3I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-3I-S6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-4I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-4I-S6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-5I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-6I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-6I-S6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-7I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-7I-S6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-8I-S6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-9I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-10I-S6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-11I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-11I-S8
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-12I-S8
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-13I-S8
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-14I-S8
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-15I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-15I-S6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-15I-S8
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-16I-S6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-16I-S8
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-17I-S6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-17I-S8
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-18I-S8
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-19I-S8
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Fabriciana_adippe/FADI-20I-S8

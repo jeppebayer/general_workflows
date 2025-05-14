@@ -1,0 +1,35 @@
+# Tag identifying file association.
+TAG: jeppebayer:EcoGenetics,population_genetics,filter,aa,snpeff:workflowconfiguration
+# (str). The name of the relevant project account.
+account: EcoGenetics
+# (str). Name of species being analyzed
+speciesName: Orchesella cincta
+# (str). Taxonomic group. Can be left empty.
+taxonomicGroup: Collembola
+# (str). Directory for intermediary files.
+workingDirectoryPath: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps
+# (str). Directory for final output files.
+outputDirectoryPath: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics
+# (str). Path to reference genome file.
+referenceGenome: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Orchesella_cincta/GCA_001718145.1_ASM171814v1_genomic.fna
+# (str). Path to reference genome annotation file in GTF format. Can be left empty. If left empty VCF file will not be SnpEff or AA annotated.
+gtfAnnotation: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Orchesella_cincta/annotation/GCA_001718145.1_ASM171814v1_genomic.gtf
+# (dict). Settings for outgroup data. Can be left empty. If left empty VCF file will not be AA annotated.
+outgroupSettings:
+  # (str). Path to outgroup VCF file. This file should NOT be filtered.
+  vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Orchesella_cincta/orchesella_villosa/OrcCin.orchesella_villosa.outgroup.allQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.norm.merged.vcf.gz
+  # (str). Path to BED file containing intervals for which the outgroup has coverage ranging within threshold values. 
+  withinThresholdBedFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Orchesella_cincta/depth/OrcCin.orchesella_villosa.outgroup.allQuality.depththreshold.bed
+# (list). Setup for VCF files to be filtered and annotated.
+vcfGroupList:
+  -
+    # (str). Name of sample group.
+    groupName: Grassland
+    # (str). Path to VCF file.
+    vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Orchesella_cincta/grassland/OrcCin.grassland.ingroup.allQuality.freebayes.merge.vcf.gz
+    # (int). Minimum coverage value for filtering.
+    minimumCoverage: 200
+    # (int). Maximum coverage value for filtering.
+    maximumCoverage: 728
+    # (str). Path to BED file containing intervals for which the sample group has coverage ranging within threshold values. 
+    withinThresholdBedFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Orchesella_cincta/depth/OrcCin.grassland.ingroup.allQuality.depththreshold.bed

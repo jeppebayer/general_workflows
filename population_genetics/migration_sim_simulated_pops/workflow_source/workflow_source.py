@@ -100,10 +100,12 @@ def migration_simulation_simsfs(config_file: str = glob.glob('*config.y*ml')[0])
         #print(file)
         # make name to copy the sfs to
         sfs_file_new = f'{new_wd}/simulated_SFS/{describer}/{os.path.basename(file)}'
-        print(sfs_file_new)
+        #print(sfs_file_new)
         # copy SFS into analysis base-folder
-        shutil.copy2(file, sfs_file_new)
-
+        if os.path.exists(sfs_file_new):
+            print("obs file exist. Refrain from copying it into folder.")
+        else:
+            shutil.copy2(file, sfs_file_new)
 
     ######################################################
     ### split SFS files, if more than one obs per file ###

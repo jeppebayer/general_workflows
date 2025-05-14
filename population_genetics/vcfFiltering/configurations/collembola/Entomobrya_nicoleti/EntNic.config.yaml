@@ -1,0 +1,68 @@
+# Tag identifying file association.
+TAG: jeppebayer:EcoGenetics,population_genetics,filter,aa,snpeff:workflowconfiguration
+# (str). The name of the relevant project account.
+account: EcoGenetics
+# (str). Name of species being analyzed
+speciesName: Entomobrya nicoleti
+# (str). Taxonomic group. Can be left empty.
+taxonomicGroup: Collembola
+# (str). Directory for intermediary files.
+workingDirectoryPath: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps
+# (str). Directory for final output files.
+outputDirectoryPath: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics
+# (str). Path to reference genome file.
+referenceGenome: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/EG_EntNic_05092024_genomic.fna
+# (str). Path to reference genome annotation file in GTF format. Can be left empty. If left empty VCF file will not be SnpEff or AA annotated.
+gtfAnnotation: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/annotation/EG_EntNic_05092024_genomic.gtf
+# (dict). Settings for outgroup data. Can be left empty. If left empty VCF file will not be AA annotated.
+outgroupSettings:
+  # (str). Path to outgroup VCF file. This file should NOT be filtered.
+  vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/entomobrya_nivalis/EntNic.entomobrya_nivalis.outgroup.allQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.norm.merged.vcf.gz
+  # (str). Path to BED file containing intervals for which the outgroup has coverage ranging within threshold values. 
+  withinThresholdBedFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/depth/EntNic.entomobrya_nivalis.outgroup.allQuality.depththreshold.bed
+# (list). Setup for VCF files to be filtered and annotated.
+vcfGroupList:
+  -
+    # (str). Name of sample group.
+    groupName: Grassland
+    # (str). Path to VCF file.
+    vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic.grassland.ingroup.highQuality.freebayes.merge.vcf.gz
+    # (int). Minimum coverage value for filtering.
+    minimumCoverage: 200
+    # (int). Maximum coverage value for filtering.
+    maximumCoverage: 660
+    # (str). Path to BED file containing intervals for which the sample group has coverage ranging within threshold values. 
+    withinThresholdBedFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/depth/EntNic.grassland.ingroup.highQuality.depththreshold.bed
+  -
+    # (str). Name of sample group.
+    groupName: Grassland
+    # (str). Path to VCF file.
+    vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic.grassland.ingroup.allQuality.freebayes.merge.vcf.gz
+    # (int). Minimum coverage value for filtering.
+    minimumCoverage: 200
+    # (int). Maximum coverage value for filtering.
+    maximumCoverage: 658
+    # (str). Path to BED file containing intervals for which the sample group has coverage ranging within threshold values. 
+    withinThresholdBedFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/depth/EntNic.grassland.ingroup.allQuality.depththreshold.bed
+  -
+    # (str). Name of sample group.
+    groupName: Conventional agriculture
+    # (str). Path to VCF file.
+    vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/conventional_agriculture/EntNic.conventional_agriculture.ingroup.allQuality.freebayes.vcf.gz
+    # (int). Minimum coverage value for filtering.
+    minimumCoverage: 200
+    # (int). Maximum coverage value for filtering.
+    maximumCoverage: 516
+    # (str). Path to BED file containing intervals for which the sample group has coverage ranging within threshold values. 
+    withinThresholdBedFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/depth/EntNic.conventional_agriculture.ingroup.allQuality.depththreshold.bed
+  -
+    # (str). Name of sample group.
+    groupName: Conservation agriculture
+    # (str). Path to VCF file.
+    vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/conservation_agriculture/EntNic.conservation_agriculture.ingroup.allQuality.freebayes.merge.vcf.gz
+    # (int). Minimum coverage value for filtering.
+    minimumCoverage: 200
+    # (int). Maximum coverage value for filtering.
+    maximumCoverage: 608
+    # (str). Path to BED file containing intervals for which the sample group has coverage ranging within threshold values. 
+    withinThresholdBedFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/depth/EntNic.conservation_agriculture.ingroup.allQuality.depththreshold.bed

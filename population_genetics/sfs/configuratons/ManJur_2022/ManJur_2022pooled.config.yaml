@@ -1,0 +1,35 @@
+# Tag identifying file association.
+TAG: jilong:EcoGenetics,site_frequency_spectrum_single_population:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Name of species being analyzed
+species_name: Maniola jurtina
+# ID of species for short
+species_id : ManJur
+# Name of the task as a unique id:
+task_id: split_ann_vcf
+# Species genome annotation file, gff:
+annotation_gff: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Maniola_jurtina/annotation/GCF_905333055.1_ilManJurt1.1_genomic.gff
+# Species genome fasta:
+genome_fasta: /faststorage/project/EcoGenetics/people/jilong/sfs/data/ManJur/GCF_905333055.1_ilManJurt1.1_genomic_id_trimmed.fa
+# Population to retrive:
+population: MaJu_poolseq_2022
+# snpEff annotated vcf file:
+ann_vcf: /faststorage/project/EcoGenetics/people/jilong/sfs/steps/ManJur/annotated_ManJur.vcf
+# raw vcf file, freebayes called:
+raw_vcf: /faststorage/project/EcoGenetics/people/jilong/sfs/data/ManJur/ManJur_raw.vcf.gz
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/sfs/single_pop_sfs/ManJur
+#Directory for final output files
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/sfs/single_pop_sfs/ManJur
+# Directory for log files
+log_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/sfs/single_pop_sfs/ManJur/logs
+# Directory for helping functions and scripts
+help_scripts_path: /faststorage/project/EcoGenetics/general_workflows/population_genetics/sfs/workflow_sources
+# Directory for input data files
+data_directory_path: /faststorage/project/EcoGenetics/people/jilong/sfs/data/ManJur
+# BAM alignment file of the populaiton
+population_bam_alignment: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics/alignments/Maniola_jurtina/Pooled/pooled_extraction/MaJu_poolseq_2022/MaJu_poolseq_2022.filtered.bam
+# Depth summary of the freebayes called variants for the population
+population_varaint_depth_summary: /faststorage/project/EcoGenetics/people/jilong/sfs/data/ManJur/ManJur.depth.tsv
+

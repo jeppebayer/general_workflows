@@ -1,0 +1,93 @@
+# Tag identifying file association.
+TAG: jeppebayer:EcoGenetics,museomics,mapping:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Name of species being analyzed
+species_name: Brenthis ino Lola
+# Path to reference genome file in FASTA format
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Brenthis_ino/GCA_921882275.1_SP_BI_364.v2_0_genomic.fna
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/museomics/steps
+# # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics
+# AdapterRemoval settings.
+adapterremoval_settings:
+  min_quality: 25
+  min_length: 20
+  adaptersequence1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCA
+  adaptersequence2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
+# Samtools filter settings.
+filter_settings:
+  flags_excluded: 3844
+  flags_required: 
+  min_mq: 20
+# List of path to sample folders containing resequencing data.
+# Data type: contemporary | historic | paired-end | single-end ...
+sample_lists:
+  -
+    time_period: 2024
+    data_type: contemporary, paired-end
+    populations:
+      -
+        population_name: Finland_Lola
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-1I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-1I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-1I-S5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-1I-S8
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-2I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-2I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-2I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-2I-S8
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-3I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-3I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-3I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-3I-S8
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-4I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-4I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-4I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-4I-S8
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-5I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-5I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-5I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-5I-S8
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-6I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-6I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-6I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-6I-S8
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-7I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-7I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-7I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-7I-S8
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-8I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-8I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-8I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-8I-S8
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-8L-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-9.1I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-9.2I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-9I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-9I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-9I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-9I-S8
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-10I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-10I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-10I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-10I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-10I-S8
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-11L-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-12L-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-13I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-14I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-15L-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-16I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-19I-S5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-21I-S5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-23I-S5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-27I-S5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-29I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-36I-S5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-37I-S5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-38I-S5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-39I-S5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Brenthis_ino/BINO-44I-S5

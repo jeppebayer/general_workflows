@@ -1,0 +1,82 @@
+# Tag identifying file association.
+TAG: jeppebayer:EcoGenetics,museomics,mapping:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Name of species being analyzed
+species_name: Thymelicus lineola Camila
+# Path to reference genome file in FASTA format
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Thymelicus_lineola/EG_ThyLin_01052024_genomic.fna
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/museomics/steps
+# # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics
+# AdapterRemoval settings.
+adapterremoval_settings:
+  min_quality: 25
+  min_length: 20
+  adaptersequence1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCA
+  adaptersequence2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
+# Samtools filter settings.
+filter_settings:
+  flags_excluded: 3844
+  flags_required: 
+  min_mq: 20
+# List of path to sample folders containing resequencing data.
+# Data type: contemporary | historic | paired-end | single-end ...
+sample_lists:
+  -
+    time_period: 2024
+    data_type: contemporary, paired-end
+    populations:
+      -
+        population_name: Denamrk_Camila
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_117_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_60_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_92_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_30_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_122_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_28_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_57_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_24_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_86_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_61_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_144_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_143_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_56_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_25_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_87_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_62_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_21_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_59_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_83_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_55_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_116_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_58_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_93_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_123_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_31_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_145_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_29_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_54_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_85_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_27_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_53_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_23_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_146_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_118_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_148_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_114_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_52_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_121_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_91_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_89_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_115_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_147_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_120_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_90_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_88_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_84_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_26_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_22_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_119_Komp

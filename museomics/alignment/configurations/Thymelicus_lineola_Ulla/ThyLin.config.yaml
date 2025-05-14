@@ -1,0 +1,93 @@
+# Tag identifying file association.
+TAG: jeppebayer:EcoGenetics,museomics,mapping:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Name of species being analyzed
+species_name: Thymelicus lineola Ulla
+# Path to reference genome file in FASTA format
+reference_genome_path: /faststorage/project/EcoGenetics/people/Jesper_Bechsgaard/Ulla_butterflies/ThyLin/EG_ThyLin_01052024_genomic.fna
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/museomics/steps
+# # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics
+# AdapterRemoval settings.
+adapterremoval_settings:
+  min_quality: 25
+  min_length: 20
+  adaptersequence1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCA
+  adaptersequence2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
+# Samtools filter settings.
+filter_settings:
+  flags_excluded: 3844
+  flags_required: 
+  min_mq: 20
+# List of path to sample folders containing resequencing data.
+# Data type: contemporary | historic | paired-end | single-end ...
+sample_lists:
+  -
+    time_period: 2024
+    data_type: contemporary, paired-end
+    populations:
+      -
+        population_name: Finland_Ulla
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_11
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_12
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_13
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_14
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_15
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_24
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_25
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_26
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_27
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_3
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_32
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_33
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_34
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_35
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_36
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_37
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_38
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_39
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_41
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_42
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_46
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_47
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_51
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_52
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_53
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_54
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_55
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_56
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_57
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_59
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_60
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_61
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_62
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_65
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_66
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_67
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_68
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_69
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_7
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_70
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_71
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_73
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_74
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_76
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_77
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_8
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_81
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_82
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_83
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_87
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_89
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_9
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_91
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_95
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_96
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_97
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_98
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_99
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Thymelicus_lineola/TL23_100

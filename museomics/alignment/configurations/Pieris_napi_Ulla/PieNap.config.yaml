@@ -1,0 +1,83 @@
+# Tag identifying file association.
+TAG: jeppebayer:EcoGenetics,museomics,mapping:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Name of species being analyzed
+species_name: Pieris napi Ulla
+# Path to reference genome file in FASTA format
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Pieris_napi/GCF_905475465.1_ilPieNapi1.2_genomic.fna
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/museomics/steps
+# # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics
+# AdapterRemoval settings.
+adapterremoval_settings:
+  min_quality: 25
+  min_length: 20
+  adaptersequence1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCA
+  adaptersequence2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
+# Samtools filter settings.
+filter_settings:
+  flags_excluded: 3844
+  flags_required: 
+  min_mq: 20
+# List of path to sample folders containing resequencing data.
+# Data type: contemporary | historic | paired-end | single-end ...
+sample_lists:
+  -
+    time_period: 2024
+    data_type: contemporary, paired-end
+    populations:
+      -
+        population_name: Finland_Ulla
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_102
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_103
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_104
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_109
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_111
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_112
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_113
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_114
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_115
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_116
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_117
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_120
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_121
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_123
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_124
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_125
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_127
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_133
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_134
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_137
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_139
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_141
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_142
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_145
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_146
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_150
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_152
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_156
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_158
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_161
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_162
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_163
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_168
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_169
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_170
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_171
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_172
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_173
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_174
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_175
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_176
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_177
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_178
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_180
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_181
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_91
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_92
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_95
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_96
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Pieris_napi/PN23_98

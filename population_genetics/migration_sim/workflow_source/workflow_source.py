@@ -79,16 +79,18 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
     awk_parse_pops_from_vcf(VCF_FILE, f'{new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_parsed_pops.tsv')
     print(f'Individual IDs and counters saved to {new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_parsed_pops.tsv')
     # Generate all possible pairs where counter2 >= counter1
-    awk_create_pairs(f'{new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_parsed_pops.tsv', f'{new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_pop_pairs.tsv')
-    print(f'Individual pairs saved to {new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_pop_pairs.tsv')
+    data_prep_outfile_pairs = f'{new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_pop_pairs.tsv'
+    awk_create_pairs(f'{new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_parsed_pops.tsv', data_prep_outfile_pairs)
+    print(f'Individual pairs saved to {data_prep_outfile_pairs}')
 
+    
 
     # Prepare data for making SFS (slow)
     make_ready_for_2dSFS_pairs = gwf.target_from_template(
             name='prepare_data_sfs',
             template=prepare_data(
                 vcf_file=VCF_FILE,
-                pop_pairs_file=f'{new_wd}/2dSFS/{species_abbreviation(SPECIES_NAME)}_pop_pairs.tsv',
+                pop_pairs_file=data_prep_outfile_pairs,
                 output_prefix=species_abbreviation(SPECIES_NAME),
                 working_dir=f'{new_wd}/2dSFS/')
         )
@@ -98,27 +100,31 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
     #################
         # funtion used to create dictionaries, based on files created in this source flow.
     #input_dict_list = create_input_dict_2dSFS(pair_file = f'{new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_pop_pairs.tsv', exclude_list = [])
-    input_dict_list = create_input_dict_2dSFS(pair_file = f'{new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_pop_pairs.tsv', include_list = INCLUDE_POPS, exclude_list = EXCLUDE_POPS)
+    print(f'\nIncludin these populations: {INCLUDE_POPS}')
+    print(f'\nExcluding these populations: {EXCLUDE_POPS}')
+    #print(data_prep_outfile_pairs)
+    input_dict_list = create_input_dict_2dSFS(pair_file = data_prep_outfile_pairs, include_list = INCLUDE_POPS, exclude_list = EXCLUDE_POPS)
     #input_dict_list_noSingl = create_input_dict_2dSFS_noSingl(pair_file = f'{new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_pop_pairs.tsv', include_list = INCLUDE_POPS, exclude_list = EXCLUDE_POPS)
     #new_wd_noSingletons
     #input_dict_list_noSingletons = create_input_dict_2dSFS(pair_file = f'{new_wd}/2dSFS/adata_prep/{species_abbreviation(SPECIES_NAME)}_pop_pairs.tsv', include_list = INCLUDE_POPS, exclude_list = EXCLUDE_POPS)
     #print(EXCLUDE_POPS)
-    print(input_dict_list[0])
+    #print(input_dict_list[0])
     
-    neutral_vcf_files_runtemplate_map = gwf.map(
-        #name=[d['name'] for d in input_dict_list],
-        template_func = pair_2DSFS_map_target,
-        inputs = input_dict_list,
-        extra = {'out2_file': make_ready_for_2dSFS_pairs.outputs['outfile_dat'], 
-                 'working_directory': f'{new_wd}/2dSFS/'})
-    
-    neutral_vcf_files_runtemplate_map_noSingletons = gwf.map(
-        #name=create_run_name_fsc_pair,
-        template_func = pair_2DSFS_map_target_noSingletons,
-        inputs = input_dict_list,
-        extra = {'out2_file': make_ready_for_2dSFS_pairs.outputs['outfile_dat'], 
-                 'working_directory': f'{new_wd_noSingletons}/2dSFS/',
-                 'working_directory_alldat': f'{new_wd}/2dSFS/'})
+    ##neutral_vcf_files_runtemplate_map = gwf.map(
+      ##  #name=[d['name'] for d in input_dict_list],
+        ##template_func = pair_2DSFS_map_target,
+        ##inputs = input_dict_list,
+        ##extra = {'out2_file': make_ready_for_2dSFS_pairs.outputs['outfile_dat'], 
+          ##       'working_directory': f'{new_wd}/2dSFS/'})
+        ###f'{working_directory}/{outname}'
+        
+    #neutral_vcf_files_runtemplate_map_noSingletons = gwf.map(
+    #    #name=create_run_name_fsc_pair,
+     #   template_func = pair_2DSFS_map_target_noSingletons,
+      #  inputs = input_dict_list,
+       # extra = {'out2_file': make_ready_for_2dSFS_pairs.outputs['outfile_dat'], 
+        #         'working_directory': f'{new_wd_noSingletons}/2dSFS/',
+         #        'working_directory_alldat': f'{new_wd}/2dSFS/'})
     
 
     #############################################################
@@ -134,15 +140,27 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
     #for k in SFS_paths:
      #   k['SFS_file'] = k.pop('outfile_path')
     
-    SFS_paths = [d['outfile_path'] for d in neutral_vcf_files_runtemplate_map.outputs] # as list of paths to combine with another list? into dicts
-    SFS_paths_noSingletons = [d['sfs_newrun_outfile_path'] for d in neutral_vcf_files_runtemplate_map_noSingletons.outputs] # as list of paths to combine with another list? into dicts
+    #SFS_paths = [d['outfile_path'] for d in neutral_vcf_files_runtemplate_map.outputs] # as list of from output of previous template. now redundant
+    SFS_paths = [f'{new_wd}/2dSFS/{d['outname']}' for d in input_dict_list] # without dependency
+    #print(SFS_paths)
+
+    ##SFS_paths_noSingletons = [d['sfs_newrun_outfile_path'] for d in neutral_vcf_files_runtemplate_map_noSingletons.outputs] # as list of paths to combine with another list? into dicts
     names_list = [d['name'] for d in input_dict_list] # as list of paths to combine with another list? into dicts
     input_dict_list_FSC = [{'SFS_file': f, 'name_pops': n} for f, n in zip(SFS_paths, names_list)]
-    input_dict_list_FSC_noSingletons = [{'SFS_file': f, 'name_pops': n} for f, n in zip(SFS_paths_noSingletons, names_list)]
+    ##input_dict_list_FSC_noSingletons = [{'SFS_file': f, 'name_pops': n} for f, n in zip(SFS_paths_noSingletons, names_list)]
+    print(" ")
+    #check if file exist, and remove if not.
+    for i in range(len(input_dict_list_FSC) - 1, -1, -1):
+        file_name = input_dict_list_FSC[i]['SFS_file']
+        if not os.path.exists(file_name):
+            print(f"removed dictionary with '{file_name}' due to non existing file")
+            input_dict_list_FSC.pop(i)  # Remove the dictionary from the list
 
-    print(input_dict_list_FSC[0])
-    print(input_dict_list_FSC_noSingletons[0])
-    
+
+    #print(input_dict_list_FSC[0])
+    #print(input_dict_list_FSC_noSingletons[0])
+    #print([d["name_pops"] for d in input_dict_list_FSC])
+    #print([d["name_pops"] for d in input_dict_list_FSC if "aaRJ" in d["name_pops"]])
 
     # set up folder structure, copy .obs into it and change name
     for migration_divide in range(MIN_MIG_DIVIDE, MAX_MIG_DIVIDE, MIGRATION_DIVIDE_INTERVAL):
@@ -156,13 +174,13 @@ def migration_simulation(config_file: str = glob.glob('*config.y*ml')[0]):
             inputs = input_dict_list_FSC,
             extra = {'migration_divide': migration_divide})
 
-        # run with no singletons:
-        setup_run_FastSimCoal = gwf.map(
-            name = create_run_name_fsc_noSingl,
-            template_func = setup_run_FSC_map_target_nosingletons ,
-            #inputs = input_dict_list_FSC_noSingletons[0:150],
-            inputs = input_dict_list_FSC_noSingletons,
-            extra = {'migration_divide': migration_divide})
+        ## run with no singletons:
+        #setup_run_FastSimCoal = gwf.map(
+         #   name = create_run_name_fsc_noSingl,
+          #  template_func = setup_run_FSC_map_target_nosingletons ,
+           # #inputs = input_dict_list_FSC_noSingletons[0:150],
+            #inputs = input_dict_list_FSC_noSingletons,
+            #extra = {'migration_divide': migration_divide})
     
 
 

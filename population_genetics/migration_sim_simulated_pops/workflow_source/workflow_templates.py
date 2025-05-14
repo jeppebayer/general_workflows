@@ -61,7 +61,6 @@ def python_make_yml(SFS_file: str, describer: str):
 
 
 
-
 def split_file(input_filename: str, path_out: str, file_name_base: str):
     with open(input_filename, 'r') as file:
         lines = file.readlines()
@@ -80,8 +79,14 @@ def split_file(input_filename: str, path_out: str, file_name_base: str):
             if len(current_data) > 2:
                 # Create directory for each file, if not exists
                 os.makedirs(f'{path_out}/rep_{file_index}', exist_ok=True)
-                with open(f'{path_out}/rep_{file_index}/{file_name_base.replace("rep_X", "rep_" + str(file_index))}', 'w') as outfile:
-                    outfile.writelines(current_data)
+                new_out_file = f'{path_out}/rep_{file_index}/{file_name_base.replace("rep_X", "rep_" + str(file_index))}'
+                if not os.path.exists(new_out_file):
+                    print("Copying replicate obs file")
+                    #if os.path.exists(new_out_file):
+                    #print("replicate obs file already exist")
+                    #else:
+                    with open(new_out_file, 'w') as outfile:
+                        outfile.writelines(current_data)
                 file_index += 1  # Increment file index after writing the file
 
             # Reset current_data with the header for the new section
@@ -93,8 +98,14 @@ def split_file(input_filename: str, path_out: str, file_name_base: str):
     # Write the remaining data to the last file if it has content
     if len(current_data) > 2:
         os.makedirs(f'{path_out}/rep_{file_index}', exist_ok=True)
-        with open(f'{path_out}/rep_{file_index}/{file_name_base.replace("rep_X", "rep_" + str(file_index))}', 'w') as outfile:
-            outfile.writelines(current_data)
+        new_out_file = f'{path_out}/rep_{file_index}/{file_name_base.replace("rep_X", "rep_" + str(file_index))}'
+        if not os.path.exists(new_out_file):
+            print("Copying replicate obs file")
+            #else:
+            with open(new_out_file, 'w') as outfile:
+                outfile.writelines(current_data)
+    
+    #print("fine")
 
 
 
@@ -121,6 +132,7 @@ def setup_run_FSC_target(SFS_file: str, migration_divide: int, name_pops: str):
 	options = {
 		'cores': 1,
 		'memory': '1g',
+		#'walltime': '05:00:00'
 		'walltime': '11:59:00'
 		#'walltime': '1-12:00:00'
 	}
@@ -132,84 +144,91 @@ def setup_run_FSC_target(SFS_file: str, migration_divide: int, name_pops: str):
 	echo "START: $(date)"
 	echo "JobID: $SLURM_JOBID"
 
-	# Make files and folders ready:
-	
-	# get folder name
-	diris={os.path.dirname(inputs['SFS_file'])}
-	echo Input directory of SFS is: $diris
-	
-	# make subfolder for specific migration divide
-	mkdir -p $diris/{migration_divide}
-	mig_div_var={migration_divide}
-
-	# Copy obs sfs and modify name to include migration divide
-	obs_file=`ls $diris/*sfs2d_*_jointMAFpop1_0.obs`
-	obs_file_base=`basename $obs_file`
-	echo Original observed file is: $obs_file
-	echo SFS is moved and renamed for new run like this: $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}}
-
-	if [ ! -f $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}} ]
-	then
-		echo .obs file did not exist in correct folder, copying and renaming.
-		cp $obs_file $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}}
+	if [ -f {outputs['parameter_value_likelihood_file']} ]; then
+    	echo "Bestlikelyhoods File exists."
+		touch {outputs['parameter_value_likelihood_file']}
 	else
-		echo .obs file already exist in correct folder. $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}}
-	fi
-	# get name from sfs file
-	new_sfs_base=${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}}
-	sfs_inherit_name="${{new_sfs_base%%_joint*}}"
-	echo $sfs_inherit_name
+    	echo "Bestlikelyhood File does not exist."
+		
+		# Make files and folders ready:
 	
-	
-	# Copy est and tpl files
-	est_file=../../../workflow_source/scripts/pop1_pop2_sfs2d.est
-	tpl_file=../../../workflow_source/scripts/pop1_pop2_sfs2d.tpl
-	est_base=`basename $est_file`
-	tpl_base=`basename $tpl_file`
-	
-	# modify them and change names
-	#if [ ! -f $diris/{migration_divide}/${{est_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}} ]
-	if [ ! -f $diris/{migration_divide}/$sfs_inherit_name".est" ]
-	then
-		#cp $est_file $diris/{migration_divide}/${{est_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}}
-		cp $est_file $diris/{migration_divide}/$sfs_inherit_name.est
+		# get folder name
+		diris={os.path.dirname(inputs['SFS_file'])}
+		echo Input directory of SFS is: $diris
+		
+		# make subfolder for specific migration divide
+		mkdir -p $diris/{migration_divide}
+		mig_div_var={migration_divide}
+
+		# Copy obs sfs and modify name to include migration divide
+		obs_file=`ls $diris/*sfs2d_*_jointMAFpop1_0.obs`
+		obs_file_base=`basename $obs_file`
+		echo Original observed file is: $obs_file
+		echo SFS is moved and renamed for new run like this: $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}}
+
+		if [ ! -f $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}} ]
+		then
+			echo .obs file did not exist in correct folder, copying and renaming.
+			cp $obs_file $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}}
+		else
+			echo .obs file already exist in correct folder. $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}}
+		fi
+		# get name from sfs file
+		new_sfs_base=${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}}
+		sfs_inherit_name="${{new_sfs_base%%_joint*}}"
+		echo $sfs_inherit_name
+		
+		
+		# Copy est and tpl files
+		est_file=../../../../workflow_source/scripts/pop1_pop2_sfs2d.est
+		tpl_file=../../../../workflow_source/scripts/pop1_pop2_sfs2d.tpl
+		est_base=`basename $est_file`
+		tpl_base=`basename $tpl_file`
+		
+		# modify them and change names
+		#if [ ! -f $diris/{migration_divide}/${{est_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}} ]
+		if [ ! -f $diris/{migration_divide}/$sfs_inherit_name".est" ]
+		then
+			#cp $est_file $diris/{migration_divide}/${{est_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}}
+			cp $est_file $diris/{migration_divide}/$sfs_inherit_name.est
+		fi
+		#if [ ! -f $diris/{migration_divide}/${{tpl_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}} ]
+		if [ ! -f $diris/{migration_divide}/$sfs_inherit_name".tpl" ]
+		then
+			#cp $tpl_file $diris/{migration_divide}/${{tpl_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}}
+			cp $tpl_file $diris/{migration_divide}/$sfs_inherit_name.tpl
+		fi
+
+		echo "\n Listing directory: $diris/{migration_divide}/"
+		ls $diris/{migration_divide}/
+		echo "\n"
+
+		# change migration tpl
+		#sed -i -e 's/600/{migration_divide}/g' $diris/{migration_divide}/${{tpl_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}}
+		sed -i -e 's/600/{migration_divide}/g' $diris/{migration_divide}/$sfs_inherit_name.tpl
+		echo migration divide changed to {migration_divide}
+
+		# now fix pop names:	
+		files_name_correct=`ls $diris/{migration_divide}/{name_pops}*|head -n1`
+		if [ -f $files_name_correct ]
+		then
+			echo Files already have desired population names: {name_pops}
+		else
+			echo Renaming the files with new population names: "pop1_pop2" changed to {name_pops}
+			rename "pop1_pop2" {name_pops} $diris/{migration_divide}/pop1_pop2*
+		fi
+
+
+		# run FastSimCoal
+		cd $diris/{migration_divide}
+		pwd
+		echo Ready to run FastSimCoal
+		/home/anneaa/EcoGenetics/people/anneaa/programs/fastsimcoal/fsc28_linux64/fsc28 -t *.tpl -e *.est -n 100000 -m -M -L 40 -y 3
+		#-y 3 is default
+		
+		echo FastSimCoal run has finished
+		mv {outputs['parameter_value_likelihood_file'].replace(".bestlikelyhoods", ".bestlhoods")} {outputs['parameter_value_likelihood_file']}
 	fi
-	#if [ ! -f $diris/{migration_divide}/${{tpl_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}} ]
-	if [ ! -f $diris/{migration_divide}/$sfs_inherit_name".tpl" ]
-	then
-		#cp $tpl_file $diris/{migration_divide}/${{tpl_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}}
-		cp $tpl_file $diris/{migration_divide}/$sfs_inherit_name.tpl
-	fi
-
-	echo "\n Listing directory: $diris/{migration_divide}/"
-	ls $diris/{migration_divide}/
-	echo "\n"
-
-	# change migration tpl
-	#sed -i -e 's/600/{migration_divide}/g' $diris/{migration_divide}/${{tpl_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}}
-	sed -i -e 's/600/{migration_divide}/g' $diris/{migration_divide}/$sfs_inherit_name.tpl
-	echo migration divide changed to {migration_divide}
-
-	# now fix pop names:	
-	files_name_correct=`ls $diris/{migration_divide}/{name_pops}*|head -n1`
-	if [ -f $files_name_correct ]
-	then
-		echo Files already have desired population names: {name_pops}
-	else
-		echo Renaming the files with new population names: "pop1_pop2" changed to {name_pops}
-		rename "pop1_pop2" {name_pops} $diris/{migration_divide}/pop1_pop2*
-	fi
-
-
-	# run FastSimCoal
-	cd $diris/{migration_divide}
-	pwd
-	echo Ready to run FastSimCoal
-	/home/anneaa/EcoGenetics/people/anneaa/programs/fastsimcoal/fsc28_linux64/fsc28 -t *.tpl -e *.est -n 100000 -m -M -L 40 -y 3
-	#-y 3 is default
-	
-	echo FastSimCoal run has finished
-	mv {outputs['parameter_value_likelihood_file'].replace(".bestlikelyhoods", ".bestlhoods")} {outputs['parameter_value_likelihood_file']}
 
 	echo "END: $(date)"
 	echo "$(jobinfo "$SLURM_JOBID")"

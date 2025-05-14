@@ -96,23 +96,27 @@ def create_input_dict_2dSFS(pair_file: str, exclude_list: list, include_list: li
 	"""
 	dict_list = []
 	file = open(pair_file)
+	#clean_list = [s.replace() for s in include_list]
+	#print(clean_list)
 	for line in file:
 		#print(line)
 		infos = line.strip("\n").split("\t")
 		#print(infos)
-		pop1 = infos[0]
+		pop1 = infos[0].replace("_", "-", 2).replace("-", "_", 1) 
 		#print(pop1)
-		pop2 = infos[1]
-		#print(pop2)
-		if any(pop1 in s for s in exclude_list):
+		pop2 = infos[1].replace("_", "-", 2).replace("-", "_",1) 
+		#print(pop1 + "----" + pop2)
+		if pop1 in exclude_list:
 			#print(pop1 + " in exclude_list")
 			continue
-		if any(pop2 in s for s in exclude_list):
+		if pop2 in exclude_list:
 			#print(pop2 + " in exclude_list")
 			continue
-		conditions = [any(pop1 in s for s in include_list), any(pop2 in s for s in include_list)]
+		#conditions = [any(pop1 in s for s in include_list), any(pop2 in s for s in include_list)]
+		conditions = [pop1 in include_list, pop2 in include_list]
+		#print(conditions)
 		if all(conditions):
-			#print("yes")
+			#print(f'yes {pop1} and {pop2}')
 			c1 = infos[2]
 			c2 = infos[3]
 			name = f'2dSFS_{pop1}_vs_{pop2}_{c1}_vs_{c2}'
@@ -250,8 +254,8 @@ def setup_run_FSC_map_target(SFS_file: str, migration_divide: int, name_pops: st
 	options = {
 		'cores': 1,
 		'memory': '1g',
-		#'walltime': '11:00:00'
-		'walltime': '1-12:00:00'
+		'walltime': '11:59:00'
+		#'walltime': '1-12:00:00'
 	}
 	spec = f"""
 	# Sources environment 										OBS EDIT:
@@ -261,61 +265,73 @@ def setup_run_FSC_map_target(SFS_file: str, migration_divide: int, name_pops: st
 	echo "START: $(date)"
 	echo "JobID: $SLURM_JOBID"
 
-	# Make files and folders ready:
+	# check if output exist:
 	
-	# get folder name
-	diris={os.path.dirname(inputs['SFS_file'])}
-	echo Input directory of SFS is: $diris
+	if [ -f {outputs['parameter_value_likelihood_file']} ]; then
+    	echo "Bestlikelyhoods File exists."
+		touch {outputs['parameter_value_likelihood_file']}
+	else
+    	echo "Bestlikelyhood File does not exist."
+		
+		# Make files and folders ready:
+		
+		# get folder name
+		diris={os.path.dirname(inputs['SFS_file'])}
+		echo Input directory of SFS is: $diris
+		
+		# make subfolder for specific migration divide
+		mkdir -p $diris/{migration_divide}
+		mig_div_var={migration_divide}
+
+		# Copy obs sfs and modify name to include migration divide
+		obs_file=`ls $diris/*sfs2d_jointMAFpop1_0.obs`
+		obs_file_base=`basename $obs_file`
+		echo SFS is moved and renamed for new run like this: $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}}
+
+		if [ ! -f $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}} ]
+		then
+			echo .obs file did not exist in correct folder, copying and renaming.
+			cp $obs_file $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}}
+		fi
+		ls $diris/{migration_divide}/
+		#cp $diris/*sfs2d_jointMAFpop1_0.obs $diris/{migration_divide}/
+		
+		
+		# Copy est and tpl files
+		est_file=../../../workflow_source/scripts/pop1_pop2_sfs2d.est
+		tpl_file=../../../workflow_source/scripts/pop1_pop2_sfs2d.tpl
+		est_base=`basename $est_file`
+		tpl_base=`basename $tpl_file`
+		
+		# modify them and change names
+		if [ ! -f $diris/{migration_divide}/${{est_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}} ]
+		then
+			cp $est_file $diris/{migration_divide}/${{est_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}}
+		fi
+		if [ ! -f $diris/{migration_divide}/${{tpl_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}} ]
+		then
+			cp $tpl_file $diris/{migration_divide}/${{tpl_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}}
+		fi
+
+		
+		# change migration tpl
+		sed -i -e 's/600/{migration_divide}/g' $diris/{migration_divide}/${{tpl_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}}
+
+		# now fix pop names:
+		rename "pop1_pop2" {name_pops} $diris/{migration_divide}/pop1_pop2*
+
+
+		# run FastSimCoal
+		cd $diris/{migration_divide}
+		#/faststorage/project/EcoGenetics/people/anneaa/programs/fastsimcoal/fsc28_linux64/fsc28 -t *.tpl -e *.est -n 100000 -m -M -L 40 -c 2
+		/faststorage/project/EcoGenetics/people/anneaa/programs/fastsimcoal/fsc28_linux64/fsc28 -t *.tpl -e *.est -n 100000 -m -M -L 40 -y 3
+
+		echo FastSimCoal run has finished
+		mv {outputs['parameter_value_likelihood_file'].replace(".bestlikelyhoods", ".bestlhoods")} {outputs['parameter_value_likelihood_file']}
 	
-	# make subfolder for specific migration divide
-	mkdir -p $diris/{migration_divide}
-	mig_div_var={migration_divide}
-
-	# Copy obs sfs and modify name to include migration divide
-	obs_file=`ls $diris/*sfs2d_jointMAFpop1_0.obs`
-	obs_file_base=`basename $obs_file`
-	echo SFS is moved and renamed for new run like this: $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}}
-
-	if [ ! -f $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}} ]
-	then
-		echo .obs file did not exist in correct folder, copying and renaming.
-		cp $obs_file $diris/{migration_divide}/${{obs_file_base/"_sfs2d_"/"_"$mig_div_var"migDiv_sfs2d_"}}
 	fi
-	ls $diris/{migration_divide}/
-	#cp $diris/*sfs2d_jointMAFpop1_0.obs $diris/{migration_divide}/
-	
-	
-	# Copy est and tpl files
-	est_file=../../../workflow_source/scripts/pop1_pop2_sfs2d.est
-	tpl_file=../../../workflow_source/scripts/pop1_pop2_sfs2d.tpl
-	est_base=`basename $est_file`
-	tpl_base=`basename $tpl_file`
-	
-	# modify them and change names
-	if [ ! -f $diris/{migration_divide}/${{est_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}} ]
-	then
-		cp $est_file $diris/{migration_divide}/${{est_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}}
-	fi
-	if [ ! -f $diris/{migration_divide}/${{tpl_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}} ]
-	then
-		cp $tpl_file $diris/{migration_divide}/${{tpl_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}}
-	fi
 
 	
-	# change migration tpl
-	sed -i -e 's/600/{migration_divide}/g' $diris/{migration_divide}/${{tpl_base/"_sfs2d"/"_"$mig_div_var"migDiv_sfs2d"}}
-
-	# now fix pop names:
-	rename "pop1_pop2" {name_pops} $diris/{migration_divide}/pop1_pop2*
-
-
-	# run FastSimCoal
-	cd $diris/{migration_divide}
-	#/faststorage/project/EcoGenetics/people/anneaa/programs/fastsimcoal/fsc28_linux64/fsc28 -t *.tpl -e *.est -n 100000 -m -M -L 40 -c 2
-	/faststorage/project/EcoGenetics/people/anneaa/programs/fastsimcoal/fsc28_linux64/fsc28 -t *.tpl -e *.est -n 100000 -m -M -L 40 -y 3
-
-	echo FastSimCoal run has finished
-	mv {outputs['parameter_value_likelihood_file'].replace(".bestlikelyhoods", ".bestlhoods")} {outputs['parameter_value_likelihood_file']}
 
 	echo "END: $(date)"
 	echo "$(jobinfo "$SLURM_JOBID")"
@@ -344,8 +360,8 @@ def setup_run_FSC_map_target_nosingletons(SFS_file: str, migration_divide: int, 
 	options = {
 		'cores': 1,
 		'memory': '1g',
-		#'walltime': '11:00:00'
-		'walltime': '1-12:00:00'
+		'walltime': '11:59:00'
+		#'walltime': '1-12:00:00'
 	}
 	spec = f"""
 	# Sources environment 										OBS EDIT:

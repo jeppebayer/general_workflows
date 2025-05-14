@@ -1,0 +1,38 @@
+# Tag identifying file association.
+TAG: jilong:EcoGenetics,site_frequency_spectrum_single_population:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Name of species being analyzed
+species_name: Entomobrya_nicoleti
+# ID of species for short
+species_id : EntNic
+# Name of the task as a unique id:
+task_id: split_ann_vcf
+# Species genome annotation file, gff:
+annotation_gff: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/annotation/EG_EntNic_05092024_genomic.gff
+#species gene bed file
+gene_bed: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/annotation/EG_EntNic_05092024_genomic.genes.bed
+#species intergenic bed file
+intergenic_bed: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/annotation/EG_EntNic_05092024_genomic.intergenic.bed
+# Species genome fasta:
+genome_fasta: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/EG_EntNic_05092024_genomic.fna
+# Population to retrive:
+population: EntNic_SKJ-C216
+# snpEff annotated vcf file:
+ann_vcf: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/neutral_vcf/EntNic.grassland.ingroup.highQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.norm.merged.filter_AF0_SnpGap5_typeSnps_biallelic_AO1_DP200-660.ann.aa.vcf.gz
+# raw vcf file, freebayes called:
+raw_vcf: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic.grassland.ingroup.highQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.norm.merged.vcf.gz
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/sfs/single_pop_sfs/EntNic
+#Directory for final output files
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/sfs/single_pop_sfs/EntNic
+# Directory for log files
+log_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/sfs/single_pop_sfs/EntNic/logs
+# Directory for helping functions and scripts
+help_scripts_path: /faststorage/project/EcoGenetics/general_workflows/population_genetics/sfs/workflow_sources
+# Directory for input data files
+data_directory_path: /faststorage/project/EcoGenetics/people/jilong/sfs/data/EntNic
+# BAM alignment file of the populaiton
+population_bam_alignment: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Entomobrya_nicoleti/grassland//EntNic_SKJ-C216/EntNic_SKJ-C216.filtered.bam
+# Depth summary of the freebayes called variants for the population
+population_varaint_depth_summary: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/depth/EntNic.grassland.ingroup.highQuality.depth.tsv

@@ -1,0 +1,91 @@
+######################
+# General stuff
+######################
+
+# Tag identifying file association.
+TAG: anneaa:EcoGenetics,population_genetics,DiversityEstimates:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Taxonomic group
+taxonomic_group: Collembola
+# Area type where it was collected (typically grassland, conventional agriculture, conservation agriculture)
+area_collected: grassland
+# Name of species being analyzed
+species_name: Pogonognathellus flavescens
+
+######################
+# Working dirctories:
+######################
+
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/test
+  #/faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps
+
+# # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
+  # this is where new fst/taxonomy or pi/taxonomy directories with outputs will be placed
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics
+
+################
+## Paths/info used for both pi and fst
+################
+
+# Path to reference genome file in FASTA format
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Pogonognathellus_flavescens/EG_PogFla_23072024_genomic.fna
+
+# Make neutral VCF and BAM settings: (intergenic and rm repetitive)
+#annotation_gtf: /home/anneaa/EcoGenetics/BACKUP/museomics/reference_genomes/Aglais_urticae/annotation/GCA_905147175.2_ilAglUrti1.2_genomic.gtf
+
+# Bed file path
+bed_files_path: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Pogonognathellus_flavescens/annotation/
+#/faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/beetles/Sitona_lineatus/annotation
+
+vcf_file: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Pogonognathellus_flavescens/grassland/PogFla.grassland.ingroup.allQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.merge.norm_splitMultiallelicAny_atomize.norm_rmDup.filter_DP200-690.vcf.gz
+#/faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/grassland/EntNic.grassland.ingroup.highQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.merge.norm_splitMultiallelicAny_atomize.norm_rmDup.filter_DP200-660.vcf.gz
+# /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/beetles/Sitona_lineatus/grassland/SitLin.grassland.ingroup.highQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.norm.merged.filter_AF0_SnpGap5_typeSnps_biallelic_AO1_DP100-272.vcf.gz
+
+# VCF AN count (if vcf file contains ./././ instead of 0/0/0/.). If unset, bcftools will calculate AN.
+vcf_AN: 
+
+################
+## Fst - specifics
+################
+
+# should fst be run. yes/no
+estimate_fst_yes_no: yes
+
+################
+## Pi - specifics
+################
+
+# should pi be run. yes/no
+estimate_pi_yes_no: yes
+
+# count of positions for calculating pi (only variants are called, thus we need a count of all sites, to calculate pi)
+count_of_positions_file: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Pogonognathellus_flavescens/sitetable/PogFla.grassland.ingroup.allQuality.sitetable.tsv
+#/faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/sitetable/EntNic.grassland.ingroup.highQuality.sitetable.tsv
+  # /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/sitetable/EntNic.grassland.ingroup.highQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.norm.merged.filter_AF0_SnpGap5_typeSnps_biallelic_AO1_DP200-660.variable.sitetable.tsv
+  # /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/beetles/Sitona_lineatus/sitetable/SitLin.grassland.ingroup.highQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.norm.merged.filter_AF0_SnpGap5_typeSnps_biallelic_AO1_DP100-272.variable.sitetable.tsv
+# OBS: VCF files have been merged, so one vcf contains info from all pops (and only positions that are common)
+
+# Pi collection file: File where all pi estimates will be combined. Will contain all populations (rows) and landcovertype_species (columns)
+output_collection_file_pi: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/pi/all_pi_estimates.txt
+
+# path to bam files - for generating neutral bam and use greenedalf
+bam_general_path: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Pogonognathellus_flavescens/grassland/
+#/home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Entomobrya_nicoleti/grassland
+
+# greenedalf info (on only biallelic)
+filter-sample-min-count: 2
+filter-sample-min-read-depth: 200
+filter-sample-max-read-depth: 690
+window-interval-width: 10000
+pool-sizes: 100
+
+################
+## Exclude any?
+################
+
+# List of populations to exclude:
+exclude_list:
+  - 
+  

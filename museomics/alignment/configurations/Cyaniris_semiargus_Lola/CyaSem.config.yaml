@@ -1,0 +1,83 @@
+# Tag identifying file association.
+TAG: jeppebayer:EcoGenetics,museomics,mapping:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Name of species being analyzed
+species_name: Cyaniris semiargus Lola
+# Path to reference genome file in FASTA format
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Cyaniris_semiargus/GCA_905187585.1_ilCyaSemi1.1_genomic.fna
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/museomics/steps
+# # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics
+# AdapterRemoval settings.
+adapterremoval_settings:
+  min_quality: 25
+  min_length: 20
+  adaptersequence1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCA
+  adaptersequence2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
+# Samtools filter settings.
+filter_settings:
+  flags_excluded: 3844
+  flags_required: 
+  min_mq: 20
+# List of path to sample folders containing resequencing data.
+# Data type: contemporary | historic | paired-end | single-end ...
+sample_lists:
+  -
+    time_period: 2024
+    data_type: contemporary, paired-end
+    populations:
+      -
+        population_name: Finland_Lola
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-1I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-1I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-1I-S5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-1I-S10
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-2I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-2I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-2I-S10
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-3I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-3I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-3I-S5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-3I-S10
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-4I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-4I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-4I-S10
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-5I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-5I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-5I-S5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-5I-S10
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-6I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-6I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-6I-S5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-6I-S10
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-7I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-7I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-7I-S5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-8I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-8I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-9I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-9I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-9I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-9I-S5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-10I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-10I-N5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-10I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-11I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-12I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-13I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-15I-S10
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-16I-S10
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-16L-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-17I-S10
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-17L-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-18I-S10
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-19I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-20I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-22I-S5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-23I-S5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-24I-S5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-25I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Cyaniris_semiargus/CSEM-25I-S5

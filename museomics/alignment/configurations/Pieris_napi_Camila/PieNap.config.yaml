@@ -1,0 +1,82 @@
+# Tag identifying file association.
+TAG: jeppebayer:EcoGenetics,museomics,mapping:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Name of species being analyzed
+species_name: Pieris napi Camila
+# Path to reference genome file in FASTA format
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Pieris_napi/GCF_905475465.1_ilPieNapi1.2_genomic.fna
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/museomics/steps
+# # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics
+# AdapterRemoval settings.
+adapterremoval_settings:
+  min_quality: 25
+  min_length: 20
+  adaptersequence1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCA
+  adaptersequence2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
+# Samtools filter settings.
+filter_settings:
+  flags_excluded: 3844
+  flags_required: 
+  min_mq: 20
+# List of path to sample folders containing resequencing data.
+# Data type: contemporary | historic | paired-end | single-end ...
+sample_lists:
+  -
+    time_period: 2024
+    data_type: contemporary, paired-end
+    populations:
+      -
+        population_name: Denmark_Camila
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_73_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_11_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_50_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_82_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_20_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_77_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_138_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_136_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_15_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_105_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_46_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_19_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_109_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_111_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_51_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_47_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_108_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_18_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_137_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_110_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_139_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_142_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_48_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_44_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_76_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_49_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_45_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_104_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_14_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_112_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_78_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_42_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_134_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_12_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_141_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_81_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_74_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_43_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_106_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_16_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_13_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_80_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_75_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_17_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_107_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_113_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_79_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_140_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Pieris_napi/PieNap_135_Eng

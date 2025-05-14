@@ -1,0 +1,93 @@
+# Tag identifying file association.
+TAG: jeppebayer:EcoGenetics,museomics,mapping:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Name of species being analyzed
+species_name: Speyeria aglaja Lola
+# Path to reference genome file in FASTA format
+reference_genome_path: 
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/museomics/steps
+# # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics
+# AdapterRemoval settings.
+adapterremoval_settings:
+  min_quality: 25
+  min_length: 20
+  adaptersequence1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCA
+  adaptersequence2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
+# Samtools filter settings.
+filter_settings:
+  flags_excluded: 3844
+  flags_required: 
+  min_mq: 20
+# List of path to sample folders containing resequencing data.
+# Data type: contemporary | historic | paired-end | single-end ...
+sample_lists:
+  -
+    time_period: 2024
+    data_type: contemporary, paired-end
+    populations:
+      -
+        population_name: Finland_Lola
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-1I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-1I-S7
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-2I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-2I-S7
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-3I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-3I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-3I-S7
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-4I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-4I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-4I-S7
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-5I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-5I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-5I-S7
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-6I-N3
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-6I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-6I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-6I-S7
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-7I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-7I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-7I-S7
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-8I-N3
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-8I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-8I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-8I-S7
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-9I-N3
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-9I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-9I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-9I-S7
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-9I-S10
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-10I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-10I-S2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-10I-S7
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-10I-S10
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-11I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-11I-S10
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-12I-N6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-12I-S10
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-13I-S10
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-14I-N3
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-15I-N3
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-16I-N3
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-18I-N3
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-19I-N3
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-20I-N3
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-22I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-23I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-24I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-25I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-26I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-26I-S10
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-28I-S10
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-29I-S10
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-30I-S10
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-32I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-33I-N3
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-33I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-34I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-34I-S10
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-35I-N4
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Lola/Speyeria_aglaja/SAGL-36I-N4

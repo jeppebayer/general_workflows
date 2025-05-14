@@ -1,0 +1,93 @@
+# Tag identifying file association.
+TAG: jeppebayer:EcoGenetics,museomics,mapping:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Name of species being analyzed
+species_name: Maniola jurtina Ulla
+# Path to reference genome file in FASTA format
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Maniola_jurtina/GCF_905333055.1_ilManJurt1.1_genomic.fna
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/museomics/steps
+# # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics
+# AdapterRemoval settings.
+adapterremoval_settings:
+  min_quality: 25
+  min_length: 20
+  adaptersequence1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCA
+  adaptersequence2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
+# Samtools filter settings.
+filter_settings:
+  flags_excluded: 3844
+  flags_required: 
+  min_mq: 20
+# List of path to sample folders containing resequencing data.
+# Data type: contemporary | historic | paired-end | single-end ...
+sample_lists:
+  -
+    time_period: 2024
+    data_type: contemporary, paired-end
+    populations:
+      -
+        population_name: Finland_Ulla
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_1
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_10
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_11
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_13
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_16
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_17
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_18
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_19
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_2
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_20
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_21
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_22
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_28
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_29
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_33
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_34
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_35
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_40
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_41
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_42
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_43
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_44
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_45
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_46
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_47
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_48
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_5
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_54
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_55
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_56
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_57
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_59
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_6
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_61
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_63
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_64
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_65
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_67
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_68
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_69
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_7
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_73
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_74
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_75
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_76
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_77
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_78
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_79
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_82
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_83
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_84
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_86
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_87
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_88
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_89
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_9
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_91
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_92
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_93
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Ulla/Maniola_jurtina/MJ23_94

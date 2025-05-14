@@ -1,0 +1,83 @@
+# Tag identifying file association.
+TAG: jeppebayer:EcoGenetics,museomics,mapping:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Name of species being analyzed
+species_name: Maniola jurtina Camila
+# Path to reference genome file in FASTA format
+reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Maniola_jurtina/GCF_905333055.1_ilManJurt1.1_genomic.fna
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/museomics/steps
+# # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics
+# AdapterRemoval settings.
+adapterremoval_settings:
+  min_quality: 25
+  min_length: 20
+  adaptersequence1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCA
+  adaptersequence2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
+# Samtools filter settings.
+filter_settings:
+  flags_excluded: 3844
+  flags_required: 
+  min_mq: 20
+# List of path to sample folders containing resequencing data.
+# Data type: contemporary | historic | paired-end | single-end ...
+sample_lists:
+  -
+    time_period: 2024
+    data_type: contemporary, paired-end
+    populations:
+      -
+        population_name: Denmark_Camila
+        sample_folder_list:
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_7_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_36_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_102_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_3_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_69_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_71_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_124_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_132_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_37_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_65_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_97_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_125_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_38_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_64_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_34_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_41_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_96_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_39_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_6_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_35_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_103_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_2_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_68_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_40_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_70_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_133_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_32_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_66_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_8_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_94_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_130_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_33_Bjorn
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_126_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_98_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_4_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_128_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_101_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_10_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_72_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_131_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_99_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_5_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_100_Komp
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_1_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_67_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_129_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_63_Hjol
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_127_Eng
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_9_Kong
+          - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Maniola_jurtina/ManJur_95_Komp
