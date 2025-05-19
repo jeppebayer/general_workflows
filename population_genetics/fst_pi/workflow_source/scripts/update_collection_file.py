@@ -6,16 +6,36 @@ import csv
 import pandas as pd
 from pandas.errors import EmptyDataError
 
-def normalize_sample_name(name, prefix="CA"):
-    # Dynamically build the regex based on the prefix
-    pattern = rf'{re.escape(prefix)}-(.*?)(\.|$)'
+def extract_segment(name, prefix="CA"):
+    # Match prefix followed by either - or _
+    pattern = rf'{re.escape(prefix)}[-_](.*?)(\.|$)'
     match = re.search(pattern, name)
-    if not match:
-        return None
-    segment = match.group(1)
-    # Remove hyphen followed by digit
-    normalized = re.sub(r'-\d+', '', segment)
-    return normalized
+    return match.group(1) if match else None
+
+def normalize_sample_names(headers, prefix="CA"):
+    segments = []
+    short_names = []
+    short_name_counts = {}
+
+    # Step 1: Extract segments and short names
+    for h in headers:
+        segment = extract_segment(h, prefix)
+        if segment is None:
+            raise ValueError(f"Could not extract sample segment from: '{h}'")
+        short_name = re.sub(r'-\w*\d+$', '', segment)  # Remove final -C123, -123 etc.
+        segments.append(segment)
+        short_names.append(short_name)
+        short_name_counts[short_name] = short_name_counts.get(short_name, 0) + 1
+
+    # Step 2: Apply logic
+    normalized_names = []
+    for segment, short_name in zip(segments, short_names):
+        if short_name_counts[short_name] == 1:
+            normalized_names.append(short_name)
+        else:
+            normalized_names.append(segment)
+    return normalized_names
+
 
 def update_matrix(input_file, matrix_file, string_species, output_file=None, prefix=""):
     # Read input values
@@ -25,12 +45,15 @@ def update_matrix(input_file, matrix_file, string_species, output_file=None, pre
     if len(lines) < 2:
         raise ValueError("Input file must contain at least a header and one data line")
 
-    headers = lines[0].strip().split()
+    #headers = lines[0].strip().split()
+    headers = lines[0].rstrip('\n').split('\t')
+    print("Headers:", headers)
     values = None
     
     # Try to find a line starting with 'average'
     for line in lines[1:]:
-        parts = line.strip().split()
+        #parts = line.strip().split()
+        parts = line.rstrip('\n').split('\t')
         if parts and parts[0].lower() == "average":
             values = list(map(float, parts[1:]))
             break
@@ -38,7 +61,8 @@ def update_matrix(input_file, matrix_file, string_species, output_file=None, pre
     # Fallback if no 'average' line is found
     if values is None:
         if len(lines) == 2:
-            parts = lines[1].strip().split()
+            #parts = lines[1].strip().split()
+            parts = lines[1].rstrip('\n').split('\t')
             try:
                 values = list(map(float, parts[1:]))
             except ValueError:
@@ -47,8 +71,15 @@ def update_matrix(input_file, matrix_file, string_species, output_file=None, pre
             raise ValueError("No line starting with 'average' found, and multiple data lines exist")
 
     # Normalize sample names
-    sample_names = [normalize_sample_name(h, prefix) for h in headers]
+    #sample_names = [normalize_sample_name(h, prefix) for h in headers]
+    sample_names = normalize_sample_names(headers, prefix)
+    print("Sample names:", sample_names)
+    print("prefix:", prefix)
     if None in sample_names:
+        for h in headers:
+            norm = normalize_sample_names(h, prefix)
+            if norm is None:
+                print(f"⚠️ Failed to normalize: '{h}'")
         raise ValueError("Could not extract all sample names")
 
     # Load or create the matrix file
@@ -76,6 +107,9 @@ def update_matrix(input_file, matrix_file, string_species, output_file=None, pre
     # Drop any duplicated rows (just in case)
     df = df[~df.index.duplicated(keep='last')]
 
+    # Sort rows (index) and columns alphabetically
+    df = df.sort_index().sort_index(axis=1)
+    
     # Output
     output_path = output_file if output_file else matrix_file
     df.to_csv(output_path, sep='\t')

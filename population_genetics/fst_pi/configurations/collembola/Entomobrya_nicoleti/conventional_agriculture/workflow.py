@@ -2,13 +2,10 @@
 import sys, os
 sys.path.insert(0, os.path.realpath('../../../../workflow_source/'))
 from workflow_source import *
-os.environ['RLIMIT_NPROC'] = '999'
 
 config = glob.glob('*config.y*ml')[0]
-
 gwf = Workflow()
-gwf = fst_and_pi_wf(config_file = config, gwf = gwf)
-#gwf = fst_and_pi_wf(config_file = config)
+gwf = fst_and_pi_wf(config_file = config, gwf=gwf)
 
 # conda create -n ecogen_neutral_diversity_wf python samtools bamtools vcftools R gwf bedtools bcftools pyyaml r-ggplot2 r-viridis
 # cd /home/anneaa/EcoGenetics/general_workflows/population_genetics/fst_pi/configurations/collembola/Entomobrya_nicoleti/grassland

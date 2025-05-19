@@ -17,14 +17,14 @@ outgroupSettings:
   # (str).
   vcfFile:
   # (int).
-  minimumCoverage: 
+  withinThresholdBedFile: 
 # (list).
 vcfGroupList:
   -
     # (str).
     groupName: Grassland
     # (str). 
-    vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/beetles/Sitona_lineatus/grassland/SitLin.grassland.ingroup.allQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.norm.merged.vcf.gz
+    vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/beetles/Sitona_lineatus/grassland/SitLin.grassland.ingroup.allQuality.freebayes.merge.vcf.gz
     # (int). 
     minimumCoverage: 100
     # (int).
@@ -35,7 +35,7 @@ vcfGroupList:
     # (str).
     groupName: Grassland
     # (str). 
-    vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/beetles/Sitona_lineatus/grassland/SitLin.grassland.ingroup.highQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.norm.merged.vcf.gz
+    vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/beetles/Sitona_lineatus/grassland/SitLin.grassland.ingroup.highQuality.freebayes.merge.vcf.gz
     # (int). 
     minimumCoverage: 100
     # (int).
@@ -46,7 +46,7 @@ vcfGroupList:
     # (str).
     groupName: Conservation agriculture
     # (str). 
-    vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/beetles/Sitona_lineatus/conservation_agriculture/SitLin.conservation_agriculture.ingroup.allQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.norm.merged.vcf.gz
+    vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/beetles/Sitona_lineatus/conservation_agriculture/SitLin.conservation_agriculture.ingroup.allQuality.freebayes.merge.vcf.gz
     # (int). 
     minimumCoverage: 100
     # (int).

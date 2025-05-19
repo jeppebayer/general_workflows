@@ -26,10 +26,10 @@ vcfGroupList:
     # (str). Name of sample group.
     groupName: Grassland
     # (str). Path to VCF file.
-    vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics/vcf/butterflies/Pieris_napi/grassland/PiNa_poolseq_2022/PiNa_poolseq_2022.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.vcf.gz
+    vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics/vcf/pooled/vcf/butterflies/Pieris_napi/grassland/PieNap.grassland.ingroup.allQuality.freebayes.vcf.gz
     # (int). Minimum coverage value for filtering.
     minimumCoverage: 200
     # (int). Maximum coverage value for filtering.
     maximumCoverage: 516
     # (str). Path to BED file containing intervals for which the sample group has coverage ranging within threshold values. 
-    withinThresholdBedFile: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics/vcf/butterflies/Pieris_napi/depth/PieNap.grassland.ingroup.allQuality.depththreshold.bed
+    withinThresholdBedFile: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics/vcf/pooled/vcf/butterflies/Pieris_napi/depth/PieNap.grassland.ingroup.allQuality.depththreshold.bed

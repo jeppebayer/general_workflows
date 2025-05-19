@@ -16,14 +16,14 @@ def purge_dup_for_assembly_workflow(config_file: str):
     GFF: str = CONFIG['annotation_gff']
     GENOME: str = CONFIG['genome_fasta']
     POP_BAM: str = CONFIG['population_bam_alignment']
-    POP_DEPTH: str = CONFIG['population_varaint_depth_summary']
-    TASK_ID: str = CONFIG['task_id']
+    #POP_DEPTH: str = CONFIG['population_varaint_depth_summary']
+    MIN_COV: int = int(CONFIG['vcf_filter_mindp'])
+    MAX_COV: int = int(CONFIG['vcf_filter_maxdp'])
     SPECIES_ID: str = CONFIG['species_id']
     POP_ID: str = CONFIG['population']
     WORK_DIR: str = CONFIG['working_directory_path']
     OUTPUT_DIR: str = CONFIG['output_directory_path']
     LOG_DIR: str = CONFIG['log_directory_path']
-    DATA_DIR: str = CONFIG['data_directory_path']
     HELP_SCRIPTS_PATH: str = CONFIG['help_scripts_path']
     GENE_BED: str = CONFIG['gene_bed']
     INTER_BED: str = CONFIG['intergenic_bed']
@@ -48,13 +48,13 @@ def purge_dup_for_assembly_workflow(config_file: str):
         )
     # Split a annoated vcf file from snpEff by types
     gwf.target_from_template(
-        name = f'sfs_{TASK_ID}_{SPECIES_ID}_{POP_ID}',
+        name = f'sfs_split_ann_vcf_{SPECIES_ID}_{POP_ID}',
         template = split_annotated_vcfs(
             work_path = WORK_DIR,
             ann_vcf = ANN_FILE,
             spid = SPECIES_ID,
             pop = POP_ID,
-            name = f'sfs_{TASK_ID}_{SPECIES_ID}_{POP_ID}',
+            name = f'sfs_split_ann_vcf_{SPECIES_ID}_{POP_ID}',
             log_path = LOG_DIR
         )
     )
@@ -79,7 +79,9 @@ def purge_dup_for_assembly_workflow(config_file: str):
         template = pop_bam2bed(
             work_path = WORK_DIR,
             bam_file = POP_BAM,
-            depth_threshold = POP_DEPTH,
+            #depth_threshold = POP_DEPTH,
+            mindp = MIN_COV,
+            maxdp = MAX_COV,
             spid = SPECIES_ID,
             pop = POP_ID,
             name = f'sfs_{SPECIES_ID}_{POP_ID}_bam_cov_pass_bed',

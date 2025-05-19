@@ -6,18 +6,20 @@ account: EcoGenetics
 species_name: Maniola jurtina
 # ID of species for short
 species_id : ManJur
-# Name of the task as a unique id:
-task_id: split_ann_vcf
 # Species genome annotation file, gff:
 annotation_gff: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Maniola_jurtina/annotation/GCF_905333055.1_ilManJurt1.1_genomic.gff
-# Species genome fasta:
+  #species gene bed file
+gene_bed: /home/jilong/EcoGenetics/BACKUP/museomics/reference_genomes/Maniola_jurtina/annotation/GCF_905333055.1_ilManJurt1.1_genomic.genes.bed
+  #species intergenic bed file
+intergenic_bed: /home/jilong/EcoGenetics/BACKUP/museomics/reference_genomes/Maniola_jurtina/annotation/GCF_905333055.1_ilManJurt1.1_genomic.intergenic.bed 
+  # Species genome fasta:
 genome_fasta: /faststorage/project/EcoGenetics/people/jilong/sfs/data/ManJur/GCF_905333055.1_ilManJurt1.1_genomic_id_trimmed.fa
 # Population to retrive:
 population: MaJu_poolseq_2022
 # snpEff annotated vcf file:
-ann_vcf: /faststorage/project/EcoGenetics/people/jilong/sfs/steps/ManJur/annotated_ManJur.vcf
+ann_vcf: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics/vcf/butterflies/Maniola_jurtina/grassland/ManJur.grassland.ingroup.allQuality.freebayes.normalized.filtered_DP200-464.ann.vcf.gz
 # raw vcf file, freebayes called:
-raw_vcf: /faststorage/project/EcoGenetics/people/jilong/sfs/data/ManJur/ManJur_raw.vcf.gz
+raw_vcf: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics/vcf/butterflies/Maniola_jurtina/grassland/ManJur.grassland.ingroup.allQuality.freebayes.normalized.vcf.gz
 # Directory for intermediary files.
 working_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/sfs/single_pop_sfs/ManJur
 #Directory for final output files
@@ -26,10 +28,10 @@ output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs
 log_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/sfs/single_pop_sfs/ManJur/logs
 # Directory for helping functions and scripts
 help_scripts_path: /faststorage/project/EcoGenetics/general_workflows/population_genetics/sfs/workflow_sources
-# Directory for input data files
-data_directory_path: /faststorage/project/EcoGenetics/people/jilong/sfs/data/ManJur
 # BAM alignment file of the populaiton
 population_bam_alignment: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics/alignments/Maniola_jurtina/Pooled/pooled_extraction/MaJu_poolseq_2022/MaJu_poolseq_2022.filtered.bam
 # Depth summary of the freebayes called variants for the population
-population_varaint_depth_summary: /faststorage/project/EcoGenetics/people/jilong/sfs/data/ManJur/ManJur.depth.tsv
-
+# minimum depth filtered for the alignment in vcf calling  
+vcf_filter_mindp: 200
+# maximum depth filtered for the alignment in vcf calling
+vcf_filter_maxdp: 464

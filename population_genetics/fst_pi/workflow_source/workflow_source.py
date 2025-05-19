@@ -30,6 +30,7 @@ def fst_and_pi_wf(config_file: str, gwf):
     #ANNOTATION_GTF: str = CONFIG['annotation_gtf']
     VCF_FILE: str = CONFIG['vcf_file']
     VCF_AN: int = CONFIG['vcf_AN']
+    INDELS_INFO_FILE: str = CONFIG['bcf_tools_stats_indels_info']
     BAM_PATH: str = CONFIG['bam_general_path']
     #COLLECTION_SITES_FILE: str = CONFIG['collection_sites_file']
     COUNT_POSITIONS_FILE: str = CONFIG['count_of_positions_file']
@@ -53,15 +54,20 @@ def fst_and_pi_wf(config_file: str, gwf):
     ### MAKE DIRECTORIES
     #print("making directories")
     # make directories
-    new_wd_fst_pi=f'{WORK_DIR}/fst_pi/{TAXONOMY}/{AREA_TYPE.replace(" ","_")}/{SPECIES_NAME.replace(" ","_")}/intermediary_files'
+    #new_wd_fst_pi=f'{WORK_DIR}/fst_pi/{TAXONOMY}/{AREA_TYPE.replace(" ","_")}/{SPECIES_NAME.replace(" ","_")}/intermediary_files'
+    new_wd_fst_pi=f'{WORK_DIR}/fst_pi/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/{AREA_TYPE.replace(" ","_")}/intermediary_files'
+    if not os.path.isdir(new_wd_fst_pi):
+        os.makedirs(new_wd_fst_pi)
     if RUN_PI:
-        new_out_pi=f'{OUTPUT_DIR}/pi/{TAXONOMY}/{AREA_TYPE.replace(" ","_")}/{SPECIES_NAME.replace(" ","_")}/'
+        #new_out_pi=f'{OUTPUT_DIR}/pi/{TAXONOMY}/{AREA_TYPE.replace(" ","_")}/{SPECIES_NAME.replace(" ","_")}/'
+        new_out_pi=f'{OUTPUT_DIR}/pi/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/{AREA_TYPE.replace(" ","_")}/'
         if not os.path.isdir(new_out_pi):
             os.makedirs(new_out_pi)
     else:
         print("Pi is not being estimated. Activate pi calculation in config file, if you want pi estimated.")
     if RUN_FST:
-        new_out_fst=f'{OUTPUT_DIR}/fst/{TAXONOMY}/{AREA_TYPE.replace(" ","_")}/{SPECIES_NAME.replace(" ","_")}/'
+        #new_out_fst=f'{OUTPUT_DIR}/fst/{TAXONOMY}/{AREA_TYPE.replace(" ","_")}/{SPECIES_NAME.replace(" ","_")}/'
+        new_out_fst=f'{OUTPUT_DIR}/fst/{TAXONOMY}/{SPECIES_NAME.replace(" ","_")}/{AREA_TYPE.replace(" ","_")}/'
         if not os.path.isdir(new_out_fst):
             os.makedirs(new_out_fst)
     else:
@@ -220,6 +226,7 @@ def fst_and_pi_wf(config_file: str, gwf):
             template = calculate_pi_template_improved(
                 allele_freq_file = recalculate_AF_template.outputs['allele_freq'],
                 allele_count_file = recalculate_AF_template.outputs['allele_count'],
+                indels_file = INDELS_INFO_FILE,
                 working_directory = new_wd_fst_pi,
                 output_directory = new_out_pi,
                 count_file = COUNT_POSITIONS_FILE, 

@@ -18,7 +18,7 @@ species_name: Orchesella cincta
 ######################
 
 # Directory for intermediary files.
-working_directory_path: /faststorage/project/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/test
+working_directory_path: /faststorage/project/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/temp_files_pi_fst
   #/faststorage/project/EcoGenetics/people/Jeppe_Bayer/population_genetics/steps
 
 # # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
@@ -43,7 +43,8 @@ bed_files_path: /faststorage/project/EcoGenetics/BACKUP/population_genetics/refe
 #/faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Pogonognathellus_flavescens/annotation/
 #/faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/beetles/Sitona_lineatus/annotation
 
-vcf_file: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Orchesella_cincta/grassland/OrcCin.grassland.ingroup.allQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.merge.norm_splitMultiallelicAny_atomize.norm_rmDup.filter_DP200-728.vcf.gz
+vcf_file: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Orchesella_cincta/grassland/OrcCin.grassland.ingroup.allQuality.freebayes.merge.normalized.filtered_DP200-728.vcf.gz
+#/faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Orchesella_cincta/grassland/OrcCin.grassland.ingroup.allQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.merge.norm_splitMultiallelicAny_atomize.norm_rmDup.filter_DP200-728.vcf.gz
 #/faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Orchesella_villosa/grassland/OrcVil.grassland.ingroup.allQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.merge.norm_splitMultiallelicAny_atomize.norm_rmDup.filter_DP200-802.vcf.gz
 #OrcVil.conservation_agriculture.ingroup.allQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.merge.norm_splitMultiallelicAny_atomize.norm_rmDup.filter_DP200-630.vcf.gz
 #/faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Pogonognathellus_flavescens/grassland/PogFla.grassland.ingroup.allQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.merge.norm_splitMultiallelicAny_atomize.norm_rmDup.filter_DP200-690.vcf.gz
@@ -75,6 +76,10 @@ count_of_positions_file: /faststorage/project/EcoGenetics/general_workflow_outpu
   # /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/sitetable/EntNic.grassland.ingroup.highQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.norm.merged.filter_AF0_SnpGap5_typeSnps_biallelic_AO1_DP200-660.variable.sitetable.tsv
   # /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/beetles/Sitona_lineatus/sitetable/SitLin.grassland.ingroup.highQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.norm.merged.filter_AF0_SnpGap5_typeSnps_biallelic_AO1_DP100-272.variable.sitetable.tsv
 # OBS: VCF files have been merged, so one vcf contains info from all pops (and only positions that are common)
+
+# information file for indels. output of bcftools stats on the vcf file. Used for correcting the total number of sites for mean pi calculation.
+bcf_tools_stats_indels_info: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Orchesella_cincta/grassland/vcfStats/OrcCin.grassland.ingroup.allQuality.freebayes.merge.normalized.vcf.gz.stats
+#/faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Isotoma_viridis/grassland/vcfStats/IsoVir.grassland.ingroup.highQuality.freebayes.merge.normalized.vcf.gz.stats
 
 # Pi collection file: File where all pi estimates will be combined. Will contain all populations (rows) and landcovertype_species (columns)
 output_collection_file_pi: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/pi/all_pi_estimates.txt

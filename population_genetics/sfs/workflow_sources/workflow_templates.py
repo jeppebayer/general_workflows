@@ -106,7 +106,7 @@ def sfs_variants_single_pop(work_path: str, type_code: str, spid: str, pop: str,
 
 
 
-def pop_bam2bed(work_path: str, bam_file: str, depth_threshold: str, spid: str, pop: str, name: str, log_path: str):
+def pop_bam2bed(work_path: str, bam_file: str, mindp: int, maxdp: int, spid: str, pop: str, name: str, log_path: str):
     inputs = {"bam":bam_file}
     outputs = {
             "log":f"{log_path}/{name}.log",
@@ -127,8 +127,8 @@ def pop_bam2bed(work_path: str, bam_file: str, depth_threshold: str, spid: str, 
     cd {work_path}/{pop}/monosites/beds
     samtools depth -@ 4 -a {bam_file} > {spid}_{pop}_bam_cov.txt
     # Extract min and max coverage thresholds from the TSV file
-    min_coverage=$(awk 'NR==2 {{print $6}}' {depth_threshold})
-    max_coverage=$(awk 'NR==2 {{print $7}}' {depth_threshold})
+    min_coverage={mindp} 
+    max_coverage={maxdp}
     awk -v min_coverage="$min_coverage" -v max_coverage="$max_coverage" \
     '$3 >= min_coverage && $3 <= max_coverage' {spid}_{pop}_bam_cov.txt > {spid}_{pop}_bam_cov_pass.txt
     awk '{{if (NR==1) {{chrom=$1; start=$2; end=$2}} else if ($2==end+1 && $1==chrom) {{end=$2}} else {{print chrom"\t"start-1"\t"end; chrom=$1; start=$2; end=$2}}}} END {{print chrom"\t"start-1"\t"end}}' {spid}_{pop}_bam_cov_pass.txt > {spid}_{pop}_bam_cov_pass.bed
@@ -276,7 +276,7 @@ def monosites_gene_sites_summary(work_path:str, spid: str, pop: str, name: str,s
             }
     options = {
               'cores':1,
-              'memory':'8g',
+              'memory':'16g',
               'walltime':'4:00:00',
               'account':"EcoGenetics"}
     spec = f"""

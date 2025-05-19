@@ -1,0 +1,80 @@
+
+###########################################################
+     # Generate of SFS for a single pooled population#
+###########################################################
+# Jilong Ma
+# aujilongm@bio.au.dk
+###########################################################
+# Outputs will be
+# Site frequency spectrum for N, S and intergenic sites per scaffold
+# both in unfolded and folded counts
+###########################################################
+
+
+#========================================================#
+##############################################
+     # Settings for human reading only#
+##############################################
+
+# Tag identifying file association.
+TAG: jilong:EcoGenetics,site_frequency_spectrum_single_population:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Name of species being analyzed
+species_name: Gonepteryx rhamni
+
+##############################################
+     # Settings for folder names#
+     # related to automatic creating of folders and paths#
+     # corresponding folders and paths will be created if not exist
+##############################################
+
+# ID of species for short
+species_id : GonRha
+# Population to retrive (the input vcf can include multiple populations(cols), the selected will be calculated):
+population: GoRh_pool50
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/sfs/single_pop_sfs/GonRha_jilong
+#Directory for final output files
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/sfs/single_pop_sfs/GonRha_jilong
+# Directory for log files
+log_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/sfs/single_pop_sfs/GonRha_jilong/logs
+# Directory for helping functions and scripts
+
+  
+##############################################
+     # Settings for input files#
+     # The following files must exist before running the workflow
+##############################################
+# Species genome annotation file, gff:
+annotation_gff: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Gonepteryx_rhamni/annotation/EG_GonRha_22032024_genomic.gff
+#species gene bed file
+gene_bed: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Gonepteryx_rhamni/annotation/EG_GonRha_22032024_genomic.genes.bed
+#species intergenic bed file
+intergenic_bed: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Gonepteryx_rhamni/annotation/EG_GonRha_22032024_genomic.intergenic.bed
+# Species genome fasta:
+genome_fasta: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Gonepteryx_rhamni/EG_GonRha_22032024_genomic.fna
+# snpEff annotated vcf file:
+ann_vcf: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics/vcf/butterflies/Gonepteryx_rhamni/grassland/GoRh_pool50.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.normalized.filtered_DP200-806.ann.vcf.gz
+# raw vcf file, freebayes called:
+raw_vcf: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics/vcf/butterflies/Gonepteryx_rhamni/grassland/GoRh_pool50.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.normalized.vcf.gz
+# BAM alignment file of the populaiton,which is used for freebayes vcf calling input
+population_bam_alignment: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics/alignments/Gonepteryx_rhamni/Pooled/pooled_extraction/GoRh_pool50/GoRh_pool50.filtered.bam
+
+  
+##############################################
+     # Workflow dependencies (source scripts)s#
+##############################################
+# Directory for helping functions and scripts
+help_scripts_path: /faststorage/project/EcoGenetics/general_workflows/population_genetics/sfs/workflow_sources
+
+##############################################
+     # Related parameter settings#
+##############################################
+
+# Depth summary of the freebayes called variants for the population
+# (To match the exact same filter as freebayes vcf calling to count the non-variant sites from the bam file)
+# minimum depth filtered for the alignment in vcf calling  
+vcf_filter_mindp: 200
+# maximum depth filtered for the alignment in vcf calling
+vcf_filter_maxdp: 806

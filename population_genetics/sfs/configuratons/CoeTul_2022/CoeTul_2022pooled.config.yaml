@@ -3,37 +3,35 @@ TAG: jilong:EcoGenetics,site_frequency_spectrum_single_population:workflowconfig
 # The name of the relevant project account.
 account: EcoGenetics
 # Name of species being analyzed
-species_name: Coenonympha tullia
+species_name: Coenonympha_tulia
 # ID of species for short
 species_id : CoeTul
-# Name of the task as a unique id:
-task_id: split_ann_vcf
 # Species genome annotation file, gff:
-annotation_gff: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Coenonympha_tullia/annotation/CoeTul_braker.rename.gff3
+annotation_gff: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Coenonympha_tullia/annotation/CoeTul_braker.rename.gff3 
   #species gene bed file
-gene_bed: /faststorage/project/EcoGenetics/people/jilong/sfs/data/CoeTul/CoeTul_gene.bed
+gene_bed: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Coenonympha_tullia/annotation/CoeTul_chromosome_gene.bed
   #species intergenic bed file
-intergenic_bed: /faststorage/project/EcoGenetics/people/jilong/sfs/data/CoeTul/CoeTul_intergenic.bed
+intergenic_bed:  /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Coenonympha_tullia/annotation/CoeTul_chromosome_integenic.bed 
   # Species genome fasta:
-genome_fasta: /faststorage/project/EcoGenetics/people/jilong/sfs/data/CoeTul/CoeTul.fa
+genome_fasta: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Coenonympha_tullia/EG_CoeTul_15102024_genomic.fna
 # Population to retrive:
 population: CoTu_poolseq_2022
 # snpEff annotated vcf file:
-ann_vcf: /faststorage/project/EcoGenetics/people/jilong/sfs/data/AglUrt/AgUr_poolseq_2022_ann.vcf
+ann_vcf: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics/vcf/butterflies/Coenonympha_tulia/grassland/CoeTul.grassland.ingroup.allQuality.freebayes.normalized.filtered_DP200-526.ann.vcf.gz
 # raw vcf file, freebayes called:
-raw_vcf: /faststorage/project/EcoGenetics/people/jilong/sfs/data/AglUrt/AglUrt_raw.vcf.gz
+raw_vcf: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics/vcf/butterflies/Coenonympha_tulia/grassland/CoeTul.grassland.ingroup.allQuality.freebayes.normalized.vcf.gz
 # Directory for intermediary files.
-working_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/sfs/single_pop_sfs/AglUrt
+working_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/sfs/single_pop_sfs/CoeTul
 #Directory for final output files
-output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/sfs/single_pop_sfs/AglUrt
+output_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/sfs/single_pop_sfs/CoeTul
 # Directory for log files
-log_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/sfs/single_pop_sfs/AglUrt/logs
+log_directory_path: /faststorage/project/EcoGenetics/general_workflow_outputs/sfs/single_pop_sfs/CoeTul/logs
 # Directory for helping functions and scripts
 help_scripts_path: /faststorage/project/EcoGenetics/general_workflows/population_genetics/sfs/workflow_sources
-# Directory for input data files
-data_directory_path: /faststorage/project/EcoGenetics/people/jilong/sfs/data/AglUrt
 # BAM alignment file of the populaiton
-population_bam_alignment: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics/alignments/Aglais_urticae/Pooled/pooled_extraction/AgUr_poolseq_2022/AgUr_poolseq_2022.filtered.bam
+population_bam_alignment: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics/alignments/Coenonympha_tullia/Pooled/pooled_extraction/CoTu_poolseq_2022/CoTu_poolseq_2022.filtered.bam 
 # Depth summary of the freebayes called variants for the population
-population_varaint_depth_summary: /faststorage/project/EcoGenetics/people/jilong/sfs/data/AglUrt/AglUrt.depth.tsv
-  
+# minimum depth filtered for the alignment in vcf calling  
+vcf_filter_mindp: 200
+# maximum depth filtered for the alignment in vcf calling
+vcf_filter_maxdp: 526

@@ -31,7 +31,7 @@ freebayesSettings:
   # (int). Amount of memory, in GB, to reserve per VCF partition. If left empty defaults to '80'.
   memory: 75
   # (str). Amount of time to reserve per VCF partition in format: 'tt:mm:ss'. If left empty defaults to '48:00:00'.
-  time: '24:00:00'
+  time: '60:00:00'
 # Batch settings. Can be used to reduced the number of jobs sent to the queue at one time.
 # Only partial VCF files will be created when batching. To complete the full workflow one must do a no-batch run.
 batchSettings:

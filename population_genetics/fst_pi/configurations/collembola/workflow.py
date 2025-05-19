@@ -2,13 +2,18 @@
 import sys, os, glob
 sys.path.insert(0, os.path.realpath('../../workflow_source/'))
 from workflow_source import *
+#os.environ['OPENBLAS_NUM_THREADS'] = '18'
 
 # make list of ymls
 configs = glob.glob('./*/*/*.config.y*ml')
 configs = [file for file in configs if "deprec" not in file]
 
 # if certain species should not be run:
-configs = [file for file in configs if "OrcCin" not in file]
+#configs = [file for file in configs if "OrcCin" not in file]
+#configs = [file for file in configs if "conservation_agriculture" not in file]
+#configs = [file for file in configs if "EntNic" in file]
+#configs = [file for file in configs if "conservation_agriculture" in file]
+configs = [file for file in configs if "grassland" in file]
 print(configs)
 
 

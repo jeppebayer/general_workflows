@@ -3,6 +3,7 @@ from gwf import AnonymousTarget
 import os, glob
 import pandas as pd
 #from scripts import collect_pi_estimates
+#os.environ['OPENBLAS_NUM_THREADS'] = '18'
 
 ########################## Functions ##########################
 
@@ -94,6 +95,42 @@ def classify_land_use(input_str):
         return "GR"
     else:
         return None  # or raise an error if unknown    
+
+import pandas as pd
+
+
+
+def parse_indel_distribution(stats_file):
+    """
+    Parses indelLength lines from bcftools stats output and computes average indel length.
+
+    Returns:
+        df (pd.DataFrame): Table of indel sizes and counts
+        avg_length (float): Weighted average indel length
+    """
+    indel_data = []
+    with open(stats_file) as f:
+        for line in f:
+            if line.startswith("IDD"):
+                #print(line)
+                parts = line.strip().split()
+                length = abs(int(parts[2]))
+                count = int(parts[3])
+                #print(count)
+                indel_data.append((length, count))
+                #print(indel_data)
+    
+    if not indel_data:
+        raise ValueError("No indelLength data found in file.")
+    
+    # Create DataFrame
+    df = pd.DataFrame(indel_data, columns=["indel_length", "count"])
+    # Compute weighted average
+    total_count = df["count"].sum()
+    weighted_sum = (df["indel_length"] * df["count"]).sum()
+    avg_length = weighted_sum / total_count if total_count else 0
+    avg_length = float(avg_length)
+    return avg_length
 
 
 
@@ -435,7 +472,7 @@ def fst_HIVERT_calc_from_AF_improved(allele_count_file: str, positions_file: str
 	outputs = {'fst_file': f'{output_directory}/{species_short}_{landcover_type}_FST_pairwise_poolfstat_blockJackn_WeirCocker.fst'}
 	options = { 
 		'cores': 1,
-		'memory': '5g',
+		'memory': '24g',
 		'walltime': '11:00:00'
 	}
 	spec = f"""
@@ -462,6 +499,8 @@ def fst_HIVERT_calc_from_AF_improved(allele_count_file: str, positions_file: str
 
 	# make output directory:
 	outdir_poolfstats={os.path.dirname(outputs['fst_file'])}/graphics
+    mkdir -p $outdir_poolfstats
+    outdir_poolfstats={os.path.dirname(outputs['fst_file'])}
     mkdir -p $outdir_poolfstats
     echo {inputs['allele_count_file']}
     # /faststorage/project/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/test/fst_pi/Collembola/conservation_agriculture/Entomobrya_nicoleti/intermediary_files/tmp/allele_freq/EntNic_Acount_allpops.count
@@ -803,7 +842,7 @@ def pi_grenedalf_template(neutral_bams: dict, working_directory: str, FILT_MIN_C
 	options = {
 		'cores': 1,
 		'memory': '1g',
-		'walltime': '11:00:00'
+		'walltime': '23:59:00'
 	}
 	spec = f"""
 	# Sources environment 										OBS EDIT:
@@ -818,7 +857,7 @@ def pi_grenedalf_template(neutral_bams: dict, working_directory: str, FILT_MIN_C
 	mkdir -p {os.path.dirname(outputs['neutral_pi_greenedalf'])}
 
 
-	grenedalf diversity --filter-sample-min-count {FILT_MIN_COUNT} --filter-sample-min-read-depth {FILT_MIN_DEPTH} --filter-sample-max-read-depth {FILT_MAX_DEPTH} --filter-total-only-biallelic-snps --window-type interval --window-interval-width {FILT_WINDOW} --pool-sizes {FILT_POOL_SIZE} --window-average-policy window-length --sam-path {get_dict_key_elements(inputs['bam_files'], "neutral_bams")} --out-dir {ouput_dir} --separator-char tab --file-prefix {species_short}_{landcover_type}_grenedalf_pi_tmp_
+	grenedalf diversity --allow-file-overwriting --filter-sample-min-count {FILT_MIN_COUNT} --filter-sample-min-read-depth {FILT_MIN_DEPTH} --filter-sample-max-read-depth {FILT_MAX_DEPTH} --filter-total-only-biallelic-snps --window-type interval --window-interval-width {FILT_WINDOW} --pool-sizes {FILT_POOL_SIZE} --window-average-policy window-length --sam-path {get_dict_key_elements(inputs['bam_files'], "neutral_bams")} --out-dir {ouput_dir} --separator-char tab --file-prefix {species_short}_{landcover_type}_grenedalf_pi_tmp_
 	## sbatch --account Ecogenetics --mem 16 --wrap="grenedalf diversity --filter-sample-min-count 2 --filter-sample-min-read-depth 200 --filter-sample-max-read-depth 660 --filter-total-only-biallelic-snps --window-type interval --window-interval-width 10000 --pool-sizes 100 --window-average-policy window-length --sam-path $bam_file --out-dir /home/anneaa/EcoGenetics/people/anneaa/tests/pi_bam_grenedalf/pi --separator-char tab --file-prefix EntNic_aaRJ_biallelic --allow-file-overwriting"
 	## sbatch --account Ecogenetics --mem 16 --wrap="grenedalf diversity --filter-sample-min-count 2 --filter-sample-min-read-depth 300 --filter-sample-max-read-depth 600 --filter-total-only-biallelic-snps --window-type interval --window-interval-width 10000 --pool-sizes 100 --window-average-policy window-length --sam-path $bam_file --out-dir /home/anneaa/EcoGenetics/people/anneaa/tests/pi_bam_grenedalf/pi --separator-char tab --file-prefix EntNic_aaRJ_biallelic_300_600 --allow-file-overwriting"
 	# callable within depth 
@@ -888,7 +927,9 @@ def make_neutral_vcf_improved(vcf_file: str, working_directory: str, neutral_bed
 	# mkdir -p {os.path.dirname(inputs['vcf_file'])}/neutral
 
 	# copy vcf into /neutral_vcf/ and make bgzip it
-	cp {inputs['vcf_file']}	{os.path.dirname(outputs['neutral_vcf'])}
+      #change to soft linking
+	ln -s {inputs['vcf_file']}	{os.path.dirname(outputs['neutral_vcf'])}/{os.path.basename(inputs['vcf_file'])}
+    #cp {inputs['vcf_file']}	{os.path.dirname(outputs['neutral_vcf'])}
 	#cp {inputs['vcf_file']} {working_directory}/{os.path.basename(inputs['vcf_file'])}
 
 	#bgzip -d {working_directory}/{os.path.basename(inputs['vcf_file'])}
@@ -906,7 +947,7 @@ def make_neutral_vcf_improved(vcf_file: str, working_directory: str, neutral_bed
 
 	bcftools index {outputs['neutral_vcf']} -o {outputs['neutral_vcf_index']}
 	
-	echo May I remove: {os.path.dirname(outputs['neutral_vcf'])}/{os.path.basename(inputs['vcf_file'])}
+	#echo May I remove: {os.path.dirname(outputs['neutral_vcf'])}/{os.path.basename(inputs['vcf_file'])}
 	echo May I remove: {os.path.dirname(outputs['neutral_vcf'])}/{os.path.basename(inputs['vcf_file']).replace(".gz", ".gz.csi")}
 
 	echo "END: $(date)"
@@ -929,7 +970,7 @@ def make_neutral_vcf_improved(vcf_file: str, working_directory: str, neutral_bed
 		# scaf1 37920   37920   1        variant; neutral .1  .001    .002
 
 
-def calculate_pi_template_improved(allele_freq_file: str, working_directory: str, count_file: str, species_short: str, output_directory: str, landcover_type: str, allele_count_file: str):
+def calculate_pi_template_improved(allele_freq_file: str, working_directory: str, count_file: str, species_short: str, output_directory: str, landcover_type: str, allele_count_file: str, indels_file:str):
 	"""
 	Template: Calculate pi from bed-style files with allele frequencies.
 	They look like this: Scaff Start_0-type_position End_0-type_position Variant_type AlleleFrequency 
@@ -950,7 +991,8 @@ def calculate_pi_template_improved(allele_freq_file: str, working_directory: str
 	"""
 	inputs = {'al_freq_file': allele_freq_file, 
 				'count_file': count_file,
-            	'allele_count_file': allele_count_file }
+            	'allele_count_file': allele_count_file,
+                'indels_file': indels_file }
 	outputs = { 'pi': f'{output_directory}/{species_short}_{landcover_type}_pi.pi',
 				'pi_mean': f'{output_directory}/{species_short}_{landcover_type}_pi_mean.pi'}
 	options = {
@@ -975,27 +1017,53 @@ def calculate_pi_template_improved(allele_freq_file: str, working_directory: str
 	mkdir -p {working_directory}/tmp/pi/
 	mkdir -p {os.path.dirname(outputs['pi'])}	
 
-	# get count from file
-	echo get line from count file
+   	## calculate number to divide by
+		# read in count of sites
+	echo get total count of sites from count file
+    line_is=`grep "total" {inputs['count_file']} | grep "all" | grep "whole_genome" | grep "intergenic_excl_repeats"`
+    echo Total count: $line_is
+	total_count=`echo $line_is| rev | awk '{{print $1}}' | rev`
+	echo Total sites: $total_count
+      
+    echo get count of sites within thresholds from count file
 	line_is=`grep "within_threshold" {inputs['count_file']} | grep "all" | grep "whole_genome" | grep "intergenic_excl_repeats"`
-	######## line_is=`grep "filter" {inputs['count_file']} | grep "all" | grep "whole_genome"
-	echo $line_is
-	total_division_nr=`echo $line_is| rev | awk '{{print $1}}' | rev`
-	echo $total_division_nr
-
-
+	      ######## line_is=`grep "filter" {inputs['count_file']} | grep "all" | grep "whole_genome"
+	echo within thresholds: $line_is
+	within_threshold=`echo $line_is| rev | awk '{{print $1}}' | rev`
+	echo sites within thresholds: $within_threshold
+    
+    	# calculate proportion of sites within threhshold
+    #prop_within=within_threshold / total_count
+	prop_within=`echo "$within_threshold / $total_count" | bc -l`
+	
+    
+    	# read in count of indels:
+    line_is=`grep "number of indels:" {inputs['indels_file']}|grep "SN"`
+    nIndels=`echo $line_is| rev | awk '{{print $1}}' | rev`
+        # calculate avg indel length using python function
+	Avg_Ind_length={parse_indel_distribution(inputs['indels_file'])}
+    
+		## Calculate number of sites to devide by:
+            # this is the logic:
+			# ($total_count * $prop_within) - ($nIndels * $prop_within) *(10 + $Avg_Ind_length)
+            # (sites within threshold) minus (amount of indels within tresholds) * (10 bases removed around indels + average length of indel, which is also being removed)
+    sites_corrected_count=`echo "($total_count * $prop_within) - ($nIndels * $prop_within) *(10 + $Avg_Ind_length)" | bc -l`
+    ind_removed=`echo "(($nIndels * $prop_within) *(10 + $Avg_Ind_length))" | bc -l`
+    echo Number of sites removed around and including indels within thresholds: $ind_removed
+    echo corrected sites count, after removal of sites around indels: $sites_corrected_count
+    
+          
 	# initiate pi files
 	echo initiate pi files
 	rm -f {working_directory}/tmp/pi/{species_short}_pi_calc_allSites_*
-	#echo -n > {working_directory}/tmp/pi/{species_short}_pi_calc_allSites.tmp
-	#echo -n > {working_directory}/tmp/pi/{species_short}_pi_calc_allSites_01aa.tmp
-	#awk '{{print $1, $2, $3}}' {inputs['al_freq_file']} > {working_directory}/tmp/pi/{species_short}_pi_calc_allSites_01aa.tmp
 	rm -f {working_directory}/tmp/pi/{species_short}_pi_calc_allSites_01aa.tmp
 
-	# built for loop, each iteration making a pop specific pi calc.
-	#file_counter=0
+    # get variables for output information  
     short_landtype={classify_land_use(landcover_type)}_
-	
+    
+    
+	# built for loop, each iteration making a pop specific pi calc.
+        
 	count_fields=`awk 'NR==1 {{print NF; exit}}' {inputs['al_freq_file']}`
 	echo number of fields $count_fields
 	echo run for loop for pi
@@ -1026,10 +1094,10 @@ def calculate_pi_template_improved(allele_freq_file: str, working_directory: str
 			}}' {inputs['al_freq_file']} >> {working_directory}/tmp/pi/{species_short}_pi_calc_allSites_$popul.tmp
 		
 		# calc mean pi
-		awk -v short_landtype=$short_landtype -v total_division_nr=$total_division_nr '
-				NR==1{{print short_landtype $1}} 
+		awk -v sites_corrected_count=$sites_corrected_count '
+				NR==1{{print $1}} 
 				NR>1{{ sum += $1; n++ }} 
-				END {{ if (total_division_nr > 0) print sum / total_division_nr }}
+				END {{ if (sites_corrected_count > 0) print sum / sites_corrected_count }}
 				' {working_directory}/tmp/pi/{species_short}_pi_calc_allSites_$popul.tmp > {working_directory}/tmp/pi/{species_short}_pi_calc_mean_$popul.tmp 
 	done
 
@@ -1071,10 +1139,6 @@ def add_pi_to_collection_file(mean_file: str, collection_output_file: str, worki
 	# Sources environment 										OBS EDIT:
 	source /home/"$USER"/.bashrc
 	conda activate ecogen_neutral_diversity_wf
-	if [ "$USER" == "jepe" ]; then
-		source /home/"$USER"/.bashrc
-		source activate popgen ########### OBS make dedicated env
-	fi
 
 	echo "START: $(date)"
 	echo "JobID: $SLURM_JOBID"
@@ -1084,7 +1148,8 @@ def add_pi_to_collection_file(mean_file: str, collection_output_file: str, worki
     #script_path=`find ../../../.. -maxdepth 4 -pattern 'collect_estimates.py' -print -quit`
 	#echo $script_path
 	echo {collection_output_file}
-	../../../../workflow_source/scripts/update_collection_file.py {inputs['file_mean']} {collection_output_file} {classify_land_use(landcover_type)}_{species_short} {collection_output_file.replace(".txt", ".txt.tmp")} {classify_land_use(landcover_type)}
+	../../../../workflow_source/scripts/update_collection_file1.py {inputs['file_mean']} {collection_output_file} {species_short}_{classify_land_use(landcover_type)} {collection_output_file.replace(".txt", ".txt.tmp")} {classify_land_use(landcover_type)}
+    #../../../../workflow_source/scripts/update_collection_file.py {inputs['file_mean']} {collection_output_file} {species_short}_{classify_land_use(landcover_type)} {collection_output_file.replace(".txt", ".txt.tmp")} {classify_land_use(landcover_type)}
      
      #/home/anneaa/EcoGenetics/general_workflows/population_genetics/fst_pi/workflow_source/scripts/update_collection_file.py 
      # 	/home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/pi/Collembola/conservation_agriculture/Entomobrya_nicoleti/EntNic_conservation_agriculture_grenedalf_theta_watterson_summary.tsv 
@@ -1096,6 +1161,7 @@ def add_pi_to_collection_file(mean_file: str, collection_output_file: str, worki
     # script finished, now make copleting files appear
     mv {collection_output_file.replace(".txt", ".txt.tmp")} {collection_output_file}
     touch {outputs['dummy_file']}
+    echo Delete this, if rerun is needed: {outputs['dummy_file']}
     
     
 	echo "END: $(date)"
