@@ -20,6 +20,10 @@ outgroupSettings:
   vcfFile: 
   # (str). Path to BED file containing intervals for which the outgroup has coverage ranging within threshold values. 
   withinThresholdBedFile: 
+# (str). Path BED file containing intergenic regions.
+intergenicBedFile: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Pogonognathellus_flavescens/annotation/EG_PogFla_23072024_genomic.intergenic.bed
+# (str). Path to BED file containing repeat regions.
+repeatsBedFile: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Pogonognathellus_flavescens/annotation/EG_PogFla_23072024_genomic.repeats.bed
 # (list). Setup for VCF files to be filtered and annotated.
 vcfGroupList:
   -

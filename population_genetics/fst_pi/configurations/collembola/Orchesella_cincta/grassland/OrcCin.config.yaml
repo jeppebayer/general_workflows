@@ -85,7 +85,7 @@ bcf_tools_stats_indels_info: /faststorage/project/EcoGenetics/general_workflow_o
 output_collection_file_pi: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/pi/all_pi_estimates.txt
 
 # path to bam files - for generating neutral bam and use greenedalf
-bam_general_path: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Orchesella_villosa/grassland/
+bam_general_path: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Orchesella_cincta/grassland/
 #/faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Pogonognathellus_flavescens/grassland/
 #/home/anneaa/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Entomobrya_nicoleti/grassland
 

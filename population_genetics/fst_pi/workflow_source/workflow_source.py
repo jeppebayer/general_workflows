@@ -42,6 +42,7 @@ def fst_and_pi_wf(config_file: str, gwf):
     FILT_MAX_DEPTH: int = CONFIG['filter-sample-max-read-depth']
     FILT_WINDOW: int = CONFIG['window-interval-width']
     FILT_POOL_SIZE: int = CONFIG['pool-sizes']
+    EXCLUDE_POPS: list = CONFIG['exclude_list']
     # --------------------------------------------------
     #                  Workflow
     # --------------------------------------------------
@@ -81,11 +82,12 @@ def fst_and_pi_wf(config_file: str, gwf):
     #print(f'{BED_PATH}/EG_OrcVil_23072024_genomic.genes.bed')
     #print(glob.glob(f'{BED_PATH}/*_genomic.genes.bed'))
     if RUN_PI or RUN_FST:
+        print(f'Running: {TAXONOMY} - {SPECIES_NAME.replace(" ","_")} - {AREA_TYPE.replace(" ","_")}')
         bed_genes = glob.glob(f'{BED_PATH}/*_genomic.genes.bed')[0]
         ##bed_intergenes = glob.glob(f'{BED_PATH}/*_genomic.intergenic.bed')[0]
         bed_repeats = glob.glob(f'{BED_PATH}/*_genomic.repeats.bed')[0]
         bed_neutral = f'{os.path.dirname(bed_genes)}/{os.path.basename(bed_genes).replace("_genomic.genes.bed", "_" + AREA_TYPE.replace(" ","_") + "_genomic.genes.bed").replace("genes","neutral")}'
-        print(bed_neutral)
+        #print(bed_neutral)
         ## f'{bed_repeats.replace("repeats","neutral")}'
     
 
@@ -115,9 +117,9 @@ def fst_and_pi_wf(config_file: str, gwf):
     ###     Make neutral vcf    ###
     ###############################
     if RUN_PI or RUN_FST:
-        print("Making neutral version of VCF file")
+        #print("Making neutral version of VCF file")
         #input_dict=[{'vcf_file': f, 'working_directory': p} for f, p in zip(files_list, files_popdir)] # making combined dictionary of files and new wd paths using list comprehension and zip
-
+        #print(VCF_FILE)
         neutral_vcf_files_template = gwf.target_from_template(
             name=f'vcf_make_neutral_{species_abbreviation(SPECIES_NAME)}_{AREA_TYPE.replace(" ","_")}',
             template=make_neutral_vcf_improved(
@@ -132,13 +134,41 @@ def fst_and_pi_wf(config_file: str, gwf):
     ###     Make neutral BAM    ###
     ###############################
     if RUN_PI:
-        print("Making neutral version of BAM file")
+        #print("Making neutral version of BAM file")
         #input_dict=[{'vcf_file': f, 'working_directory': p} for f, p in zip(files_list, files_popdir)] # making combined dictionary of files and new wd paths using list comprehension and zip
         
-        # OBS
-        # get list of bam files
-        bam_dict_list = find_bam_files(BAM_PATH)
-        #print(len(bam_dict_list))
+        #import json
+        #from pathlib import Path
+        #if not os.path.isdir(f'{WORK_DIR}/fst_pi/{TAXONOMY}/bam_list_check'):
+        #    os.makedirs(f'{WORK_DIR}/fst_pi/{TAXONOMY}/bam_list_check')
+        #STATE_FILE = Path(f'{WORK_DIR}/fst_pi/{TAXONOMY}/bam_list_check/bam_dict_state.json')
+
+        ## Load previous state
+        #if STATE_FILE.exists():
+        #    with STATE_FILE.open("r") as f:
+        #        all_bam_dicts = json.load(f)
+        #else:
+        #    all_bam_dicts = []
+
+        # Your new bam_dict_list for this run
+        bam_dict_list = find_bam_files(BAM_PATH)  # however it's generated
+
+        ## Check for duplicates
+        #for new_dict in bam_dict_list:
+        #    if new_dict in all_bam_dicts:
+        #        print("Duplicate found:", new_dict)
+        #        print("Not running duplicate.")
+        #    else:
+        #        all_bam_dicts.append(new_dict)
+                
+
+        ## Save updated state
+        #with STATE_FILE.open("w") as f:
+        #    json.dump(all_bam_dicts, f, indent=2)
+
+                    
+        #bam_dict_list = find_bam_files(BAM_PATH)
+        #print((bam_dict_list))
         neutral_bam_files_map = gwf.map(
             name=create_bam_run_name,
             #name=f'bam_make_neutral_{species_abbreviation(SPECIES_NAME)}_{AREA_TYPE.replace(" ","_")}',
@@ -154,7 +184,7 @@ def fst_and_pi_wf(config_file: str, gwf):
     ###############################
     if RUN_PI or RUN_FST:
         # get allele frequencies
-        print("Re-calculating allele frequencies for each population")
+        #print("Re-calculating allele frequencies for each population")
 
         # add template with single run: ( can be paralellized if need be - requires modifications )
         #recalculate_AF
@@ -173,46 +203,54 @@ def fst_and_pi_wf(config_file: str, gwf):
     ###     CAlC Fst        ###
     ###########################
     if RUN_FST:
-        print(recalculate_AF_template.outputs['allele_freq'])
-        fst_from_AF_template = gwf.target_from_template(
-            name = f'fst_popoolation_calc_from_AF_{species_abbreviation(SPECIES_NAME)}_{AREA_TYPE.replace(" ","_")}',
-            template = fst_calc_from_AF_improved(
-                allele_freq_file = recalculate_AF_template.outputs['allele_freq'],
-                working_dir = new_wd_fst_pi, 
-                output_directory = new_out_fst,
-                species_short = species_abbreviation(SPECIES_NAME),
-                landcover_type = AREA_TYPE.replace(" ","_") )
-        )
-        
-        ##################################
-        ###     CAlC HUDSON Fst        ###
-        ##################################
         #print(recalculate_AF_template.outputs['allele_freq'])
-        fst_HUD_from_AF_template = gwf.target_from_template(
-            name = f'fst_HUD_calc_from_AF_{species_abbreviation(SPECIES_NAME)}_{AREA_TYPE.replace(" ","_")}',
-            template = fst_HUDSON_calc_from_AF_improved(
-                allele_freq_file = recalculate_AF_template.outputs['allele_freq'],
-                working_dir = new_wd_fst_pi, 
-                output_directory = new_out_fst,
-                species_short = species_abbreviation(SPECIES_NAME),
-                landcover_type = AREA_TYPE.replace(" ","_"))
-        )
+            # only run pairwise fst calculations, if more than one pop:
+        #print(vcf_column_count(VCF_FILE))
+    
+        if vcf_column_count(VCF_FILE) > 10: 
+            # Checking if there is more than one population
+            # #print("enter if")
+            fst_from_AF_template = gwf.target_from_template(
+                name = f'fst_popoolation_calc_from_AF_{species_abbreviation(SPECIES_NAME)}_{AREA_TYPE.replace(" ","_")}',
+                template = fst_calc_from_AF_improved(
+                    allele_freq_file = recalculate_AF_template.outputs['allele_freq'],
+                    working_dir = new_wd_fst_pi,
+                    output_directory = new_out_fst,
+                    species_short = species_abbreviation(SPECIES_NAME),
+                    landcover_type = AREA_TYPE.replace(" ","_") )
+            )
+            
+            ##################################
+            ###     CAlC HUDSON Fst        ###
+            ##################################
+            #print(recalculate_AF_template.outputs['allele_freq'])
+            fst_HUD_from_AF_template = gwf.target_from_template(
+                name = f'fst_HUD_calc_from_AF_{species_abbreviation(SPECIES_NAME)}_{AREA_TYPE.replace(" ","_")}',
+                template = fst_HUDSON_calc_from_AF_improved(
+                    allele_freq_file = recalculate_AF_template.outputs['allele_freq'],
+                    working_dir = new_wd_fst_pi, 
+                    output_directory = new_out_fst,
+                    species_short = species_abbreviation(SPECIES_NAME),
+                    landcover_type = AREA_TYPE.replace(" ","_"))
+            )
 
 
-        ############################################
-        ###     CAlC Hivert/Poolfstat Fst        ###
-        ############################################
-        
-        fst_HIVERT_from_AF_template = gwf.target_from_template(
-            name = f'fst_HIVERT_calc_from_ACount_{species_abbreviation(SPECIES_NAME)}_{AREA_TYPE.replace(" ","_")}',
-            template = fst_HIVERT_calc_from_AF_improved(
-                allele_count_file = recalculate_AF_template.outputs['allele_count'],
-                positions_file = recalculate_AF_template.outputs['allele_positions'],
-                working_dir = new_wd_fst_pi, 
-                output_directory = new_out_fst,
-                species_short = species_abbreviation(SPECIES_NAME),
-                landcover_type = AREA_TYPE.replace(" ","_"))
-        )
+            ############################################
+            ###     CAlC Hivert/Poolfstat Fst        ###
+            ############################################
+            
+            fst_HIVERT_from_AF_template = gwf.target_from_template(
+                name = f'fst_HIVERT_calc_from_ACount_{species_abbreviation(SPECIES_NAME)}_{AREA_TYPE.replace(" ","_")}',
+                template = fst_HIVERT_calc_from_AF_improved(
+                    allele_count_file = recalculate_AF_template.outputs['allele_count'],
+                    positions_file = recalculate_AF_template.outputs['allele_positions'],
+                    working_dir = new_wd_fst_pi, 
+                    output_directory = new_out_fst,
+                    species_short = species_abbreviation(SPECIES_NAME),
+                    landcover_type = AREA_TYPE.replace(" ","_"))
+            )
+        else:
+            print("Only one population. Not estimating Fst.")
 
 
     ##########################
@@ -262,9 +300,9 @@ def fst_and_pi_wf(config_file: str, gwf):
         ###     Add pi to collection     ###
         ####################################
 
-        print(classify_land_use(AREA_TYPE.replace(" ","_")))
+        #print(classify_land_use(AREA_TYPE.replace(" ","_")))
         # need counting file for this
-        print("Collecting estimates:" + PI_COLLECTION_FILE)
+        #print("Collecting estimates:" + PI_COLLECTION_FILE)
         pi_collection_greenedalf = gwf.target_from_template(
             name = f'pi_nei_collection_{species_abbreviation(SPECIES_NAME)}_{AREA_TYPE.replace(" ","_")}',
             template = add_pi_to_collection_file(
@@ -273,10 +311,11 @@ def fst_and_pi_wf(config_file: str, gwf):
                 collection_output_file = PI_COLLECTION_FILE,
                 taxonomy = TAXONOMY.replace(" ", "_"),
                 species_short = species_abbreviation(SPECIES_NAME),
-                landcover_type = AREA_TYPE.replace(" ","_"))
+                landcover_type = AREA_TYPE.replace(" ","_"),
+                python_ignore_list = EXCLUDE_POPS)
         )
         
-        print("Collecting estimates:" + PI_COLLECTION_FILE.replace(".txt", "_greenedalf.txt"))
+        #print("Collecting estimates:" + PI_COLLECTION_FILE.replace(".txt", "_greenedalf.txt"))
         pi_collection_greenedalf = gwf.target_from_template(
             name = f'pi_greened_collection_{species_abbreviation(SPECIES_NAME)}_{AREA_TYPE.replace(" ","_")}',
             template = add_pi_to_collection_file(
@@ -285,11 +324,12 @@ def fst_and_pi_wf(config_file: str, gwf):
                 collection_output_file = PI_COLLECTION_FILE.replace(".txt", "_greenedalf.txt"),
                 taxonomy = TAXONOMY.replace(" ", "_"),
                 species_short = species_abbreviation(SPECIES_NAME),
-                landcover_type = AREA_TYPE.replace(" ","_"))
+                landcover_type = AREA_TYPE.replace(" ","_"),
+                python_ignore_list = EXCLUDE_POPS)
         )
 
 
-        print("Collecting estimates:" + PI_COLLECTION_FILE.replace(".txt", "_greenedalf.txt").replace("all_pi","all_tajD"))
+        #print("Collecting estimates:" + PI_COLLECTION_FILE.replace(".txt", "_greenedalf.txt").replace("all_pi","all_tajD"))
         pi_collection_greenedalf = gwf.target_from_template(
             name = f'TajD_greened_collection_{species_abbreviation(SPECIES_NAME)}_{AREA_TYPE.replace(" ","_")}',
             template = add_pi_to_collection_file(
@@ -298,10 +338,11 @@ def fst_and_pi_wf(config_file: str, gwf):
                 collection_output_file = PI_COLLECTION_FILE.replace(".txt", "_greenedalf.txt").replace("all_pi","all_tajD"),
                 taxonomy = TAXONOMY.replace(" ", "_"),
                 species_short = species_abbreviation(SPECIES_NAME),
-                landcover_type = AREA_TYPE.replace(" ","_"))
+                landcover_type = AREA_TYPE.replace(" ","_"),
+                python_ignore_list = EXCLUDE_POPS)
         )
 
-        print("Collecting estimates:" + PI_COLLECTION_FILE.replace(".txt", "_greenedalf.txt").replace("all_pi","all_wattersonTheta"))
+        #print("Collecting estimates:" + PI_COLLECTION_FILE.replace(".txt", "_greenedalf.txt").replace("all_pi","all_wattersonTheta"))
         pi_collection_greenedalf = gwf.target_from_template(
             name = f'Watterson_greened_collection_{species_abbreviation(SPECIES_NAME)}_{AREA_TYPE.replace(" ","_")}',
             template = add_pi_to_collection_file(
@@ -310,7 +351,8 @@ def fst_and_pi_wf(config_file: str, gwf):
                 collection_output_file = PI_COLLECTION_FILE.replace(".txt", "_greenedalf.txt").replace("all_pi","all_wattersonTheta"),
                 taxonomy = TAXONOMY.replace(" ", "_"),
                 species_short = species_abbreviation(SPECIES_NAME),
-                landcover_type = AREA_TYPE.replace(" ","_"))
+                landcover_type = AREA_TYPE.replace(" ","_"),
+                python_ignore_list = EXCLUDE_POPS)
         )
         
     print(" ")

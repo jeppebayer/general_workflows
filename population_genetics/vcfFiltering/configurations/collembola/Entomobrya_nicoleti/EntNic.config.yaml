@@ -20,6 +20,10 @@ outgroupSettings:
   vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/entomobrya_nivalis/EntNic.entomobrya_nivalis.outgroup.allQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.norm.merged.vcf.gz
   # (str). Path to BED file containing intervals for which the outgroup has coverage ranging within threshold values. 
   withinThresholdBedFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Entomobrya_nicoleti/depth/EntNic.entomobrya_nivalis.outgroup.allQuality.depththreshold.bed
+# (str). Path BED file containing intergenic regions.
+intergenicBedFile: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/annotation/EG_EntNic_05092024_genomic.intergenic.bed
+# (str). Path to BED file containing repeat regions.
+repeatsBedFile: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Entomobrya_nicoleti/annotation/EG_EntNic_05092024_genomic.repeats.bed
 # (list). Setup for VCF files to be filtered and annotated.
 vcfGroupList:
   -

@@ -28,8 +28,8 @@ vcfGroupList:
     # (str). Path to VCF file.
     vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics/vcf/pooled/vcf/butterflies/Lycaena_virgaureae/grassland/LycVir.grassland.ingroup.allQuality.freebayes.vcf.gz
     # (int). Minimum coverage value for filtering.
-    minimumCoverage: 200
+    minimumCoverage: 130
     # (int). Maximum coverage value for filtering.
-    maximumCoverage: 360
+    maximumCoverage: 220
     # (str). Path to BED file containing intervals for which the sample group has coverage ranging within threshold values. 
     withinThresholdBedFile: /faststorage/project/EcoGenetics/general_workflow_outputs/museomics/vcf/pooled/vcf/butterflies/Lycaena_virgaureae/depth/LycVir.grassland.ingroup.allQuality.depththreshold.bed

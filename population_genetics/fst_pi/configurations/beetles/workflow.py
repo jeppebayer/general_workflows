@@ -18,7 +18,7 @@ configs = [file for file in configs if "deprec" not in file]
 #configs = [file for file in configs if "conservation_agriculture" in file]
 #configs = [file for file in configs if "conventional_agriculture" in file]
 #configs = [file for file in configs if "grassland" in file]
-print(f'Configuration files:\n {configs}\n')
+print(configs)
 
 
 # loop over them
@@ -28,7 +28,7 @@ for config in configs:
 
 
 # conda create -n ecogen_neutral_diversity_wf python samtools bamtools vcftools R gwf bedtools bcftools pyyaml r-ggplot2 r-viridis
-# cd /home/anneaa/EcoGenetics/general_workflows/population_genetics/fst_pi/configurations/collembola
+# cd /home/anneaa/EcoGenetics/general_workflows/population_genetics/fst_pi/configurations/collembola/Entomobrya_nicoleti/grassland
 # conda activate ecogen_neutral_diversity_wf
 # gwf run
 # gwf status

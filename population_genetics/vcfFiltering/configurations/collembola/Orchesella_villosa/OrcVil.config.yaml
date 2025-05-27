@@ -20,6 +20,10 @@ outgroupSettings:
   vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Orchesella_villosa/orchesella_cincta/OrcVil.orchesella_cincta.outgroup.allQuality.freebayes_n3_p100_minaltfrc0_minaltcnt2_singlecall.norm.merged.vcf.gz
   # (str). Path to BED file containing intervals for which the outgroup has coverage ranging within threshold values. 
   withinThresholdBedFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Orchesella_villosa/depth/OrcVil.orchesella_cincta.outgroup.allQuality.depththreshold.bed
+# (str). Path BED file containing intergenic regions.
+intergenicBedFile: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Orchesella_villosa/annotation/EG_OrcVil_23072024_genomic.intergenic.bed
+# (str). Path to BED file containing repeat regions.
+repeatsBedFile: /faststorage/project/EcoGenetics/BACKUP/population_genetics/reference_genomes/collembola/Orchesella_villosa/annotation/EG_OrcVil_23072024_genomic.repeats.bed
 # (list). Setup for VCF files to be filtered and annotated.
 vcfGroupList:
   -

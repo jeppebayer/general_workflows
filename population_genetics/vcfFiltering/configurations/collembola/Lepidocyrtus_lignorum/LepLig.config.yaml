@@ -20,6 +20,10 @@ outgroupSettings:
   vcfFile:
   # (str). Path to BED file containing intervals for which the outgroup has coverage ranging within threshold values. 
   withinThresholdBedFile: 
+# (str). Path BED file containing intergenic regions.
+intergenicBedFile: 
+# (str). Path to BED file containing repeat regions.
+repeatsBedFile: 
 # (list). Setup for VCF files to be filtered and annotated.
 vcfGroupList:
   -

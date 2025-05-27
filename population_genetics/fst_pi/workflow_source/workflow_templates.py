@@ -2,6 +2,7 @@
 from gwf import AnonymousTarget
 import os, glob
 import pandas as pd
+import gzip
 #from scripts import collect_pi_estimates
 #os.environ['OPENBLAS_NUM_THREADS'] = '18'
 
@@ -132,13 +133,21 @@ def parse_indel_distribution(stats_file):
     avg_length = float(avg_length)
     return avg_length
 
+            
+def vcf_column_count(filename):
+    with gzip.open(filename, 'rt') as f:
+        for line in f:
+            if line.startswith('#CHROM'):
+                columns = line.strip().split('\t')
+                return len(columns)
+    return 0  # if no #CHROM line found
 
 
 ############### Naming functions #########################
 
 def create_bam_run_name(idx: str, target: AnonymousTarget) -> str:
 	#pair_name=target.inputs['name_pops']
-	return f'bam_neutral_{os.path.basename(target.outputs["neutral_bam"]).replace("-","_")}'
+	return f'bam_neutral_{os.path.dirname(target.outputs["neutral_bam"]).replace("-","_").split("/")[-5]}_{os.path.basename(target.outputs["neutral_bam"]).replace("-","_")}'
 
 
 def create_grened_run_name(idx: str, target: AnonymousTarget) -> str:
@@ -330,9 +339,6 @@ def fst_calc_from_AF_improved(allele_freq_file: str, working_dir: str, species_s
 			for columns2 in `seq $((columns+1)) $tot_cols`
 			do
 				echo $columns2
-				#popul_1=`awk -v idx=$columns '{{ print $idx; exit }}' {working_dir}/tmp/fst/AF_header.tmp1`
-				#popul_2=`awk -v idx=$columns2 'NR=1{{ print $idx; exit }}' {working_dir}/tmp/fst/AF_header.tmp1`
-				#echo $popul_1 - $popul_2
 
 				# create output file name:
 				# fst_output_file_mod={working_dir}/tmp/fst/{species_short}_fst_allpairs.fst
@@ -342,10 +348,7 @@ def fst_calc_from_AF_improved(allele_freq_file: str, working_dir: str, species_s
 				###################
 				### Calculate fst
 				###################
-				echo index: $columns-$columns2 > ${{fst_output_file_mod/.fst/.temp}}
-				echo pops_nr: $((columns-$NUMBER_MAINCOLS))-$((columns2-$NUMBER_MAINCOLS)) >> ${{fst_output_file_mod/.fst/.temp}}
-				#echo pops: $popul_1-$popul_2 >> ${{fst_output_file_mod/.fst/.temp}}
-				
+								
 				awk -v firstpop=$columns -v secondpop=$columns2 '
 					NR==1{{print $firstpop ":" $secondpop }};
 					NR>1{{
@@ -388,9 +391,8 @@ def fst_calc_from_AF_improved(allele_freq_file: str, working_dir: str, species_s
 	###############
 	## Calculate mean
 	##############
-
 	awk 'BEGIN{{ FS = OFS = "\t"}};
-		NR == 1 || NR==2 || NR==3 {{print $0}}
+		NR == 1 {{print $0}}
 		NR > 2 {{
 			for (i=1; i<=NF; i++) {{
 				if ($i != "" || $i != "NA" ) {{
@@ -505,8 +507,18 @@ def fst_HIVERT_calc_from_AF_improved(allele_count_file: str, positions_file: str
     echo {inputs['allele_count_file']}
     # /faststorage/project/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/test/fst_pi/Collembola/conservation_agriculture/Entomobrya_nicoleti/intermediary_files/tmp/allele_freq/EntNic_Acount_allpops.count
 	
+    # get script
+    if [[ -f ../../../../workflow_source/scripts/fst_poolfstat_from_allelecounts.r ]]; then
+		script_to_run=../../../../workflow_source/scripts/fst_poolfstat_from_allelecounts.r
+	elif [[ -f ../../workflow_source/scripts/fst_poolfstat_from_allelecounts.r ]]; then
+		script_to_run=../../workflow_source/scripts/fst_poolfstat_from_allelecounts.r
+	else
+    	echo "script not found"
+    fi
+    
     # start R script
-	Rscript ../../../../workflow_source/scripts/fst_poolfstat_from_allelecounts.r {inputs['allele_count_file']} {inputs['positions_file']} $outdir_poolfstats {species_short} {landcover_type}
+	Rscript $script_to_run {inputs['allele_count_file']} {inputs['positions_file']} $outdir_poolfstats {species_short} {landcover_type}
+      #Rscript ../../../../workflow_source/scripts/fst_poolfstat_from_allelecounts.r {inputs['allele_count_file']} {inputs['positions_file']} $outdir_poolfstats {species_short} {landcover_type}
 	# calculates fst
 	#[1] "/faststorage/project/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/test/fst_pi/Collembola/conservation_agriculture/Entomobrya_nicoleti/intermediary_files/tmp/allele_freq/EntNic_Acount_allpops.count"
 	#[1] "/faststorage/project/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/test/fst_pi/Collembola/conservation_agriculture/Entomobrya_nicoleti/intermediary_files/tmp/allele_freq/EntNic_positions.pos"
@@ -574,7 +586,7 @@ def fst_HUDSON_calc_from_AF_improved(allele_freq_file: str, working_dir: str, sp
 	echo input aF file: {inputs['allele_freq_file']}
 	tot_cols=`awk 'NR == 1 {{print NF; exit}}' {inputs['allele_freq_file']}`
 	echo total columns: $tot_cols
-	head {inputs['allele_freq_file']} 
+	head -n 1 {inputs['allele_freq_file']} 
 
 	for columns in `seq $((NUMBER_MAINCOLS+1)) $tot_cols`
 	do
@@ -596,25 +608,23 @@ def fst_HUDSON_calc_from_AF_improved(allele_freq_file: str, working_dir: str, sp
 				#fst_output_file_mod={working_dir}/tmp/fst/{species_short}_fst_allpairs_hudson.fst
 				fst_output_file_mod={working_dir}/tmp/fst/{os.path.basename(outputs['fst_file_hudson'])}
 				fst_output_file_mod=${{fst_output_file_mod/.fst/"_pops_"$((columns-$NUMBER_MAINCOLS))"_"$((columns2-$NUMBER_MAINCOLS))".fst"}}
-				echo $fst_output_file_mod
+				#echo $fst_output_file_mod
 
 				###################
 				### Calculate fst
 				###################
-				echo index: $columns - $columns2 > ${{fst_output_file_mod/.fst/.temp}}
-				echo pops_nr: $((columns-$NUMBER_MAINCOLS))-$((columns2-$NUMBER_MAINCOLS)) >> ${{fst_output_file_mod/.fst/.temp}}
-				#echo pops: $popul_1-$popul_2 >> ${{fst_output_file_mod/.fst/.temp}}
-				
+				echo ${{fst_output_file_mod/.fst/.temp}}
+                rm -f ${{fst_output_file_mod/.fst/.temp}}
 				awk -v firstpop_AF=$columns -v secondpop_AF=$columns2 '
-					NR==1{{print $firstpop_AF ":" $secondpop_AF }};
-					NR>1{{
+					NR == 1{{print $firstpop_AF ":" $secondpop_AF }};
+					NR > 1{{
 					if ($firstpop_AF == "" || $secondpop_AF == "" || $firstpop_AF == "NA" || $secondpop_AF == "NA")  # if AF is na (aka empty field), put fst=NA
-					{{ 	fst=NA; 
+						{{ 	fst=NA; 
 						print fst;
 						first_pi=0; second_pi=0; pi_both=0; D_both=0; fst=NA; next	}}
 					else
-					# hudson calc pi per site
-					{{ first_pi=2 * $firstpop_AF *(1 - $firstpop_AF);
+						# hudson calc pi per site
+						{{ first_pi=2 * $firstpop_AF *(1 - $firstpop_AF);
 						second_pi=2 * $secondpop_AF * (1 - $secondpop_AF);
 						pi_both=(first_pi + second_pi) / 2;
 
@@ -655,32 +665,28 @@ def fst_HUDSON_calc_from_AF_improved(allele_freq_file: str, working_dir: str, sp
 						print fst_regular_mean;
 						print fst_mean }}
 
-					' {inputs['allele_freq_file']} >> ${{fst_output_file_mod/.fst/.temp}}
-
-					#mv ${{fst_output_file_mod/.fst/.temp}} $fst_output_file_mod
-				
+					' {inputs['allele_freq_file']} >> ${{fst_output_file_mod/.fst/.temp}}			
 			done
 		fi
 	done
 
 	# paste files together
-	#paste -d'\t' {working_dir}/tmp/fst/{species_short}_fst_allpairs*.temp > {outputs['fst_file_hudson']}.tmp
 	paste -d'\t' {working_dir}/tmp/fst/{os.path.basename(outputs['fst_file_hudson']).replace(".fst", "*.temp")} > {outputs['fst_file_hudson']}.tmp
 	
-	# transfer mean calculations to new file
-	head -n 3 {outputs['fst_file_hudson']}.tmp > {outputs['fst_file_mean_hudson']}.tmp
-	tail -n 4 {outputs['fst_file_hudson']}.tmp >> {outputs['fst_file_mean_hudson']}.tmp
-	echo -e "index\npopnr\nname\nD_mean\npi_mean\nsitecount\nfst_regular_mean\nfst_mean" > {outputs['fst_file_mean_hudson']}.tmp1 
+	# transfer mean calculations to new file    
+    head -n 1 {outputs['fst_file_hudson']}.tmp > {outputs['fst_file_mean_hudson']}.tmp
+	tail -n 5 {outputs['fst_file_hudson']}.tmp >> {outputs['fst_file_mean_hudson']}.tmp
+	echo -e "name\nD_mean\npi_mean\nsitecount\nfst_regular_mean\nfst_mean" > {outputs['fst_file_mean_hudson']}.tmp1 
 	paste -d'\t' {outputs['fst_file_mean_hudson']}.tmp1 {outputs['fst_file_mean_hudson']}.tmp > {outputs['fst_file_mean_hudson']}
 	
 	# clean up
 	rm -f {outputs['fst_file_mean_hudson']}.tmp1
 	rm -f {outputs['fst_file_mean_hudson']}.tmp
 
-	# delete last four lines from per site file
-	for num in `seq 1 4`; do 
+	# delete last five lines from per site file
+	for num in `seq 1 5`; do 
 		echo $num
-		sed '$d' {outputs['fst_file_hudson']}.tmp
+		sed -i '$d' {outputs['fst_file_hudson']}.tmp
 	done
 
 	mv {outputs['fst_file_hudson']}.tmp {outputs['fst_file_hudson']}
@@ -869,9 +875,20 @@ def pi_grenedalf_template(neutral_bams: dict, working_directory: str, FILT_MIN_C
 	mv {outputs['neutral_pi_greenedalf'].replace("_pi.", "_pi_tmp_diversity.")} {outputs['neutral_pi_greenedalf']}
 	# {species_short}_{landcover_type}_grenedalf_pi_tmp_
 	
+        # get script
+    if [[ -f ../../../../workflow_source/scripts/calc_mean_pi.py ]]; then
+		script_to_run=../../../../workflow_source/scripts/calc_mean_pi.py
+	elif [[ -f ../../workflow_source/scripts/calc_mean_pi.py ]]; then
+		script_to_run=../../workflow_source/scripts/calc_mean_pi.py
+	else
+    	echo "script not found"
+    fi
+    
     # calculate mean for each pop:
     if [[ -f {outputs['neutral_pi_greenedalf']} ]]; then
-		../../../../workflow_source/scripts/calc_mean_pi.py {outputs['neutral_pi_greenedalf']} {species_short} {landcover_type} {ouput_dir}
+    
+		$script_to_run {outputs['neutral_pi_greenedalf']} {species_short} {landcover_type} {ouput_dir}
+            #../../../../workflow_source/scripts/calc_mean_pi.py {outputs['neutral_pi_greenedalf']} {species_short} {landcover_type} {ouput_dir}
         #../../../../calc_mean_pi.py {outputs['neutral_pi_greenedalf']} {species_short} {landcover_type} {ouput_dir}
             # calculates mean of all estimates -  pi, TajD and Wattersons theta.
     fi
@@ -1064,13 +1081,13 @@ def calculate_pi_template_improved(allele_freq_file: str, working_directory: str
     
 	# built for loop, each iteration making a pop specific pi calc.
         
-	count_fields=`awk 'NR==1 {{print NF; exit}}' {inputs['al_freq_file']}`
+	count_fields=`awk 'NR == 1 {{print NF; exit}}' {inputs['al_freq_file']}`
 	echo number of fields $count_fields
 	echo run for loop for pi
 	for number in `seq 1 $count_fields`
 	do
 		echo $number
-		popul=`awk -v number=$number 'NR==1 {{print $number}}' {inputs['al_freq_file']}`
+		popul=`awk -v number=$number 'NR == 1 {{print $number}}' {inputs['al_freq_file']}`
 		echo $popul
 		#echo $popul > {working_directory}/tmp/pi/{species_short}_pi_calc_allSites_$popul.tmp
 
@@ -1095,8 +1112,8 @@ def calculate_pi_template_improved(allele_freq_file: str, working_directory: str
 		
 		# calc mean pi
 		awk -v sites_corrected_count=$sites_corrected_count '
-				NR==1{{print $1}} 
-				NR>1{{ sum += $1; n++ }} 
+				NR == 1{{print $1}} 
+				NR > 1{{ sum += $1; n++ }} 
 				END {{ if (sites_corrected_count > 0) print sum / sites_corrected_count }}
 				' {working_directory}/tmp/pi/{species_short}_pi_calc_allSites_$popul.tmp > {working_directory}/tmp/pi/{species_short}_pi_calc_mean_$popul.tmp 
 	done
@@ -1115,7 +1132,7 @@ def calculate_pi_template_improved(allele_freq_file: str, working_directory: str
 
 
 
-def add_pi_to_collection_file(mean_file: str, collection_output_file: str, working_directory: str, species_short: str, landcover_type: str, taxonomy: str):
+def add_pi_to_collection_file(mean_file: str, collection_output_file: str, working_directory: str, species_short: str, landcover_type: str, taxonomy: str, python_ignore_list: list):
 	"""
 	Template: Collects pi estimates and adds it to common file.
 		one template for each diversity measure.
@@ -1147,8 +1164,18 @@ def add_pi_to_collection_file(mean_file: str, collection_output_file: str, worki
 	#script_path=`find ../../../.. -maxdepth 4 -name 'collect_pi_estimates.py' -print -quit`
     #script_path=`find ../../../.. -maxdepth 4 -pattern 'collect_estimates.py' -print -quit`
 	#echo $script_path
+        # get script
+    if [[ -f ../../../../workflow_source/scripts/update_collection_file1.py ]]; then
+		script_to_run=../../../../workflow_source/scripts/update_collection_file1.py
+	elif [[ -f ../../workflow_source/scripts/update_collection_file1.py ]]; then
+		script_to_run=../../workflow_source/scripts/update_collection_file1.py
+	else
+    	echo "script not found"
+    fi
+    
 	echo {collection_output_file}
-	../../../../workflow_source/scripts/update_collection_file1.py {inputs['file_mean']} {collection_output_file} {species_short}_{classify_land_use(landcover_type)} {collection_output_file.replace(".txt", ".txt.tmp")} {classify_land_use(landcover_type)}
+	$script_to_run {inputs['file_mean']} {collection_output_file} {species_short}_{classify_land_use(landcover_type)} {collection_output_file.replace(".txt", ".txt.tmp")} {classify_land_use(landcover_type)} "{python_ignore_list}"
+      #../../../../workflow_source/scripts/update_collection_file1.py {inputs['file_mean']} {collection_output_file} {species_short}_{classify_land_use(landcover_type)} {collection_output_file.replace(".txt", ".txt.tmp")} {classify_land_use(landcover_type)}
     #../../../../workflow_source/scripts/update_collection_file.py {inputs['file_mean']} {collection_output_file} {species_short}_{classify_land_use(landcover_type)} {collection_output_file.replace(".txt", ".txt.tmp")} {classify_land_use(landcover_type)}
      
      #/home/anneaa/EcoGenetics/general_workflows/population_genetics/fst_pi/workflow_source/scripts/update_collection_file.py 
@@ -1159,7 +1186,13 @@ def add_pi_to_collection_file(mean_file: str, collection_output_file: str, worki
   
         
     # script finished, now make copleting files appear
-    mv {collection_output_file.replace(".txt", ".txt.tmp")} {collection_output_file}
+    #if [ -f {collection_output_file.replace(".txt", ".txt.tmp")} ]; then
+    if [[ -s {collection_output_file.replace(".txt", ".txt.tmp")} ]]; then
+      	mv {collection_output_file.replace(".txt", ".txt.tmp")} {collection_output_file}
+    fi
+	if [[ -s {collection_output_file.replace(".txt", ".txt.lock")} ]]; then
+      	rm -f {collection_output_file.replace(".txt", ".txt.lock")}
+    fi
     touch {outputs['dummy_file']}
     echo Delete this, if rerun is needed: {outputs['dummy_file']}
     

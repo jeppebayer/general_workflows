@@ -27,6 +27,7 @@ print(position_file)
 fst_output_dir <- args_are[3]
 # fst_output_file=fst_file_all_pairs
 # fst_output_dir <- "/home/anneaa/EcoGenetics/people/anneaa/derived_dat_scripts/neutral_diversity_pipeline/fst_pi_gwf_intermediate_steps/fst_pi/Collembola/grassland/Entomobrya_nicoleti/intermediary_files/tmp/fst"
+# fst_output_dir <- "/faststorage/project/EcoGenetics/general_workflows/population_genetics/fst_pi/configurations/collembola"
 # conda activate ecogen_neutral_diversity_wf
 print(fst_output_dir)
 
@@ -103,16 +104,18 @@ plot(fst_allelecounts$sliding.windows.fvalues$CumMidPos/1e6, fst_allelecounts$sl
 abline(h = fst_allelecounts$Fst, lty = 2)
 dev.off()
 # dashed line is overall fst, colors are alternating chromosomes
-
+print("past first plot")
 #without bundled
-png(file = paste0(fst_output_dir, "/graphics/", species_short, "_", landscape_type, "_FST_poolfstat_overall_sliding_w", snps_in_window, "_WeirCocker_manhattan_bundRem.png"), res = 600, units = "in", width = 12, height = 7)
-plot(fst_allelecounts$sliding.windows.fvalues[-which(fst_allelecounts$sliding.windows.fvalues$Chr == "bundled_sequences"),]$CumMidPos/1e6, fst_allelecounts$sliding.windows.fvalues[-which(fst_allelecounts$sliding.windows.fvalues$Chr == "bundled_sequences"),]$MultiLocusFst,
-	xlab = "Cumulated Position (in Mb)", ylab = paste0("Muli-locus Fst (", snps_in_window, ")"),
-	col = as.numeric(as.factor(fst_allelecounts$sliding.windows.fvalues[-which(fst_allelecounts$sliding.windows.fvalues$Chr == "bundled_sequences"),]$Chr)), 
-	pch = 16, main = paste0(snps_in_window, " SNP windows"))
-abline(h = fst_allelecounts$Fst, lty = 2)
-dev.off()
-
+if( any(fst_allelecounts$sliding.windows.fvalues$Chr == "bundled_sequences" )){
+  png(file = paste0(fst_output_dir, "/graphics/", species_short, "_", landscape_type, "_FST_poolfstat_overall_sliding_w", snps_in_window, "_WeirCocker_manhattan_bundRem.png"), res = 600, units = "in", width = 12, height = 7)
+  plot(fst_allelecounts$sliding.windows.fvalues[-which(fst_allelecounts$sliding.windows.fvalues$Chr == "bundled_sequences"),]$CumMidPos/1e6, fst_allelecounts$sliding.windows.fvalues[-which(fst_allelecounts$sliding.windows.fvalues$Chr == "bundled_sequences"),]$MultiLocusFst,
+    xlab = "Cumulated Position (in Mb)", ylab = paste0("Muli-locus Fst (", snps_in_window, ")"),
+    col = as.numeric(as.factor(fst_allelecounts$sliding.windows.fvalues[-which(fst_allelecounts$sliding.windows.fvalues$Chr == "bundled_sequences"),]$Chr)), 
+    pch = 16, main = paste0(snps_in_window, " SNP windows"))
+  abline(h = fst_allelecounts$Fst, lty = 2)
+  dev.off()
+}
+print("past sec plot")
 
 ###############################
 ### Calculate pairwise FST  ###
@@ -152,6 +155,7 @@ points(data$Fst, seq_along(data$Fst), pch = 19, cex = .5)
 axis(2, at = seq_along(data$Fst), labels = data$labels, las = 2, cex.axis = .4, lwd.ticks = .5)
 dev.off()
 }
+print("past third plot")
 
 
 # regular fst plot (dot plot)
@@ -166,7 +170,7 @@ plot(data$Fst,
 )
 dev.off()
 }
-
+print("past fourth plot")
 # ordered but regular fst plot
 {
 data <- data.frame(fst_allelecounts_pairwise@values$"Fst bjack mean", fst_allelecounts_pairwise@values$Fst_CI95l, fst_allelecounts_pairwise@values$Fst_CI95u, rownames(fst_allelecounts_pairwise@values))
@@ -180,13 +184,14 @@ plot(data$Fst,
 dev.off()
 }
 
-
+print("past fifth plot")
 # plotting heatmap
 {png(file = paste0(fst_output_dir, "/graphics/", species_short, "_", landscape_type, "_FST_pairwise_poolfstat", "_WeirCocker_heatmap.png"), res = 600, units = "in", width = 10, height = 10)
 heatmap(fst_allelecounts_pairwise)
 dev.off()}
 
 
+print("past sixth plot")
 
 # phylogeny
 library(tidyr)
@@ -230,6 +235,7 @@ png(file = paste0(fst_output_dir, "/graphics/", species_short, "_", landscape_ty
 plot(tree_nj, main="Neighbor Joining Tree from FST")
 dev.off()
 }
+print("past seventh plot")
 ##############################
 ### Hierachical Fst
 ##############################
@@ -240,5 +246,5 @@ dev.off()
 
 
 
-
+quit()
 

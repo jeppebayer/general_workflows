@@ -106,6 +106,27 @@ pool-sizes: 100
 
 # List of populations to exclude:
 exclude_list:
-  - 
+  - aeRoe
+  - FUR
+  - HaeJ
+  - HYF
+  - JHJ
+  - JYS
+  - KOS
+  - MYS
+  - RES
+  - SHJ
+  - K-DAS
+  - K-FLJ
+  - K-HVJ
+  - K-MoeJ
+  - K-ToeJ
+  - CA-BMJ
+  - CA-HVJ
+  - CA-HYS
+  - CA-JES
+  - CA-LES
+  
+  # Still in doubt about CA-HYS and SHJ
   
   
