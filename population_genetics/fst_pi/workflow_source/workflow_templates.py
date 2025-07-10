@@ -283,7 +283,7 @@ def recalculate_AF_improved(input_vcf: str, working_dir: str, species_short: str
 
 
 
-def fst_calc_from_AF_improved(allele_freq_file: str, working_dir: str, species_short: str, output_directory: str, landcover_type: str):
+def fst_calc_from_AF_improved(allele_freq_file: str, working_dir: str, species_short: str, output_directory: str, landcover_type: str, allele_count_file: str):
 	"""
 	Template: Recalculate Allele frequency for each population, and output it in a pop specific temporary file. Then paste them together
 	
@@ -294,13 +294,15 @@ def fst_calc_from_AF_improved(allele_freq_file: str, working_dir: str, species_s
 	
 	:param
 	"""
-	inputs = {'allele_freq_file': allele_freq_file}
+	inputs = {'allele_freq_file': allele_freq_file,
+           'allele_count_file': allele_count_file}
 	outputs = {'fst_file': f'{output_directory}/{species_short}_{landcover_type}_fst_allpairs_popoolation.fst',
-				'fst_file_mean': f'{output_directory}/{species_short}_{landcover_type}_fst_allpairs_popoolation_mean.fst'}
+				'fst_file_mean': f'{output_directory}/{species_short}_{landcover_type}_fst_allpairs_popoolation_reg_mean.fst',
+                'fst_file_PImean_fst_mean': f'{output_directory}/{species_short}_{landcover_type}_fst_allpairs_popoolation_mean.fst'}
 	options = {
 		'cores': 1,
 		'memory': '5g',
-		'walltime': '11:00:00'
+		'walltime': '23:00:00'
 	}
 	spec = f"""
 	# Sources environment 										OBS EDIT:
@@ -344,50 +346,111 @@ def fst_calc_from_AF_improved(allele_freq_file: str, working_dir: str, species_s
 				# fst_output_file_mod={working_dir}/tmp/fst/{species_short}_fst_allpairs.fst
 				fst_output_file_mod={working_dir}/tmp/fst/{os.path.basename(outputs['fst_file'])}				
 				fst_output_file_mod=${{fst_output_file_mod/.fst/"_pops_"$((columns-$NUMBER_MAINCOLS))"_"$((columns2-$NUMBER_MAINCOLS))".fst"}}
-
+				rm -f ${{fst_output_file_mod/.fst/.temp1}}
 				###################
 				### Calculate fst
 				###################
+                 	# get pop AN
+				AN_bcf_firstpop=`awk -v columns=$columns 'NR==2 {{
+						split($columns, a, ",")
+						sum = a[1] + a[2]
+						print sum
+					}}' {inputs['allele_count_file']}`
+				AN_bcf_secondpop=`awk -v columns2=$columns2 'NR==2 {{
+						split($columns2, a, ",")
+						sum = a[1] + a[2]
+						print sum
+					}}' {inputs['allele_count_file']}`
+				echo "AN (Chr. number) is calculated as (pop1 and pop2): $AN_bcf_firstpop and $AN_bcf_secondpop"
 								
-				awk -v firstpop=$columns -v secondpop=$columns2 '
+				awk -v firstpop=$columns -v secondpop=$columns2 -v AN_bcf_firstpop=$AN_bcf_firstpop -v AN_bcf_secondpop=$AN_bcf_secondpop '
 					NR==1{{print $firstpop ":" $secondpop }};
 					NR>1{{
 					if ($firstpop == "" || $secondpop == "" || $firstpop == "NA" || $secondpop == "NA")  # if AF is na (aka empty field), put fst=NA
-						{{ 	fst=NA; 
-							print fst;
+						{{ 	fst="NA"; 
+							print fst, fst, fst;
 							first_pi=0; second_pi=0; pi_within=0; pi_total=0; fst=NA; next	}}
 
-					first_pi=1-($firstpop)^2-(1-$firstpop)^2;
-					second_pi=1-($secondpop)^2-(1-$secondpop)^2;
+					#first_pi=1-($firstpop)^2-(1-$firstpop)^2;
+					#second_pi=1-($secondpop)^2-(1-$secondpop)^2;
+                    
+                    first_pi=2*($firstpop)*(1-$firstpop)*(AN_bcf_firstpop/(AN_bcf_firstpop-1));
+					second_pi=2*($secondpop)*(1-$secondpop)*(AN_bcf_secondpop/(AN_bcf_secondpop-1));
 					
+                    # pi=2*(AF)*(1-AF)*(AN_bcf/(AN_bcf-1))
+                         
 					pi_within=(first_pi + second_pi)/2;
-
-					pi_total=1-(($firstpop + $secondpop)/2)^2-(((1-$firstpop) + (1-$secondpop))/2)^2;
+					AN_avg=(AN_bcf_firstpop+AN_bcf_secondpop)/2
+					pi_total=(1-(($firstpop + $secondpop)/2)^2-(((1-$firstpop) + (1-$secondpop))/2)^2)*(AN_avg/(AN_avg-1));
 					
 					if (pi_total=="0")  # pi tot will be 0, thus zero devision
-						{{ 	fst=NA; 
-							#print $firstpop, $secondpop, first_pi, second_pi, pi_within, pi_total, fst;
-							print fst;
+						{{ 	fst="NA"; 
+                            print fst, fst, fst; 
+                                #which means pi within and total will also be printed empty
 							first_pi=0; second_pi=0; pi_within=0; pi_total=0; fst=NA	}}
 					else 
 						{{ 	fst=(pi_total-pi_within)/pi_total;
 							#print $firstpop, $secondpop, first_pi, second_pi, pi_within, pi_total, fst;
-							print fst;
+							#print fst;
+                            print fst, pi_within, pi_total;
 							first_pi=0; second_pi=0; pi_within=0; pi_total=0; fst=NA  }}
-					}}' {inputs['allele_freq_file']} >> ${{fst_output_file_mod/.fst/.temp}}
+					}}' {inputs['allele_freq_file']} >> ${{fst_output_file_mod/.fst/.temp1}}
 
-					#mv ${{fst_output_file_mod/.fst/.temp}} $fst_output_file_mod
-				
+                         
+                         # create fst calc based on mean total and witin pi calcs
+                    awk 'NR == 1{{print $1}};
+                        NR > 1{{print $2, $3}}' ${{fst_output_file_mod/.fst/.temp1}} > ${{fst_output_file_mod/.fst/.tempPI}}
+						
+                        # output regular fst
+                    awk '{{print $1}}' ${{fst_output_file_mod/.fst/.temp1}} > ${{fst_output_file_mod/.fst/.temp}}
+
+                    
+                    
+                    	# calculate mean total pi and mean wintin pi
+                    #BEGIN{{ FS = OFS = "\t"}};
+                	awk ' NR == 1 {{print $1}}
+						NR > 1 {{
+							for (i=1; i<=NF; i++) {{
+								if ($i != "" && $i != "NA" ) {{
+									count[i]++
+									sum[i] += $i }};
+							}}
+						}}
+						END {{
+							for (i=1; i<=NF; i++) {{
+								if (i == NF) {{
+									printf "%f", sum[i] / count[i]  # No tab for the last column
+								}} else {{
+									printf "%f\\t", sum[i] / count[i]  # Tab between columns
+								}}
+							}}
+						}}' ${{fst_output_file_mod/.fst/.tempPI}} > ${{fst_output_file_mod/.fst/.tempPIavg}}
+						
+                              
+                            # calculate mean fst based on mean within pi and mean total pi
+                        awk 'NR == 1 {{ print $1 }};
+                            NR > 1 {{pi_within=$1; pi_total=$2;
+								if (pi_total=="0")  # pi tot will be 0, thus zero devision
+									{{ 	fst=NA; 
+										#print $firstpop, $secondpop, first_pi, second_pi, pi_within, pi_total, fst;
+										print fst;
+										first_pi=0; second_pi=0; pi_within=0; pi_total=0; fst=NA	}}
+								else 
+									{{ 	fst=(pi_total-pi_within)/pi_total;
+										#print $firstpop, $secondpop, first_pi, second_pi, pi_within, pi_total, fst;
+										print fst;
+										#print fst, pi_within, pi_total;
+										first_pi=0; second_pi=0; pi_within=0; pi_total=0; fst=NA  }}
+								}}' ${{fst_output_file_mod/.fst/.tempPIavg}} > ${{fst_output_file_mod/.fst/.tempPIavg1}}
+                         
+                               
 			done
 		fi
 	done
 
-	#fst_output_file_new=allpairs_$fst_output_file.fst
-	#paste -d'\t' {working_dir}/tmp/fst/$fst_output_file*.fst	> $working_directory/$fst_output_file_new
 	paste -d'\t' {working_dir}/tmp/fst/{os.path.basename(outputs['fst_file']).replace(".fst", "*.temp")} > {outputs['fst_file']}
-	#paste -d'\t' {working_dir}/tmp/fst/{species_short}_fst_allpairs*.temp > {outputs['fst_file']}
-	#{species_short}_fst_allpairs*.temp
-
+	paste -d'\t' {working_dir}/tmp/fst/{os.path.basename(outputs['fst_file']).replace(".fst", "*.tempPIavg1")} > {outputs['fst_file_PImean_fst_mean']}
+     
 	###############
 	## Calculate mean
 	##############
@@ -395,7 +458,7 @@ def fst_calc_from_AF_improved(allele_freq_file: str, working_dir: str, species_s
 		NR == 1 {{print $0}}
 		NR > 2 {{
 			for (i=1; i<=NF; i++) {{
-				if ($i != "" || $i != "NA" ) {{
+				if ($i != "" && $i != "NA" ) {{
 					count[i]++
 					sum[i] += $i }};
 			}}
@@ -415,6 +478,9 @@ def fst_calc_from_AF_improved(allele_freq_file: str, working_dir: str, species_s
 	# Clean up
 	#rm -f {working_dir}/tmp/fst/{species_short}_fst_allpairs*.temp
 	rm -f {working_dir}/tmp/fst/{os.path.basename(outputs['fst_file']).replace(".fst", "*.temp")}
+    rm -f {working_dir}/tmp/fst/{os.path.basename(outputs['fst_file']).replace(".fst", "*.temp1")}
+    rm -f {working_dir}/tmp/fst/{os.path.basename(outputs['fst_file']).replace(".fst", "*.tempPI")}
+    rm -f {working_dir}/tmp/fst/{os.path.basename(outputs['fst_file']).replace(".fst", "*.tempPIavg1")}
 
 	echo "END: $(date)"
 	echo "$(jobinfo "$SLURM_JOBID")"
@@ -1103,8 +1169,8 @@ def calculate_pi_template_improved(allele_freq_file: str, working_directory: str
 		awk -v short_landtype=$short_landtype -v number=$number -v AN_bcf=$AN_bcf '
 			NR == 1 {{print short_landtype $number}}
 			NR > 1 {{ AF=$number;
-				#pi=1-(AF)^2-(1-AF)^2;
-				#pi=2*(AF)*(1-AF); #similar
+				#pi=1-(AF)^2-(1-AF)^2; #pi from popoolation script
+				#pi=2*(AF)*(1-AF); #similar, but nei and Tajima
 				#pi=2*(AF)*(1-AF)*(100/(100-1)); # with number of chromosomes added N/N-1
                 pi=2*(AF)*(1-AF)*(AN_bcf/(AN_bcf-1)); # with number of chromosomes added N/N-1 via bcftools calc, if deviating from original 100 per sample.
 				print pi

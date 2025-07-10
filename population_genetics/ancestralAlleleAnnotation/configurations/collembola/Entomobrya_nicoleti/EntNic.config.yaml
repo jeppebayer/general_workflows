@@ -25,7 +25,7 @@ freebayesSettings:
   # (int). Amount of memory, in GB, to reserve per VCF partition. If left empty defaults to '50'.
   memory: 40
   # (str). Amount of time to reserve per VCF partition in format: 'tt:mm:ss'. If left empty defaults to '24:00:00'.
-  time: '24:00:00'
+  time: '72:00:00'
 # (list). Ingroup setup. List of dictionaries containing information for each ingroup.
 ingroupSetup:
   - 

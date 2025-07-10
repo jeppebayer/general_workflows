@@ -214,6 +214,7 @@ def fst_and_pi_wf(config_file: str, gwf):
                 name = f'fst_popoolation_calc_from_AF_{species_abbreviation(SPECIES_NAME)}_{AREA_TYPE.replace(" ","_")}',
                 template = fst_calc_from_AF_improved(
                     allele_freq_file = recalculate_AF_template.outputs['allele_freq'],
+                    allele_count_file = recalculate_AF_template.outputs['allele_count'],
                     working_dir = new_wd_fst_pi,
                     output_directory = new_out_fst,
                     species_short = species_abbreviation(SPECIES_NAME),

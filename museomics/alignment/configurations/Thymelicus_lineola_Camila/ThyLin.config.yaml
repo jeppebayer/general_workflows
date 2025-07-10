@@ -5,7 +5,7 @@ account: EcoGenetics
 # Name of species being analyzed
 species_name: Thymelicus lineola Camila
 # Path to reference genome file in FASTA format
-reference_genome_path: /faststorage/project/EcoGenetics/BACKUP/museomics/reference_genomes/Thymelicus_lineola/EG_ThyLin_01052024_genomic.fna
+reference_genome_path: /faststorage/project/EcoGenetics/people/Jesper_Bechsgaard/Ulla_butterflies/ThyLin/EG_ThyLin_01052024_genomic.fna
 # Directory for intermediary files.
 working_directory_path: /faststorage/project/EcoGenetics/people/Jeppe_Bayer/museomics/steps
 # # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
@@ -29,7 +29,7 @@ sample_lists:
     data_type: contemporary, paired-end
     populations:
       -
-        population_name: Denamrk_Camila
+        population_name: Denmark_Camila
         sample_folder_list:
           - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_117_Komp
           - /faststorage/project/EcoGenetics/BACKUP/butterflies_Camila/Thymelicus_lineola/ThyLin_60_Bjorn

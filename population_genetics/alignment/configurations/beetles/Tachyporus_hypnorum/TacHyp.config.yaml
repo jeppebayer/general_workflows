@@ -28,17 +28,29 @@ sample_lists:
   -
     group_name: Grassland
     sample_folder_list:
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_ADJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_aeRoe
+#      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_BIJ_49ind
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_BRS
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_DSJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_FUR
+#      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_GSJ_40ind
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_HAS
+#      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_HHJ_39ind
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_KRS
+#      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_LEJ_36ind
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_MSJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_MYS
+#      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_RDJ_39ind
+#      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_SBJ_45ind
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_SKJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_STF
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_STJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_TRJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_ULJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_UTJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_VAJ
+#      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_aaRJ_45ind
   -
     group_name: Conservation_agriculture
     sample_folder_list:
@@ -47,6 +59,8 @@ sample_lists:
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TecHyp_CA-HVJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TecHyp_CA-LES
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TecHyp_CA-MoeJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_BIJ_49ind
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Tachyporus_hypnorum/TacHyp_CA-STJ_37ind
   -
     group_name: Conventional_agriculture
     sample_folder_list:

@@ -32,13 +32,22 @@ sample_lists:
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Stenus_fulvicornis/SteFul_BIJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Stenus_fulvicornis/SteFul_DoeJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Stenus_fulvicornis/SteFul_DSJ
+#      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Stenus_fulvicornis/SteFul_FHJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Stenus_fulvicornis/SteFul_FUR_45ind
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Stenus_fulvicornis/SteFul_GSJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Stenus_fulvicornis/SteFul_JEJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Stenus_fulvicornis/SteFul_KLJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Stenus_fulvicornis/SteFul_LEJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Stenus_fulvicornis/SteFul_LVJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Stenus_fulvicornis/SteFul_MSJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Stenus_fulvicornis/SteFul_RDJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Stenus_fulvicornis/SteFul_RES
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Stenus_fulvicornis/SteFul_SBJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Stenus_fulvicornis/SteFul_SHJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Stenus_fulvicornis/SteFul_SKJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Stenus_fulvicornis/SteFul_SKS
+#      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Stenus_fulvicornis/SteFul_SSJ_40ind
+#      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Stenus_fulvicornis/SteFul_STF_47ind
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Stenus_fulvicornis/SteFul_SUJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Stenus_fulvicornis/SteFul_TRJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Stenus_fulvicornis/SteFul_ULJ

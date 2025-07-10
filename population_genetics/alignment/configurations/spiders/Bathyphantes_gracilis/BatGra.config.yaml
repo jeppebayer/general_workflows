@@ -1,0 +1,41 @@
+# Tag identifying file association.
+TAG: jeppebayer:EcoGenetics,population_genetics,mapping:workflowconfiguration
+# The name of the relevant project account.
+account: EcoGenetics
+# Taxonomic group
+taxonomic_group: spiders
+# Name of species being analyzed
+species_name: Bathyphantes gracilis
+# Path to reference genome file in FASTA format
+reference_genome_path: /faststorage/project/EcoGenetics/people/anneaa/derived_dat_scripts/workflows_intermediates/spiders/Bathyphantes_gracilis/draft_assembly/purge_dups_primary/01/BatGra.purged.fa
+# Directory for intermediary files.
+working_directory_path: /faststorage/project/EcoGenetics/people/Jesper_Bechsgaard/test
+# # Directory for final output files. (If left empty, output file will be placed within 'working_directory_path')
+output_directory_path: /faststorage/project/EcoGenetics/people/Jesper_Bechsgaard/test/BatGra
+# AdapterRemoval settings.
+adapterremoval_settings:
+  min_quality: 25
+  min_length: 20
+  adaptersequence1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCA
+  adaptersequence2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
+# Samtools filter settings.
+filter_settings:
+  flags_excluded: 3844
+  flags_required: 
+  min_mq: 20
+# List of path to sample folders containing resequencing data.
+sample_lists:
+  -
+    group_name: Grassland
+    sample_folder_list:
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/spiders/Bathyphantes_gracilis/BatGra_HaeJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/spiders/Bathyphantes_gracilis/BatGra_NOJ
+  -
+    group_name: Conservation_agriculture
+    sample_folder_list:
+  -
+    group_name: Conventional_agriculture
+    sample_folder_list:
+  -
+    group_name: Outgroup_
+    sample_folder_list:

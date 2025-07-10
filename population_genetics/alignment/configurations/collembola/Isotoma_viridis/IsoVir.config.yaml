@@ -30,8 +30,12 @@ sample_lists:
     sample_folder_list:
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_aeRoe-C310
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_BJJ-C98
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_BIJ-C211
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_DoeJ-C422
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_DSJ-C236
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_FHJ-C362
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_FUR-C232
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_FaaJ-C417
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_GoeJ-C135
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_GSJ-C275
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_HaeJ-C283
@@ -40,6 +44,7 @@ sample_lists:
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_JHJ-C224
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_JoeJ-C251
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_JYS-C175
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_KLJ-C204
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_KoeJ-C213
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_KOS-C179
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_KRS-C186
@@ -47,13 +52,20 @@ sample_lists:
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_MSJ-C319
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_MSS-C296
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_MYS-C153
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_NOJ-C262
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_NYS-F-C118
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_RES-C168
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_RMJ-C306
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_RYJ-C17
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_SBJ-C73
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_SHJ-C321
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_SKS-C56
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_SSJ-C260
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_STF-C445
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_STJ-C444
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_TOJ-C72
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_TRJ-C346
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_aaRJ-C229
   -
     group_name: Conservation_agriculture
     sample_folder_list:
@@ -67,6 +79,9 @@ sample_lists:
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_CA-LES-C351
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_CA-MoeJ-C354
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_CA-YDJ-C120
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_CA_DAS-C431
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_CA_FLJ-C394
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Isotoma_viridis/IsoVir_CA_RoeF-C338
   -
     group_name: Conventional_agriculture
     sample_folder_list:

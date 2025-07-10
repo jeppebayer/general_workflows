@@ -29,6 +29,11 @@ sample_lists:
     group_name: Grassland
     sample_folder_list:
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_cincta/OrcCin_aeRoe-C182
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_cincta/OrcCin_GoeJ-C14
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_cincta/OrcCin_KLJ-C204
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_cincta/OrcCin_MYS-C137
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_cincta/OrcCin_SBJ-C51
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_cincta/OrcCin_SSJ-C257
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_cincta/OrcCin_DSJ-C233
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_cincta/OrcCin_FaaJ-C6
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_cincta/OrcCin_JHJ-C222

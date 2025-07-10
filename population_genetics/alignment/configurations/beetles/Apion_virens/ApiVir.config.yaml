@@ -31,7 +31,10 @@ sample_lists:
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_virens/ApiVir_FHJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_virens/ApiVir_HHJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_virens/ApiVir_SBJ
+#      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_virens/ApiVir_LVJ_41ind
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_virens/ApiVir_SBJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_virens/ApiVir_SKS
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_virens/ApiVir_SUJ_49ind
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_virens/ApiVir_UTJ
   -
     group_name: Conservation_agriculture

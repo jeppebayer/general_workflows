@@ -29,6 +29,7 @@ sample_lists:
     group_name: Grassland
     sample_folder_list:
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_aaRJ-C207
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_BJJ-C97
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_BRS-C269
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_FaaJ-C8
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_FHJ-C92
@@ -37,9 +38,13 @@ sample_lists:
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_GSJ-C273
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_HHJ-C215
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_JEJ-C18
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_JoeJ-C253
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_KRJ-C356
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_KOS-C181
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_LEJ-C243
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_LVJ-C78
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_RDJ-C245
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_SBJ-C449
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_MYS-C39
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_RES-C286
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Lepidocyrtus_lignorum/LepLig_SHJ-C9

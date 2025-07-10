@@ -40,6 +40,9 @@ sample_lists:
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Pogonognathellus_flavescens/PogFla_SHJ-C21
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Pogonognathellus_flavescens/PogFla_SSJ-C261
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Pogonognathellus_flavescens/PogFla_ULJ-C315
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Pogonognathellus_flavescens/PogFla_DoeJ-C453
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Pogonognathellus_flavescens/PogFla_RDJ-C240
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Pogonognathellus_flavescens/PogFla_SUJ-C415
   -
     group_name: Conservation_agriculture
     sample_folder_list:

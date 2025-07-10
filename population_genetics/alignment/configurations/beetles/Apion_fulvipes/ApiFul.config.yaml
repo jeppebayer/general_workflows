@@ -34,16 +34,19 @@ sample_lists:
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_FUR
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_HaeJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_HAS
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_HHJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_JYS
-      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_K-LES
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_KLJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_KoeJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_KOS
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_KRS
-      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_MoeJ
+#      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_LVJ_49ind
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_MSS
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_NYS
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_RDJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_SBJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_SKS
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_STF
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_SUJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_TRJ
   -
@@ -54,7 +57,7 @@ sample_lists:
   -
     group_name: Conventional_agriculture
     sample_folder_list:
-      - 
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Apion_fulvipes/ApiFul_K-LES
   -
     group_name: 
     sample_folder_list:

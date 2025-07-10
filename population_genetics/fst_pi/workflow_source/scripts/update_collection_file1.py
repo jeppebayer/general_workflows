@@ -129,12 +129,16 @@ def update_matrix(input_path, matrix_path, species, output_path, prefix="CA", ig
     if isinstance(ignore_list, list) and ignore_list:
         # Filter out excluded names
             # Remove None values and ensure all are strings
+        #print(ignore_list)
         ignore_list = [str(name) for name in ignore_list if name is not None]
         # now chage excluded names to match other names
         ignore_list = [re.sub(re.escape("oe"), "O", name) for name in ignore_list]
         ignore_list = [re.sub(re.escape("aa"), "A", name) for name in ignore_list]
         ignore_list = [re.sub(re.escape("ae"), "A", name) for name in ignore_list]
+        ignore_list = [re.sub(re.escape("-"), "_", name) for name in ignore_list]
+        #print(ignore_list)
         filtered = [(n, v) for n, v in zip(norm_names, values) if n not in ignore_list]
+        #print(filtered)
         if filtered:
             norm_names, values = zip(*filtered)
         else:

@@ -108,19 +108,22 @@ exclude_list:
   - HYF
   - JHJ
   - JYS
-  - KOS
   - MYS
   - RES
-  - SHJ
-  - K-DAS
-  - K-FLJ
-  - K-HVJ
-  - K-MoeJ
-  - K-ToeJ
-  - CA-BMJ
-  - CA-HVJ
-  - CA-HYS
-  - CA-JES
-  - CA-LES
+  #- K-DAS
+  #- K-FLJ
+  #- K-HVJ
+  #- K-MoeJ
+  #- K-ToeJ
+  #- CA-BMJ
+  #- CA-HYS
+  #- CA-JES
+  #- CA-LES
+  ##- KOS
+  ##- SHJ
+  ##- CA-HVJ
+  ## Still in doubt about CA-HYS and SHJ
+  
+  
   
   # Still in doubt about CA-HYS and SHJ

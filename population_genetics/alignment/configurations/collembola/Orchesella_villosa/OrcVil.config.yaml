@@ -41,6 +41,10 @@ sample_lists:
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_SKS-C54
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_ULJ-C123
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_VIS-C359
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_CA_DAS-C428
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_CA_RoeF-C410
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_K_LES-C382
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/collembola/Orchesella_villosa/OrcVil_K_RoeF-C418
   -
     group_name: Conservation_agriculture
     sample_folder_list:

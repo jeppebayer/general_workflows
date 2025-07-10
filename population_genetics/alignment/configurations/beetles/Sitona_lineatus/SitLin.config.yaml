@@ -35,17 +35,25 @@ sample_lists:
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_FUR
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_HAS
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_HES
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_HHJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_HYF
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_JoeJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_JYS
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_KOS
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_KRS
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_MOS
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_MSS
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_ORoe
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_RDJ_39ind
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_RES
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_SBJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_STF_45ind
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_STJ_44ind
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_SUJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_ULJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_UTJ
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_VAJ
+      - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_VIS_36ind
       - /faststorage/project/EcoGenetics/BACKUP/population_genetics/fastq/beetles/Sitona_lineatus/SitLin_aaRJ
   -
     group_name: Conservation_agriculture
