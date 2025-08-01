@@ -30,22 +30,11 @@ vcfGroupList:
     # (str). Name of sample group.
     groupName: Grassland
     # (str). Path to VCF file.
-    vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Isotoma_viridis/grassland/IsoVir.grassland.ingroup.highQuality.freebayes.merge.vcf.gz
-    # (int). Minimum coverage value for filtering.
-    minimumCoverage: 200
-    # (int). Maximum coverage value for filtering.
-    maximumCoverage: 802
-    # (str). Path to BED file containing intervals for which the sample group has coverage ranging within threshold values. 
-    withinThresholdBedFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Isotoma_viridis/depth/IsoVir.grassland.ingroup.highQuality.depththreshold.bed
-  -
-    # (str). Name of sample group.
-    groupName: Grassland
-    # (str). Path to VCF file.
     vcfFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Isotoma_viridis/grassland/IsoVir.grassland.ingroup.allQuality.freebayes.merge.vcf.gz
     # (int). Minimum coverage value for filtering.
     minimumCoverage: 200
     # (int). Maximum coverage value for filtering.
-    maximumCoverage: 798
+    maximumCoverage: 668
     # (str). Path to BED file containing intervals for which the sample group has coverage ranging within threshold values. 
     withinThresholdBedFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Isotoma_viridis/depth/IsoVir.grassland.ingroup.allQuality.depththreshold.bed
   -
@@ -56,7 +45,7 @@ vcfGroupList:
     # (int). Minimum coverage value for filtering.
     minimumCoverage: 200
     # (int). Maximum coverage value for filtering.
-    maximumCoverage: 780
+    maximumCoverage: 716
     # (str). Path to BED file containing intervals for which the sample group has coverage ranging within threshold values. 
     withinThresholdBedFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Isotoma_viridis/depth/IsoVir.conventional_agriculture.ingroup.allQuality.depththreshold.bed
   -
@@ -67,6 +56,6 @@ vcfGroupList:
     # (int). Minimum coverage value for filtering.
     minimumCoverage: 200
     # (int). Maximum coverage value for filtering.
-    maximumCoverage: 572
+    maximumCoverage: 568
     # (str). Path to BED file containing intervals for which the sample group has coverage ranging within threshold values. 
     withinThresholdBedFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Isotoma_viridis/depth/IsoVir.conservation_agriculture.ingroup.allQuality.depththreshold.bed

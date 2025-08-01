@@ -34,6 +34,6 @@ vcfGroupList:
     # (int). Minimum coverage value for filtering.
     minimumCoverage: 200
     # (int). Maximum coverage value for filtering.
-    maximumCoverage: 728
+    maximumCoverage: 782
     # (str). Path to BED file containing intervals for which the sample group has coverage ranging within threshold values. 
     withinThresholdBedFile: /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/vcf/collembola/Orchesella_cincta/depth/OrcCin.grassland.ingroup.allQuality.depththreshold.bed

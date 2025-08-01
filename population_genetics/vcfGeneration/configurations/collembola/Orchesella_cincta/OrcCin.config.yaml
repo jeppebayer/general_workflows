@@ -64,7 +64,7 @@ sampleList:
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Orchesella_cincta/grassland/OrcCin_NYS-F-C25-1/OrcCin_NYS-F-C25-1.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Orchesella_cincta/grassland/OrcCin_NYS-F-C25-2/OrcCin_NYS-F-C25-2.filtered.bam
       - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Orchesella_cincta/grassland/OrcCin_ORoe-C31/OrcCin_ORoe-C31.filtered.bam
-      - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Orchesella_cincta/grassland/OrcCin_RYJ/OrcCin_RYJ.filtered.bam
+      # Removed based on SFS - /faststorage/project/EcoGenetics/general_workflow_outputs/population_genetics/alignments/collembola/Orchesella_cincta/grassland/OrcCin_RYJ/OrcCin_RYJ.filtered.bam
     # (list). List of paths to 'low quality' BAM file.
     lowQualityBamFileList:
       - 
